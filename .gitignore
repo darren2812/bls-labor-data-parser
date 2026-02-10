@@ -1,0 +1,9 @@
+# JetBrains / CLion
+.idea/
+
+# CMake / Ninja build output
+cmake-build-*/
+build/
+
+# macOS
+.DS_Store
