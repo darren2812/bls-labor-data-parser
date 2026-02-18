@@ -38,7 +38,7 @@ void printTableHeadings(std::ofstream& output, const std::string* headings, int*
 	int consoleWidth = 0;
 	
 	// outputs table title in output file and console
-	output << "Table 1.2 Occupational projections, 2023—2033, and worker characteristics, 2023"
+	output << "Table 1.2 Occupational projections, 2023ï¿½2033, and worker characteristics, 2023"
 		<< " (Numbers in thousands, except percentages and median annual wages)" << std::endl
 		<< "An * after an occupation title represents a user-created occupation.\n" << std::endl
 		<< "Link to Employment Data Definitions: https://www.bls.gov/emp/documentation/definitions.htm" << std::endl
@@ -102,10 +102,10 @@ void printTableEntry(std::ofstream& output, int* columnLengths, Occupation& curr
 }
 
 // function to pinpoint the specific index of an occupation
-Occupation* selectSpecficIndex(Occupation* searchedJobs, Occupation* allJobs, const int& jobNumber, std::string& userInput, std::string command) {
+Occupation* selectSpecficIndex(Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter, std::string& userInput, std::string command) {
 	std::getline(std::cin, userInput);
 	lowerString(userInput);
-	int searchRows = searchByJob(searchedJobs, allJobs, jobNumber, userInput);
+	int searchRows = searchByJob(searchedJobs, allJobs, jobCounter, userInput);
 	std::cout << std::endl;
 	if (searchRows > 0) {
 		for (int i = 0; i < searchRows; i++) {
@@ -169,7 +169,7 @@ char yesOrNoMenu() {
 }
 
 // helper function to handle all search functions
-bool searchFunction(SinglyLinkedList* list, std::string dataStructure, std::string searchType, Occupation* searchedJobs, Occupation* allJobs, const int& jobNumber,
+bool searchFunction(SinglyLinkedList* list, std::string dataStructure, std::string searchType, Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter,
 	const std::string* headings, int* columnLengths, int& searchRows) {
 
 	std::string input = "-";
@@ -190,7 +190,7 @@ bool searchFunction(SinglyLinkedList* list, std::string dataStructure, std::stri
 		startTime = std::chrono::high_resolution_clock::now();
 		// searchRows based on what function is being passed in as an argument
 		if (dataStructure == "array") {
-			searchRows = searchByJob(searchedJobs, allJobs, jobNumber, input);
+			searchRows = searchByJob(searchedJobs, allJobs, jobCounter, input);
 		}
 		else if (dataStructure == "list") {
 			searchRows = list->searchListByJob(input, searchedJobs);
@@ -240,7 +240,7 @@ bool searchFunction(SinglyLinkedList* list, std::string dataStructure, std::stri
 		startTime = std::chrono::high_resolution_clock::now();
 		// searchRows based on what function is entered
 		if (dataStructure == "array") {
-			searchRows = searchByWage(searchedJobs, allJobs, jobNumber, lowerLimit, upperLimit);
+			searchRows = searchByWage(searchedJobs, allJobs, jobCounter, lowerLimit, upperLimit);
 		}
 		else if (dataStructure == "list") {
 			searchRows = list->searchListByWage(lowerLimit, upperLimit, searchedJobs);
@@ -271,7 +271,7 @@ bool searchFunction(SinglyLinkedList* list, std::string dataStructure, std::stri
 	}
 }
 
-Occupation* buildKeyAndSearch(Occupation* allJobs, int jobNumber, HashTable& hashTable) {
+Occupation* buildKeyAndSearch(Occupation* allJobs, int jobCounter, HashTable& hashTable) {
 	std::string firstHalfKey = "00";
 	std::string userInput;
 	Occupation* jobSearched = nullptr;
@@ -279,7 +279,7 @@ Occupation* buildKeyAndSearch(Occupation* allJobs, int jobNumber, HashTable& has
 
 	// displays the major occupation groups in the table (https://www.bls.gov/oes/2023/may/oes_stru.htm)
 	std::cout << std::endl;
-	for (int i = 0; i < jobNumber; i++) {
+	for (int i = 0; i < jobCounter; i++) {
 		// major groups are denoted by four 0s at the end of the code, hence a modulo of 10000 will result in 0
 		if (allJobs[i].getMatrixCodeInt() % 10000 == 0) {
 			std::cout << allJobs[i].getMatrixCode().substr(0, 2) << ": " <<
@@ -326,7 +326,7 @@ Occupation* buildKeyAndSearch(Occupation* allJobs, int jobNumber, HashTable& has
 		firstHalfKey = userInput;
 	}
 	std::cout << std::endl;
-	for (int i = 0; i < jobNumber; i++) {
+	for (int i = 0; i < jobCounter; i++) {
 		// displaying specific jobs now
 		if (allJobs[i].getMatrixCode().substr(0, 2) == firstHalfKey) {
 			std::cout << allJobs[i].getMatrixCode().substr(3, 4) << ": " <<

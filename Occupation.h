@@ -1,46 +1,48 @@
 // Occupation.h
-// Darren Daniel
 
 #pragma once
 #include <string>
 
 // Create occupations class with a private struct containing different variables
 class Occupation {
+
 private:
-	struct Job {
-		// default values for Job struct
-		std::string occupation = "-";
-		std::string matrixCode = "-";
-		int matrixCodeInt = 0;
-		std::string occupationType = "-";
-		float employmentCurrent = -1.0f;
-		std::string employmentCurrentString = "-";
-		float employmentFuture = -1.0f;
-		std::string employmentFutureString = "-";
-		float distributionCurrent = -1.0f;
-		std::string distributionCurrentString = "-";
-		float distributionFuture = -1.0f;
-		std::string distributionFutureString = "-";
-		float numericChange = -1.0f;
-		std::string numericChangeString = "-";
-		float percentChange = -1.0f;
-		std::string percentChangeString = "-";
-		float percentSelfEmployed = -1.0f;
-		std::string percentSelfEmployedString = "-";
-		float jobOpenings = -1.0f;
-		std::string jobOpeningsString = "-";
-		float wage = -1.0f;
-		std::string wageString = "-";
-		std::string education = "-";
-		int educationScore = 0;
-		std::string workExperience = "-";
-		int workExperienceScore = 0;
-		std::string training = "-";
-		std::string handbookContent = "-";
-		int jobIndex = -1;
-	} jobStruct;
+	std::string occupation = "-";
+	std::string matrixCode = "-";
+	int matrixCodeInt = 0;
+	std::string occupationType = "-";
+	float employmentCurrent = -1.0f;
+	std::string employmentCurrentString = "-";
+	float employmentFuture = -1.0f;
+	std::string employmentFutureString = "-";
+	float distributionCurrent = -1.0f;
+	std::string distributionCurrentString = "-";
+	float distributionFuture = -1.0f;
+	std::string distributionFutureString = "-";
+	float numericChange = -1.0f;
+	std::string numericChangeString = "-";
+	float percentChange = -1.0f;
+	std::string percentChangeString = "-";
+	float percentSelfEmployed = -1.0f;
+	std::string percentSelfEmployedString = "-";
+	float jobOpenings = -1.0f;
+	std::string jobOpeningsString = "-";
+	float wage = -1.0f;
+	std::string wageString = "-";
+	std::string education = "-";
+	int educationScore = 0;
+	std::string workExperience = "-";
+	int workExperienceScore = 0;
+	std::string training = "-";
+	std::string handbookContent = "-";
+	int jobIndex = -1;
+
 public:
-	// declaring getters
+
+	// some data fields have string and corresponding numerical return types.
+	// This is due to some blank data from the original website. In this implementation,
+	// non-existent data is equated to a 0, but will be displayed as a "-" on the console output.
+
 	std::string getOccupation() const;
 	int getMatrixCodeInt() const;
 	std::string getMatrixCode() const;
@@ -71,7 +73,6 @@ public:
 	std::string getHandbookContent() const;
 	int getJobIndex() const;
 
-	// Declaring setters
 	void setOccupation(std::string o);
 	void setMatrixCode(std::string mc);
 	void setOccupationType(std::string ot);

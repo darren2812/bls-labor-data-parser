@@ -22,7 +22,7 @@ int getThisWorkExperienceScore(const Occupation& job) {
 
 
 // sorting dialogue function to ask if user wants to see the data sorted
-void sortingDialogue(Occupation*& allJobs, Occupation*& sortedJobs, int jobNumber, const std::string* headings, int* columnLengths) {
+void sortingDialogue(Occupation*& allJobs, Occupation*& sortedJobs, int jobCounter, const std::string* headings, int* columnLengths) {
 	std::string userInput = "-";
 	bool ascending = false;
 	char menuOption;
@@ -59,19 +59,19 @@ void sortingDialogue(Occupation*& allJobs, Occupation*& sortedJobs, int jobNumbe
 		switch (menuOption) {
 		case 'A': // user selects alphabetical sort
 			sortCategory = "Occupation Title";
-			sortJob(allJobs, sortedJobs, jobNumber, ascending, getThisOccupation);
+			sortJob(allJobs, sortedJobs, jobCounter, ascending, getThisOccupation);
 			break;
 		case 'B': // user selects wage sort
 			sortCategory = "Median Annual Wage 2024";
-			sortJob(allJobs, sortedJobs, jobNumber, ascending, getThisWage);
+			sortJob(allJobs, sortedJobs, jobCounter, ascending, getThisWage);
 			break;
 		case 'C': // user selects education sort
 			sortCategory = "Typical Education Needed for Entry";
-			sortJob(allJobs, sortedJobs, jobNumber, ascending, getThisEducationScore);
+			sortJob(allJobs, sortedJobs, jobCounter, ascending, getThisEducationScore);
 			break;
 		case 'D':
 			sortCategory = "Work Experience in a Related Occupation";
-			sortJob(allJobs, sortedJobs, jobNumber, ascending, getThisWorkExperienceScore);
+			sortJob(allJobs, sortedJobs, jobCounter, ascending, getThisWorkExperienceScore);
 			break;
 		default: // break to main menu
 			return;
@@ -82,7 +82,7 @@ void sortingDialogue(Occupation*& allJobs, Occupation*& sortedJobs, int jobNumbe
 	default:
 		return;
 	}
-	viewEntries(sortedJobs, headings, columnLengths, jobNumber);
+	viewEntries(sortedJobs, headings, columnLengths, jobCounter);
 	std::cout << "\nData successfully sorted based on " << sortCategory << " in " << sortOrder << " order." << std::endl;
 	std::cout << "\nCheck output file for full table." << std::endl;
 }

@@ -10,22 +10,15 @@ float getThisWage(const Occupation& job);
 int getThisEducationScore(const Occupation& job);
 int getThisWorkExperienceScore(const Occupation& job);
 
-// sorting algorithms from zyBooks
-// ascending bool for function reusability inspired from Noah's code
-// helper function to copy array, initialize indices, and call merge sort
-// ChatGPT helped debugged an issue with the pointer by suggesting to pass it by reference
-
-// templated functions and function pointers learned from Google AI and Cherno
-// https://www.youtube.com/watch?v=p4sDgQ-jao4
 template <typename T>
-void sortJob(Occupation* allJobs, Occupation*& sortedJobs, int jobNumber, bool ascending, T(*function)(const Occupation& job)) {
+void sortJob(Occupation* allJobs, Occupation*& sortedJobs, int jobCounter, bool ascending, T(*function)(const Occupation& job)) {
 	// assigning the sortedJobs pointer to a dynamic array
-	sortedJobs = new Occupation[jobNumber];
-	for (int i = 0; i < jobNumber; i++) {
+	sortedJobs = new Occupation[jobCounter];
+	for (int i = 0; i < jobCounter; i++) {
 		sortedJobs[i] = allJobs[i];
 	}
 	int lowIndex = 0;
-	int highIndex = jobNumber - 1;
+	int highIndex = jobCounter - 1;
 	mergeSortJob(sortedJobs, lowIndex, highIndex, ascending, function);
 }
 template <typename T>
@@ -82,4 +75,4 @@ void mergeJob(Occupation*& sortedJobs, int lowIndex, int midIndex, int highIndex
 }
 
 // helper function to ask for user sorting preferences
-void sortingDialogue(Occupation*& allJobs, Occupation*& sortedJobs, int jobNumber, const std::string* headings, int* columnLengths);
+void sortingDialogue(Occupation*& allJobs, Occupation*& sortedJobs, int jobCounter, const std::string* headings, int* columnLengths);

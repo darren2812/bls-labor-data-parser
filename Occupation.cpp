@@ -6,158 +6,156 @@
 
 // getters return the specific data field of jobStruct
 std::string Occupation::getOccupation() const {
-	return jobStruct.occupation;
+	return occupation;
 }
 int Occupation::getMatrixCodeInt() const {
-	return jobStruct.matrixCodeInt;
+	return matrixCodeInt;
 }
 std::string Occupation::getMatrixCode() const {
-	return jobStruct.matrixCode;
+	return matrixCode;
 }
 std::string Occupation::getOccupationType() const {
-	return jobStruct.occupationType;
+	return occupationType;
 }
 float Occupation::getEmploymentCurrent() const {
-	return jobStruct.employmentCurrent;
+	return employmentCurrent;
 }
 std::string Occupation::getEmploymentCurrentString() const {
-	return jobStruct.employmentCurrentString;
+	return employmentCurrentString;
 }
 float Occupation::getEmploymentFuture() const {
-	return jobStruct.employmentFuture;
+	return employmentFuture;
 }
 std::string Occupation::getEmploymentFutureString() const {
-	return jobStruct.employmentFutureString;
+	return employmentFutureString;
 }
 float Occupation::getDistributionCurrent() const {
-	return jobStruct.distributionCurrent;
+	return distributionCurrent;
 }
 std::string Occupation::getDistributionCurrentString() const {
-	return jobStruct.distributionCurrentString;
+	return distributionCurrentString;
 }
 float Occupation::getDistributionFuture() const {
-	return jobStruct.distributionFuture;
+	return distributionFuture;
 }
 std::string Occupation::getDistributionFutureString() const {
-	return jobStruct.distributionFutureString;
+	return distributionFutureString;
 }
 float Occupation::getNumericChange() const {
-	return jobStruct.numericChange;
+	return numericChange;
 }
 std::string Occupation::getNumericChangeString() const {
-	return jobStruct.numericChangeString;
+	return numericChangeString;
 }
 float Occupation::getPercentageChange() const {
-	return jobStruct.percentChange;
+	return percentChange;
 }
 std::string Occupation::getPercentageChangeString() const {
-	return jobStruct.percentChangeString;
+	return percentChangeString;
 }
 float Occupation::getPercentSelfEmployed() const {
-	return jobStruct.percentSelfEmployed;
+	return percentSelfEmployed;
 }
 std::string Occupation::getPercentSelfEmployedString() const {
-	return jobStruct.percentSelfEmployedString;
+	return percentSelfEmployedString;
 }
 float Occupation::getJobOpenings() const {
-	return jobStruct.jobOpenings;
+	return jobOpenings;
 }
 std::string Occupation::getJobOpeningsString() const {
-	return jobStruct.jobOpeningsString;
+	return jobOpeningsString;
 }
 float Occupation::getWage() const {
-	return jobStruct.wage;
+	return wage;
 }
 std::string Occupation::getWageString() const {
-	return jobStruct.wageString;
+	return wageString;
 }
 std::string Occupation::getEducation() const {
-	return jobStruct.education;
+	return education;
 }
 int Occupation::getEducationScore() const {
-	return jobStruct.educationScore;
+	return educationScore;
 }
 std::string Occupation::getWorkExperience() const {
-	return jobStruct.workExperience;
+	return workExperience;
 }
 int Occupation::getWorkExperienceScore() const {
-	return jobStruct.workExperienceScore;
+	return workExperienceScore;
 }
 std::string Occupation::getTraining() const {
-	return jobStruct.training;
+	return training;
 }
 std::string Occupation::getHandbookContent() const {
-	return jobStruct.handbookContent;
+	return handbookContent;
 }
 int Occupation::getJobIndex() const {
-	return jobStruct.jobIndex;
+	return jobIndex;
 }
 
 // setters assign std::string arguments to std::string data fields and call toFloat() function for float data fields
 void Occupation::setOccupation(std::string o) {
-	jobStruct.occupation = o;
+	occupation = o;
 }
 void Occupation::setMatrixCode(std::string mc) {
 	if (mc == "-") {
-		jobStruct.matrixCode = mc;
-		jobStruct.matrixCodeInt = 0;
+		matrixCode = mc;
+		matrixCodeInt = 0;
 	}
 	else {
-		jobStruct.matrixCode = mc;
+		matrixCode = mc;
 		// erases the - character from the matrix code
 		mc.erase(2, 1);
 		// converts the modified code to an int
-		jobStruct.matrixCodeInt = stoi(mc);
+		matrixCodeInt = stoi(mc);
 	}
 }
 void Occupation::setOccupationType(std::string ot) {
-	jobStruct.occupationType = ot;
+	occupationType = ot;
 }
 void Occupation::setEmploymentCurrent(std::string ec) {
-	jobStruct.employmentCurrentString = ec;
-	jobStruct.employmentCurrent = toFloat(ec);
+	employmentCurrentString = ec;
+	employmentCurrent = toFloat(ec);
 }
 void Occupation::setEmploymentFuture(std::string ef) {
-	jobStruct.employmentFutureString = ef;
-	jobStruct.employmentFuture = toFloat(ef);
+	employmentFutureString = ef;
+	employmentFuture = toFloat(ef);
 }
 void Occupation::setDistributionCurrent(std::string dc) {
-	jobStruct.distributionCurrentString = dc;
-	jobStruct.distributionCurrent = toFloat(dc);
+	distributionCurrentString = dc;
+	distributionCurrent = toFloat(dc);
 }
 void Occupation::setDistributionFuture(std::string df) {
-	jobStruct.distributionFutureString = df;
-	jobStruct.distributionFuture = toFloat(df);
+	distributionFutureString = df;
+	distributionFuture = toFloat(df);
 }
 void Occupation::setNumericChange(std::string nc) {
-	jobStruct.numericChangeString = nc;
-	jobStruct.numericChange = toFloat(nc);
+	numericChangeString = nc;
+	numericChange = toFloat(nc);
 }
 void Occupation::setPercentageChange(std::string pc) {
-	jobStruct.percentChangeString = pc;
-	jobStruct.percentChange = toFloat(pc);
+	percentChangeString = pc;
+	percentChange = toFloat(pc);
 }
 void Occupation::setPercentSelfEmployed(std::string pse) {
-	jobStruct.percentSelfEmployedString = pse;
-	jobStruct.percentSelfEmployed = toFloat(pse);
+	percentSelfEmployedString = pse;
+	percentSelfEmployed = toFloat(pse);
 }
 void Occupation::setJobOpenings(std::string jo) {
-	jobStruct.jobOpeningsString = jo;
-	jobStruct.jobOpenings = toFloat(jo);
+	jobOpeningsString = jo;
+	jobOpenings = toFloat(jo);
 }
 void Occupation::setWage(std::string w) {
-	jobStruct.wageString = w;
+	wageString = w;
 	size_t tempIndex = w.find(">=$");
-	// delete instances of >=$ and the comma in the wage data for jobs with >=$239,200 wage
-	// code learned from geeks for geeks website and chatGPT
 	if (tempIndex != std::string::npos) {
 		w.erase(tempIndex, 3); // deletes >=$
 		w.erase(tempIndex + 3, 1); // deletes comma
 	}
-	jobStruct.wage = toFloat(w);
+	wage = toFloat(w);
 }
 void Occupation::setEducation(std::string e) {
-	jobStruct.education = e;
+	education = e;
 	int score = 0;
 	if (e == "No formal educational credential") {
 		score = 1;
@@ -183,10 +181,10 @@ void Occupation::setEducation(std::string e) {
 	else if (e == "Doctoral or professional degree") {
 		score = 8;
 	}
-	jobStruct.educationScore = score;
+	educationScore = score;
 }
 void Occupation::setWorkExperience(std::string we) {
-	jobStruct.workExperience = we;
+	workExperience = we;
 	int score = 0;
 	if (we == "None") {
 		score = 1;
@@ -197,14 +195,14 @@ void Occupation::setWorkExperience(std::string we) {
 	else if (we == "5 years or more") {
 		score = 3;
 	}
-	jobStruct.workExperienceScore = score;
+	workExperienceScore = score;
 }
 void Occupation::setTraining(std::string t) {
-	jobStruct.training = t;
+	training = t;
 }
 void Occupation::setHandbookContent(std::string hc) {
-	jobStruct.handbookContent = hc;
+	handbookContent = hc;
 }
 void Occupation::setJobIndex(int i) {
-	jobStruct.jobIndex = i;
+	jobIndex = i;
 }

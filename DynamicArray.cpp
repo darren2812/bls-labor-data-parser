@@ -1,6 +1,3 @@
-// JobDatabase.cpp
-// Darren Daniel
-
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -8,9 +5,13 @@
 #include <iomanip>
 #include <cmath>
 #include "Helpers.h"
-#include "JobDatabase.h"
+#include "DynamicArray.h"
 
-void readEntries(std::ifstream& rawData, Occupation* allJobs, const std::string* headings, int* columnLengths, int& jobCounter) {
+DynamicArray::DynamicArray(int& capacity) {
+	data = new Occupation[capacity];
+}
+
+void DynamicArray::readEntries(std::ifstream& rawData, Occupation* allJobs, const std::string* headings, int* columnLengths, int& jobCounter) {
 	// code by ChatGPT to reset file stream cursor position after first while std::getline function
 	rawData.clear();
 	rawData.seekg(0, std::ios::beg);
@@ -105,10 +106,10 @@ void readEntries(std::ifstream& rawData, Occupation* allJobs, const std::string*
 	}
 }
 
-void viewEntries(Occupation* allJobs, const std::string* headings, int* columnLengths, const int& jobCounter) {
+void DynamicArray::viewEntries(Occupation* allJobs, const std::string* headings, int* columnLengths, const int& jobCounter) {
 	// output to text file
 	std::ofstream output("../output/output.txt");
-	
+
 	// outputs table headings
 	printTableHeadings(output, headings, columnLengths);
 	// outputs contents of the table
@@ -120,7 +121,7 @@ void viewEntries(Occupation* allJobs, const std::string* headings, int* columnLe
 	output.close();
 }
 
-int searchByJob(Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter, std::string jobSearched) {
+int DynamicArray::searchByJob(Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter, std::string jobSearched) {
 	// initializing counters
 	int foundSearches = 0;
 
@@ -143,7 +144,7 @@ int searchByJob(Occupation* searchedJobs, Occupation* allJobs, const int& jobCou
 	return foundSearches;
 }
 
-int searchByWage(Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter, const float& lowerLimit,
+int DynamicArray::searchByWage(Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter, const float& lowerLimit,
 	const float& upperLimit) {
 	// initializing counter
 	int foundSearches = 0;
@@ -158,7 +159,7 @@ int searchByWage(Occupation* searchedJobs, Occupation* allJobs, const int& jobCo
 	return foundSearches;
 }
 
-Occupation addEntry(Occupation*& allJobs, int& jobCounter, int& totalJobsCapacity, std::string& jobAdded, int* columnLengths, std::string key) {
+Occupation DynamicArray::addEntry(Occupation*& allJobs, int& jobCounter, int& totalJobsCapacity, std::string& jobAdded, int* columnLengths, std::string key) {
 	// temporary std::string and float to store user input
 	std::string tempString = "";
 	float tempFloat = 0.0f;
@@ -461,7 +462,7 @@ Occupation addEntry(Occupation*& allJobs, int& jobCounter, int& totalJobsCapacit
 	return allJobs[jobCounter - 1];
 }
 
-void addEntryAgain(Occupation jobAdded, Occupation*& allJobs, int& jobCounter) {
+void DynamicArray::addEntryAgain(Occupation jobAdded, Occupation*& allJobs, int& jobCounter) {
 	int indexAdded = jobAdded.getJobIndex();
 	// add entry shifts elements to the right
 	for (int i = jobCounter - 1; i >= indexAdded; i--) {
@@ -474,7 +475,7 @@ void addEntryAgain(Occupation jobAdded, Occupation*& allJobs, int& jobCounter) {
 	jobCounter++;
 }
 
-Occupation removeEntry(Occupation*& allJobs, int& jobCounter, int& totalJobsCapacity, int indexRemoved) {
+Occupation DynamicArray::removeEntry(Occupation*& allJobs, int& jobCounter, int& totalJobsCapacity, int indexRemoved) {
 	Occupation jobToReturn = allJobs[indexRemoved];
 	// remove entry shifts elements to the left instead of resizing
 	for (int i = indexRemoved + 1; i < jobCounter; i++) {
@@ -488,7 +489,7 @@ Occupation removeEntry(Occupation*& allJobs, int& jobCounter, int& totalJobsCapa
 	return jobToReturn;
 }
 
-void rewriteJobFile(Occupation* allJobs, const int& jobCounter) {
+void DynamicArray::rewriteJobFile(Occupation* allJobs, const int& jobCounter) {
 	// opens the input file as an output file stream and automatically wipes the file's contents
 	std::ofstream modifiedData("../input/rawData.txt");
 	// iterates through entire dynamic array
@@ -514,7 +515,7 @@ void rewriteJobFile(Occupation* allJobs, const int& jobCounter) {
 	modifiedData.close();
 }
 
-void importList(std::ifstream& listData, Occupation* allJobs, SinglyLinkedList* list, int jobCounter, HashTable& hashTable) {
+void DynamicArray::importList(std::ifstream& listData, Occupation* allJobs, SinglyLinkedList* list, int jobCounter, HashTable& hashTable) {
 	// setting the cursor position back to the start
 	listData.clear();
 	listData.seekg(0, std::ios::beg);
@@ -547,7 +548,7 @@ void importList(std::ifstream& listData, Occupation* allJobs, SinglyLinkedList* 
 	}
 }
 
-void rewriteListFile(SinglyLinkedList* list) {
+void DynamicArray::rewriteListFile(SinglyLinkedList* list) {
 	// opens the input file as an output file stream and automatically wipes the file's contents
 	std::ofstream modifiedData("../input/listData.txt");
 	SinglyLinkedNode<Occupation>* current = list->getListHead();

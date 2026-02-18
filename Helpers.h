@@ -21,16 +21,16 @@ void printTableHeadings(std::ofstream& output, const std::string* headings, int*
 // function to print table entry
 void printTableEntry(std::ofstream& output, int* columnLengths, Occupation& currentJob);
 // function to select a specific index from the database
-Occupation* selectSpecficIndex(Occupation* searchedJobs, Occupation* allJobs, const int& jobNumber, std::string& userInput, std::string command);
+Occupation* selectSpecficIndex(Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter, std::string& userInput, std::string command);
 // function to handle menu selection for reusability
 char menuHandling(char firstLetter, char lastLetter, std::string& userInput);
 // function to handle yes/no selection for reusability
 char yesOrNoMenu();
 // helper function to handle all search functions
-bool searchFunction(SinglyLinkedList* list, std::string dataStructure, std::string searchType, Occupation* searchedJobs, Occupation* allJobs, const int& jobNumber,
+bool searchFunction(SinglyLinkedList* list, std::string dataStructure, std::string searchType, Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter,
 	const std::string* headings, int* columnLengths, int& searchRows);
 // helper function to search for a particular job in the hash table
-Occupation* buildKeyAndSearch(Occupation* allJobs, int jobNumber, HashTable& hashTable);
+Occupation* buildKeyAndSearch(Occupation* allJobs, int jobCounter, HashTable& hashTable);
 // function to find max value in an array
 float findMax(Occupation**& jobArray, int numberOfJobs, float(*function)(Occupation*&));
 // function to print out bar chart to the console
