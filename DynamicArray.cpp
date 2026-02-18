@@ -1,3 +1,5 @@
+/*
+
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -38,7 +40,6 @@ void DynamicArray::readEntries(std::ifstream& rawData, Occupation* allJobs, cons
 		Case 14: Training
 		Case 15: Set columnCount to -1 so that it becomes 0 again after increment
 				 and increment jobCounter to move to the next jobCounter of the dynamic array
-	*/
 
 	// reads through the entire text file line by line
 	while (std::getline(rawData, tempString)) {
@@ -560,3 +561,5 @@ void DynamicArray::rewriteListFile(SinglyLinkedList* list) {
 	// closes file
 	modifiedData.close();
 }
+
+*/

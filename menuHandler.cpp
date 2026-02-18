@@ -1,3 +1,5 @@
+/*
+
 #include "menuHandler.h"
 
 MenuHandler::MenuHandler()
@@ -34,3 +36,5 @@ MenuHandler::MenuHandler()
 void MenuHandler::initializeDataStructures() {
 
 }
+
+*/

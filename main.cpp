@@ -15,6 +15,102 @@
 
 int main() {
 
+	// integer to store the number of table headings
+	const int NUM_OF_HEADINGS = 16;
+	// float to store the maximum length of a bar chart when comparing jobs
+	const float MAX_BAR_CHART_LENGTH = 100;
+	// file stream for data
+	std::ifstream rawData("../input/rawData.txt");
+	std::ifstream listData("../input/laistData.txt");
+	// headings in indexes 1 and 15 are null to skip columns 2 and 16 in data file
+	std::string headings[NUM_OF_HEADINGS] = { "Occupation", "SOC Matrix Code", "Type", "Employment 2023", "Employment 2033",
+						   "% Distribution 2023", "% Distribution 2033", "Change 2023-33",
+						   "% Change 2023-33", "% Self Employed", "Annual Openings 2023-33",
+						   "Median Wage 2024", "Typical Education Needed", "Related Work Experience",
+						   "Typical On-the-Job Training", "" };
+	// string to take in user input
+	std::string userInput = "-";
+	std::string jobInput;
+	std::string firstHalfKey;
+	std::string secondHalfKey;
+
+	// jobNumber counter in main to store the jobNumber of the last job
+	int jobCounter = 0;
+	// searchRows represents the number of entries successfully searched
+	int searchRows = 0;
+	// number of total rows in original text file
+	int numberOfRows = 0;
+	// max number of jobs analyzed
+	int totalJobsCapacity = 0;
+	// array to assign different lengths for each column and setting everything to 0
+	int columnLengths[16] = {};
+	// int to store matrix code when searching
+	int searchCode;
+	// occupation pointer to store occupation being searched
+	Occupation* jobSearchedPtr = nullptr;
+	// occupation object to store occupation being modified
+	Occupation jobModified;
+	// bool to determine whether any searches were found
+	bool searchOutcome = false;
+	// bool to determine whether user has saved or not
+	bool savedDatabase = false;
+	bool savedList = false;
+
+	// VARIABLES FOR COMPARISON
+	// int to store how many jobs to compare
+	short jobsToCompare = 0;
+	// int to act as a counter when selecting jobs
+	short selectionCounter = 0;
+	// float to see the largest number in the comparison
+	float maxValue = 0;
+	// float to keep track of the value of each hashtag
+	float valueOfHashTag = 0;
+	// int to keep track of the number of hashtags to print to the console
+	int numberOfHashTags = 0;
+	// lambda to pass into functions when printing bar charts
+	float getterLambda;
+
+	// sets default table column lengths to the size of the headings + 1
+	for (int i = 0; i < 16; i++) {
+		columnLengths[i] = headings[i].size() + 1;
+	}
+
+	// code from zybooks to read file
+	if (!rawData.is_open()) {
+		std::cout << "\nThe file rawData.txt could not be opened" << std::endl;
+		return 1;
+	}
+
+	// count number of lines and assign to jobInput temporarily
+	while (std::getline(rawData, jobInput)) {
+		numberOfRows++;
+	}
+
+	if (numberOfRows % 16 != 0) {
+		std::cout << "\nThe number of rows in the input file are incompatible. Try redownloading the input source file.\n" << std::endl
+			<< "Exiting the program..." << std::endl;
+		return 1;
+	}
+
+	// divide number of rows by number of rows per entry which is 16
+	totalJobsCapacity = numberOfRows / 16;
+
+	// creating dynamic array for all jobs
+	Occupation* allJobs = new Occupation[totalJobsCapacity];
+
+	// creating hash table for all jobs
+	HashTable hashTable;
+
+	// declaring linked list pointer suggested by chatGPT
+	SinglyLinkedList* list = new SinglyLinkedList;
+
+	// creating stacks to track recent changes
+	JobStack recentChangesDatabase;
+	JobStack recentChangesList;
+	// Job in the being undone
+	Occupation undoneJob;
+	JobPair undoneJobPair;
+
 	// read entries from the file and closes file
 	readEntries(rawData, allJobs, headings, columnLengths, jobCounter);
 	rawData.close();

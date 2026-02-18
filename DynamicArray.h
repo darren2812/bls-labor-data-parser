@@ -1,5 +1,6 @@
 #pragma once
 
+/*
 #include <string>
 #include "Occupation.h"
 #include "HashTable.h"
@@ -47,3 +48,4 @@ public:
     // function to modify list input file
     void rewriteListFile(SinglyLinkedList* list);
 };
+*/
