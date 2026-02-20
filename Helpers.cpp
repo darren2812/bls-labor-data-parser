@@ -137,8 +137,8 @@ Occupation* selectSpecficIndex(Occupation* searchedJobs, Occupation* allJobs, co
 }
 
 // function to handle menu commands
-char menuHandling(char firstLetter, char lastLetter, std::string& userInput) {
-	userInput = "-";
+char menuHandling(char firstLetter, char lastLetter) {
+	std::string userInput = "-";
 	std::getline(std::cin, userInput);
 	char tempChar = toupper(userInput[0]);
 
