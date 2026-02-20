@@ -4,7 +4,7 @@
 #include <iostream>
 #include "Sort.h"
 #include "Helpers.h"
-#include "JobDatabase.h"
+#include "OldDatabase.h"
 
 // getter functions for mergeSort
 std::string getThisOccupation(const Occupation& job) {

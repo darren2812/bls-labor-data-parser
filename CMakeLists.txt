@@ -13,8 +13,8 @@ add_executable(bls_labor_data_parser
         HashTable.h
         Helpers.cpp
         Helpers.h
-        JobDatabase.cpp
-        JobDatabase.h
+        OldDatabase.cpp
+        OldDatabase.h
         LinkedList.cpp
         LinkedList.h
         main.cpp
@@ -27,4 +27,6 @@ add_executable(bls_labor_data_parser
         menuHandler.h
         menuHandler.cpp
         DynamicArray.h
-        DynamicArray.cpp)
+        DynamicArray.cpp
+        JobDatabase.cpp
+        JobDatabase.h)

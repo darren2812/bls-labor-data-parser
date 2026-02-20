@@ -220,3 +220,22 @@ Occupation MenuHandler::promptJobAttributes(std::string jobTitle) {
 
     return occupationToReturn;
 }
+
+int MenuHandler::promptMatrixCodePrefix() {
+    std::string userInput;
+
+    do {
+        std::cout << "\nEnter a number above to select an existing category for the new occupation.\n" << std::endl;
+        std::getline(std::cin, userInput);
+
+        try {
+            return stoi(userInput);
+        }
+        catch (const std::invalid_argument&) {
+            std::cout << "\nThe value entered is not an integer. Try again" << std::endl;
+        }
+        catch (const std::out_of_range&) {
+            std::cout << "\nThe value entered is out of range. Try again" << std::endl;
+        }
+    } while (true);
+}

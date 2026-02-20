@@ -93,6 +93,6 @@ public:
 
 	// functions for calculations
 	void calculateChanges();
-	float formatOneDecimal(float& f);
+	std::string formatOneDecimal(float& value);
 };
 

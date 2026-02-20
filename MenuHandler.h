@@ -91,7 +91,10 @@ private:
 public:
 	MenuHandler();
 	void initializeDataStructures();
+
+	// job adding prompts
 	Occupation promptJobAttributes(std::string jobTitle);
 	std::string promptNonNegativeOrDash();
+	int promptMatrixCodePrefix();
 
 };

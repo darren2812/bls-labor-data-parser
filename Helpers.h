@@ -7,7 +7,7 @@
 #include <fstream>
 #include "LinkedList.h"
 #include "Occupation.h"
-#include "JobDatabase.h"
+#include "OldDatabase.h"
 #include "HashTable.h"
 
 // input handler for missing values

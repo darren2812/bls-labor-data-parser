@@ -3,7 +3,7 @@
 #include <string>
 #include "Occupation.h"
 #include "HashTable.h"
-#include "menuHandler.h"
+#include "MenuHandler.h"
 
 class DynamicArray {
 private:
@@ -13,14 +13,21 @@ private:
 
 public:
     DynamicArray(int& capacity);
+    int getCurrentSize() const;
 
     void increaseCapacity();
 
     // function to read entries
-    void readEntries(std::ifstream& rawData, const std::string* headings, int* columnLengths, int& jobCounter);
+    void readEntries(std::ifstream& rawData, const std::string* headings, int* columnLengths);
 
     // function to view entries
-    void viewEntries(const std::string* headings, int* columnLengths, const int& jobCounter) const;
+    void viewEntries(const std::string* headings, int* columnLengths) const;
+
+    void viewCategories() const;
+
+    bool categoryExists(int& codePrefix) const;
+
+    std::string generateUniqueKey(int& codePrefix) const;
 
     // function to search by job title
     int searchByJob(const DynamicArray& allJobs, const int& jobCounter, std::string& jobSearched);

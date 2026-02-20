@@ -26,9 +26,13 @@ void DynamicArray::increaseCapacity() {
     capacity = newCapacity;
 }
 
+int DynamicArray::getCurrentSize() const {
+    return currentSize;
+}
+
 
 void DynamicArray::readEntries(std::ifstream &rawData, const std::string *headings,
-                 int *columnLengths, int &jobCounter) {
+                               int *columnLengths) {
     // code by ChatGPT to reset file stream cursor position after first while std::getline function
     rawData.clear();
     rawData.seekg(0, std::ios::beg);
@@ -107,7 +111,7 @@ void DynamicArray::readEntries(std::ifstream &rawData, const std::string *headin
                 break;
             case 15:
                 this->data[currentSize].setHandbookContent(tempString);
-                this->data[currentSize].setJobIndex(jobCounter);
+                this->data[currentSize].setJobIndex(currentSize);
                 columnCount = -1;
                 currentSize++;
                 break;
@@ -123,7 +127,7 @@ void DynamicArray::readEntries(std::ifstream &rawData, const std::string *headin
     }
 }
 
-void DynamicArray::viewEntries(const std::string* headings, int* columnLengths, const int& jobCounter)
+void DynamicArray::viewEntries(const std::string* headings, int* columnLengths)
 const {
     // output to text file
     std::ofstream output("../output/output.txt");
@@ -137,6 +141,29 @@ const {
     }
     // closes output file
     output.close();
+}
+
+void DynamicArray::viewCategories() const {
+    for (int i = 0; i < currentSize; i++) {
+        if (this->data[i].getMatrixCodeInt() % 10000 == 0) {
+            std::cout << this->data[i].getMatrixCode().substr(0, 2) << ": " <<
+                this->data[i].getOccupation() << std::endl;
+        }
+    }
+}
+
+bool DynamicArray::categoryExists(int &codePrefix) const {
+    for (int i = 0; i < currentSize; i++) {
+        if (this->data[i].getMatrixCodeInt() % 10000 == codePrefix) {
+            return true;
+        }
+    }
+    return false;
+}
+
+std::string DynamicArray::generateUniqueKey(int &codePrefix) const {
+    int codeSuffix = 1;
+    while ()
 }
 
 int DynamicArray::searchByJob(const DynamicArray& allJobs, const int& jobCounter, std::string& jobSearched) {

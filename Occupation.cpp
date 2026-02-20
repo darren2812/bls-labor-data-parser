@@ -3,6 +3,7 @@
 
 #include "Occupation.h"
 #include "Helpers.h"
+#include <sstream>
 
 // getters return the specific data field of jobStruct
 std::string Occupation::getOccupation() const {
@@ -215,11 +216,20 @@ void Occupation::calculateChanges() {
 	}
 
 	// calculating numeric and percent and rounding off to one decimal place
-	float numeric = std::round((employmentFuture - employmentCurrent) * 10) / 10.0f;
-	float percent =	std::round((numeric / employmentCurrent) * 100 * 10) / 10.0f;
+	float numeric = employmentFuture - employmentCurrent;
+	float percent =	numeric / employmentCurrent * 100;
 
-	setNumericChange(std::to_string(numeric));
-	setPercentageChange(std::to_string(percent));
+	setNumericChange(formatOneDecimal(numeric));
+	setPercentageChange(formatOneDecimal(percent));
+}
+
+std::string Occupation::formatOneDecimal(float &value) {
+	// rounding to one decimal place
+	value = std::round(value * 10) / 10.0f;
+
+	std::ostringstream roundedString;
+	roundedString << std::fixed << std::setprecision(1) << value;
+	return roundedString.str();
 }
 
 /*
@@ -231,6 +241,4 @@ calculateOccupationChange
 addEntry
 
 Set the job index of the job when adding the job to the array.auto
-
-Make function for rounding calculations.
 */

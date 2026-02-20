@@ -6,7 +6,7 @@
 #include <chrono>
 #include "LinkedList.h"
 #include "Helpers.h"
-#include "JobDatabase.h"
+#include "OldDatabase.h"
 #include "Occupation.h"
 
 // initializing global catch variable to determine if catch statement is called
