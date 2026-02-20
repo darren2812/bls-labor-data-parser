@@ -23,7 +23,7 @@ void printTableEntry(std::ofstream& output, int* columnLengths, Occupation& curr
 // function to select a specific index from the database
 Occupation* selectSpecficIndex(Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter, std::string& userInput, std::string command);
 // function to handle menu selection for reusability
-char menuHandling(char firstLetter, char lastLetter);
+char menuHandling(char firstLetter, char lastLetter, bool acceptDash);
 // function to handle yes/no selection for reusability
 char yesOrNoMenu();
 // helper function to handle all search functions

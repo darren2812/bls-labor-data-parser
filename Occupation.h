@@ -90,5 +90,9 @@ public:
 	void setTraining(std::string t);
 	void setHandbookContent(std::string hc);
 	void setJobIndex(int i);
+
+	// functions for calculations
+	void calculateChanges();
+	float formatOneDecimal(float& f);
 };
 

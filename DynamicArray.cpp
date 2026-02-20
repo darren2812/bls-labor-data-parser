@@ -203,7 +203,7 @@ Occupation DynamicArray::addEntry(int &jobCounter, int &totalJobsCapacity, std::
         std::getline(std::cin, tempString);
         tempString[0] = toupper(tempString[0]);
     }
-    switch (menuHandling('A', 'B')) {
+    switch (menuHandling('A', 'B', false)) {
         case 'A': // assigns "Summary" occupation type
             this->data[jobCounter].setOccupationType("Summary");
             break;
@@ -371,13 +371,13 @@ Occupation DynamicArray::addEntry(int &jobCounter, int &totalJobsCapacity, std::
             allJobs.data[jobCounter].setEducation("Some college, no degree");
             break;
         case 'E':
-            allJobs.data[jobCounter].setEducation("Associate�s degree");
+            allJobs.data[jobCounter].setEducation("Associate's degree");
             break;
         case 'F':
-            allJobs.data[jobCounter].setEducation("Bachelor�s degree");
+            allJobs.data[jobCounter].setEducation("Bachelor's degree");
             break;
         case 'G':
-            allJobs.data[jobCounter].setEducation("Master�s degree");
+            allJobs.data[jobCounter].setEducation("Master's degree");
             break;
         case 'H':
             allJobs.data[jobCounter].setEducation("Doctoral or professional degree");

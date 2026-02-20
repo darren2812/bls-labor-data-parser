@@ -206,3 +206,31 @@ void Occupation::setHandbookContent(std::string hc) {
 void Occupation::setJobIndex(int i) {
 	jobIndex = i;
 }
+
+void Occupation::calculateChanges() {
+	if (employmentCurrentString == "-" || employmentFutureString == "-") {
+		setNumericChange("-");
+		setPercentageChange("-");
+		return;
+	}
+
+	// calculating numeric and percent and rounding off to one decimal place
+	float numeric = std::round((employmentFuture - employmentCurrent) * 10) / 10.0f;
+	float percent =	std::round((numeric / employmentCurrent) * 100 * 10) / 10.0f;
+
+	setNumericChange(std::to_string(numeric));
+	setPercentageChange(std::to_string(percent));
+}
+
+/*
+Make a new function to Generate matrix code
+
+generateUniqueKey
+promptJobAttributes
+calculateOccupationChange
+addEntry
+
+Set the job index of the job when adding the job to the array.auto
+
+Make function for rounding calculations.
+*/

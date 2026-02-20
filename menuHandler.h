@@ -1,4 +1,3 @@
-/*
 
 #pragma once
 #include <iostream>
@@ -92,6 +91,7 @@ private:
 public:
 	MenuHandler();
 	void initializeDataStructures();
-};
+	Occupation promptJobAttributes(std::string jobTitle);
+	std::string promptNonNegativeOrDash();
 
-*/
+};
