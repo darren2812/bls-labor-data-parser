@@ -7,8 +7,28 @@
 #include "Helpers.h"
 #include "DynamicArray.h"
 
-DynamicArray::DynamicArray(int &capacity) {
+DynamicArray::DynamicArray() : capacity(0), data(nullptr) {}
+
+DynamicArray::DynamicArray(int capacity) : capacity(capacity) {
     data = new Occupation[capacity];
+}
+
+DynamicArray& DynamicArray::operator=(const DynamicArray &other) {
+    if (this != &other) {
+        delete[] data;
+        capacity = other.capacity;
+        currentSize = other.currentSize;
+        data = new Occupation[capacity];
+        for (int i = 0; i < currentSize; i++) {
+            data[i] = other.data[i];
+        }
+    }
+    return *this;
+}
+
+DynamicArray::~DynamicArray() {
+    delete[] data;
+    data = nullptr;
 }
 
 void DynamicArray::increaseCapacity() {
@@ -30,6 +50,9 @@ int DynamicArray::getCurrentSize() const {
     return currentSize;
 }
 
+int DynamicArray::getCapacity() const {
+    return capacity;
+}
 
 void DynamicArray::readEntries(std::ifstream &rawData, const std::string *headings,
                                int *columnLengths) {
@@ -127,7 +150,7 @@ void DynamicArray::readEntries(std::ifstream &rawData, const std::string *headin
     }
 }
 
-void DynamicArray::viewEntries(const std::string* headings, int* columnLengths)
+void DynamicArray::viewEntries(const std::string *headings, int *columnLengths)
 const {
     // output to text file
     std::ofstream output("../output/output.txt");
@@ -147,7 +170,7 @@ void DynamicArray::viewCategories() const {
     for (int i = 0; i < currentSize; i++) {
         if (this->data[i].getMatrixCodeInt() % 10000 == 0) {
             std::cout << this->data[i].getMatrixCode().substr(0, 2) << ": " <<
-                this->data[i].getOccupation() << std::endl;
+                    this->data[i].getOccupation() << std::endl;
         }
     }
 }
@@ -161,34 +184,30 @@ bool DynamicArray::categoryExists(int &codePrefix) const {
     return false;
 }
 
-std::string DynamicArray::generateUniqueKey(int &codePrefix) const {
-    int codeSuffix = 1;
-    while ()
-}
-
-int DynamicArray::searchByJob(const DynamicArray& allJobs, const int& jobCounter, std::string& jobSearched) {
+int DynamicArray::searchByJob(const DynamicArray &allJobs, const std::string &jobSearched) {
     // initializing counter
     int foundSearches = 0;
+    int allJobsSize = allJobs.getCurrentSize();
 
     // linear search for substrings
-    for (int i = 0; i < jobCounter; i++) {
-
+    for (int i = 0; i < allJobsSize; i++) {
         std::string query = jobSearched;
         std::string currentEntry = allJobs.data[i].getOccupation();
         std::transform(query.begin(), query.end(), query.begin(), ::tolower);
-        std::transform (currentEntry.begin(), currentEntry.end(), currentEntry.begin(), ::tolower);
+        std::transform(currentEntry.begin(), currentEntry.end(), currentEntry.begin(), ::tolower);
 
         if (currentEntry.find(query) != std::string::npos) {
             this->data[foundSearches] = allJobs.data[i];
             foundSearches++;
+            currentSize++;
         }
     }
 
     return foundSearches;
 }
 
-int DynamicArray::searchByWage(const DynamicArray& allJobs, const int& jobCounter, const float& lowerLimit,
-        const float& upperLimit) {
+int DynamicArray::searchByWage(const DynamicArray &allJobs, const int &jobCounter, const float &lowerLimit,
+                               const float &upperLimit) {
     // initializing counter
     int foundSearches = 0;
 

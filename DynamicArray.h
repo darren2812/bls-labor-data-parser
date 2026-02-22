@@ -12,8 +12,16 @@ private:
     int currentSize = 0;
 
 public:
-    DynamicArray(int& capacity);
+    DynamicArray();
+    DynamicArray(int capacity);
+
+    // overloading the equal operator to copy
+    DynamicArray& operator=(const DynamicArray& other);
+
+    ~DynamicArray();
+
     int getCurrentSize() const;
+    int getCapacity() const;
 
     void increaseCapacity();
 
@@ -27,10 +35,8 @@ public:
 
     bool categoryExists(int& codePrefix) const;
 
-    std::string generateUniqueKey(int& codePrefix) const;
-
     // function to search by job title
-    int searchByJob(const DynamicArray& allJobs, const int& jobCounter, std::string& jobSearched);
+    int searchByJob(const DynamicArray& allJobs, const std::string& jobSearched);
 
     // function to search by wage
     int searchByWage(const DynamicArray& allJobs, const int& jobCounter, const float& lowerLimit,

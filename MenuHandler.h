@@ -1,16 +1,16 @@
 
 #pragma once
+
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <chrono>
 #include "Helpers.h"
 #include "Occupation.h"
-#include "DynamicArray.h"
+#include "JobDatabase.h"
 #include "LinkedList.h"
 #include "Sort.h"
 #include "Stack.h"
-#include "HashTable.h"
 
 class MenuHandler {
 private:
@@ -37,10 +37,8 @@ private:
 	std::ifstream listData;
 
 	// DATA STRUCTURES
-	// creating dynamic array for all jobs
-	DynamicArray allJobs = new Occupation[totalJobsCapacity];
-	// creating hash table for all jobs
-	HashTable hashTable;
+	JobDatabase allJobsDatabase;
+	DynamicArray searchedJobs;
 	// declaring linked list pointer suggested by chatGPT
 	SinglyLinkedList* list = new SinglyLinkedList;
 	// creating stacks to track recent changes
@@ -90,11 +88,11 @@ private:
 
 public:
 	MenuHandler();
-	void initializeDataStructures();
+	void allocateDataStructures();
 
 	// job adding prompts
 	Occupation promptJobAttributes(std::string jobTitle);
 	std::string promptNonNegativeOrDash();
 	int promptMatrixCodePrefix();
-
+	void handleAddJob();
 };

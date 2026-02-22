@@ -33,7 +33,12 @@ bool OpenAddressingBucket::isEmptySinceStart() const {
 }
 
 // defining constructor for hash table
-HashTable::HashTable(int c1, int c2, int initialCapacity) {
+
+HashTable::HashTable() :
+	table(nullptr),
+	tableCapacity(0){}
+
+HashTable::HashTable(int initialCapacity) {
 	table = new OpenAddressingBucket*[initialCapacity];
 	for (int i = 0; i < initialCapacity; i++) {
 		table[i] = &OpenAddressingBucket::EMPTY_SINCE_START;
@@ -68,7 +73,7 @@ int HashTable::hashJobKey(int key) {
 }
 
 // function to get job pointer
-Occupation* HashTable::getJobPointer(int key) {
+Occupation* HashTable::getJobPointer(int key) const {
 	int hashedKey = hashJobKey(key);
 	int bucketIndex;
 	for (int i = 0; i < tableCapacity; i++) {

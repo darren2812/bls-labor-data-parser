@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 #include "Occupation.h"
 
 class OpenAddressingBucket {
@@ -28,20 +27,21 @@ private:
 	// main structure is a dynamic array of pointers
 	OpenAddressingBucket** table;
 	// declaring constants for quadratic probing
-	int c1;
-	int c2;
+	int c1 = 1;
+	int c2 = 1;
 	int tableCapacity;
 
 	// private hashing method
 	int hashJobKey(int key);
 public:
 	// default constructor takes in default arguments if not defined by the user
-	HashTable(int c1 = 1, int c2 = 1, int initialCapacity = 2003);
+	HashTable();
+	HashTable(int initialCapacity);
 	// chatGPT informed that a destructor is required as the array is dynamically allocated
 	~HashTable();
 	
 	// search method
-	Occupation* getJobPointer(int key);
+	Occupation* getJobPointer(int key) const;
 
 	// methods to modify contents of table
 	bool insertJob(Occupation& jobInserted);

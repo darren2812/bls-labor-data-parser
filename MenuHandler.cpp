@@ -2,8 +2,7 @@
 #include "menuHandler.h"
 
 MenuHandler::MenuHandler()
-: rawData("./input/rawData.txt"), listData("./input/listData.txt")  {
-
+: rawData("./input/rawData.txt"), listData("./input/listData.txt") {
     std::string dummy;
 
     // sets default table column lengths to the size of the headings + 1
@@ -30,10 +29,11 @@ MenuHandler::MenuHandler()
 
     // divide number of rows by number of rows per entry which is 16
     totalJobsCapacity = numberOfRows / NUM_OF_HEADINGS;
+
 }
 
-void MenuHandler::initializeDataStructures() {
-
+void MenuHandler::allocateDataStructures() {
+    allJobsDatabase = JobDatabase(totalJobsCapacity);
 }
 
 std::string MenuHandler::promptNonNegativeOrDash() {
@@ -238,4 +238,30 @@ int MenuHandler::promptMatrixCodePrefix() {
             std::cout << "\nThe value entered is out of range. Try again" << std::endl;
         }
     } while (true);
+}
+
+void MenuHandler::handleAddJob() {
+
+    std::cout << "\nWhat job do you want to add?\n" << std::endl;
+    std::getline(std::cin, jobInput);
+    lowerString(jobInput);
+
+    allJobsDatabase.searchByJob()
+
+    // resetting userInput
+    userInput = "";
+
+    // outputs existing jobs to console
+    if (searchRows > 0) {
+        std::cout << std::endl;
+        for (int i = 0; i < searchRows; i++) {
+            std::cout << "\t- " << searchedJobs[i].getOccupation() << std::endl;
+        }
+        std::cout << "\nWe have these jobs in our database. Do you still want to add an entry? (y/n)\n" << std::endl;
+        userInput = yesOrNoMenu();
+    }
+
+    allJobsDatabase.allJobsArray.viewCategories();
+
+
 }
