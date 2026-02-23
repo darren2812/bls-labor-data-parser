@@ -6,7 +6,6 @@
 #include <fstream>
 #include <chrono>
 #include "Helpers.h"
-#include "Occupation.h"
 #include "JobDatabase.h"
 #include "LinkedList.h"
 #include "Sort.h"
@@ -38,7 +37,6 @@ private:
 
 	// DATA STRUCTURES
 	JobDatabase allJobsDatabase;
-	DynamicArray searchedJobs;
 	// declaring linked list pointer suggested by chatGPT
 	SinglyLinkedList* list = new SinglyLinkedList;
 	// creating stacks to track recent changes
@@ -89,6 +87,13 @@ private:
 public:
 	MenuHandler();
 	void allocateDataStructures();
+
+	// table related functions
+	void printTableHeadings(std::ofstream& output, const std::string* headings, int* columnLengths) const;
+	void printTableEntry(std::ofstream& output, int* columnLengths, Occupation& currentJob) const;
+	void formatAndPrintArray(const DynamicArray &array, std::string *headings, int *columnLengths) const;
+	// method to display all contents of the hash table
+	void formatAndPrintHashTable(const HashTable &table, std::string *headings, int *columnLengths) const;
 
 	// job adding prompts
 	Occupation promptJobAttributes(std::string jobTitle);

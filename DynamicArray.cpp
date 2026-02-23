@@ -26,6 +26,10 @@ DynamicArray& DynamicArray::operator=(const DynamicArray &other) {
     return *this;
 }
 
+Occupation &DynamicArray::operator[](int index) const {
+    return data[index];
+}
+
 DynamicArray::~DynamicArray() {
     delete[] data;
     data = nullptr;
@@ -148,22 +152,6 @@ void DynamicArray::readEntries(std::ifstream &rawData, const std::string *headin
         // increments columnCount
         columnCount++;
     }
-}
-
-void DynamicArray::viewEntries(const std::string *headings, int *columnLengths)
-const {
-    // output to text file
-    std::ofstream output("../output/output.txt");
-
-    // outputs table headings
-    printTableHeadings(output, headings, columnLengths);
-    // outputs contents of the table
-    for (int i = 0; i < currentSize; i++) {
-        // pass in each instance to the function to print
-        printTableEntry(output, columnLengths, this->data[i]);
-    }
-    // closes output file
-    output.close();
 }
 
 void DynamicArray::viewCategories() const {

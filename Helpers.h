@@ -16,10 +16,6 @@ float toFloat(std::string& s);
 void lowerString(std::string& input);
 // global boolean to determine whether catch is called or not
 extern bool g_catch;
-// function to print table headings
-void printTableHeadings(std::ofstream& output, const std::string* headings, int* columnLengths);
-// function to print table entry
-void printTableEntry(std::ofstream& output, int* columnLengths, Occupation& currentJob);
 // function to select a specific index from the database
 Occupation* selectSpecficIndex(Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter, std::string& userInput, std::string command);
 // function to handle menu selection for reusability

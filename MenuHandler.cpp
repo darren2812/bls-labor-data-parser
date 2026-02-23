@@ -1,8 +1,7 @@
-
-#include "menuHandler.h"
+#include "MenuHandler.h"
 
 MenuHandler::MenuHandler()
-: rawData("./input/rawData.txt"), listData("./input/listData.txt") {
+    : rawData("./input/rawData.txt"), listData("./input/listData.txt") {
     std::string dummy;
 
     // sets default table column lengths to the size of the headings + 1
@@ -22,18 +21,128 @@ MenuHandler::MenuHandler()
     }
 
     if (numberOfRows % NUM_OF_HEADINGS != 0) {
-        std::cout << "\nThe number of rows in the input file are incompatible. Try redownloading the input source file.\n" << std::endl
-            << "Exiting the program..." << std::endl;
+        std::cout <<
+                "\nThe number of rows in the input file are incompatible. Try redownloading the input source file.\n" <<
+                std::endl
+                << "Exiting the program..." << std::endl;
         return;
     }
 
     // divide number of rows by number of rows per entry which is 16
     totalJobsCapacity = numberOfRows / NUM_OF_HEADINGS;
-
 }
 
 void MenuHandler::allocateDataStructures() {
     allJobsDatabase = JobDatabase(totalJobsCapacity);
+}
+
+void MenuHandler::formatAndPrintArray(const DynamicArray &array, std::string *headings, int *columnLengths)
+const {
+    // output to text file
+    std::ofstream output("../output/output.txt");
+    int arraySize = array.getCurrentSize();
+
+    // outputs table headings
+    printTableHeadings(output, headings, columnLengths);
+    // outputs contents of the table
+    for (int i = 0; i < arraySize; i++) {
+        // pass in each instance to the function to print
+        printTableEntry(output, columnLengths, array[i]);
+    }
+    // closes output file
+    output.close();
+}
+
+void MenuHandler::formatAndPrintHashTable(const HashTable &table, std::string *headings, int *columnLengths) const {
+    // output to text file
+    std::ofstream output("../output/output.txt");
+    int hashTableCapacity = table.getTableCapacity();
+
+    // outputs table headings
+    printTableHeadings(output, headings, columnLengths);
+    // outputs contents of the table
+    for (int i = 0; i < hashTableCapacity; i++) {
+        if (!table[i]->isEmpty()) {
+            printTableEntry(output, columnLengths, *table[i]->JobPointer);
+        } else {
+            output << "EMPTY INDEX" << std::endl;
+            std::cout << "EMPTY INDEX" << std::endl;
+        }
+    }
+    // closes output file
+    output.close();
+}
+
+// function to print headings
+void MenuHandler::printTableHeadings(std::ofstream &output, const std::string *headings, int *columnLengths) const {
+    // total width of the table in output and console
+    int totalWidth = 0;
+    int consoleWidth = 0;
+
+    // outputs table title in output file and console
+    output << "Table 1.2 Occupational projections, 2023�2033, and worker characteristics, 2023"
+            << " (Numbers in thousands, except percentages and median annual wages)" << std::endl
+            << "An * after an occupation title represents a user-created occupation.\n" << std::endl
+            << "Link to Employment Data Definitions: https://www.bls.gov/emp/documentation/definitions.htm" << std::endl
+            << "Link to Original Dataset: https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm\n"
+            << std::endl;
+    std::cout << "\nTable 1.2 Summary (Employment number in thousands)" << std::endl
+            << "An * after an occupation title represents a user-created occupation.\n" << std::endl
+            << "Link to Employment Data Definitions: https://www.bls.gov/emp/documentation/definitions.htm" << std::endl
+            << "Link to Original Dataset: https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm\n"
+            << std::endl;
+
+    // outputs headings to the output file and skips over column 2 and 16
+    for (int i = 0; i < NUM_OF_HEADINGS; i++) {
+        if (i != 1 && i != 15) {
+            output << std::left << std::setw(columnLengths[i]) << headings[i] << "|";
+            totalWidth += columnLengths[i];
+            // takes widths from job title, employment, wage, education, and work experience columns for console summary
+            if (i == 0 || i == 3 || i == 11 || i == 12 || i == 13) {
+                std::cout << std::left << std::setw(columnLengths[i]) << headings[i] << "|";
+                consoleWidth += columnLengths[i];
+            }
+        }
+    }
+    // moves cursor down to next line
+    std::cout << std::endl;
+    output << std::endl;
+    // outputs horizontal heading divider for totalWidth + 12 times because '|' character is not counted for totalWidth
+    for (int i = 0; i <= totalWidth + 12; i++) {
+        output << '=';
+    }
+    // outputs line at the end of the table
+    output << '|' << std::endl;
+    // similar loop but outputs to console instead
+    for (int i = 0; i <= consoleWidth + 3; i++) {
+        std::cout << '=';
+    }
+    std::cout << '|' << std::endl;
+}
+
+// function to print table entry
+void MenuHandler::printTableEntry(std::ofstream &output, int *columnLengths, Occupation &currentJob) const {
+    // outputs each line of table to the output file
+    output << std::left << std::setw(columnLengths[0]) << currentJob.getOccupation() << "|"
+            << std::setw(columnLengths[2]) << currentJob.getOccupationType() << "|"
+            << std::setw(columnLengths[3]) << currentJob.getEmploymentCurrentString() << "|"
+            << std::setw(columnLengths[4]) << currentJob.getEmploymentFutureString() << "|"
+            << std::setw(columnLengths[5]) << currentJob.getDistributionCurrentString() << "|"
+            << std::setw(columnLengths[6]) << currentJob.getDistributionFutureString() << "|"
+            << std::setw(columnLengths[7]) << currentJob.getNumericChangeString() << "|"
+            << std::setw(columnLengths[8]) << currentJob.getPercentageChangeString() << "|"
+            << std::setw(columnLengths[9]) << currentJob.getPercentSelfEmployedString() << "|"
+            << std::setw(columnLengths[10]) << currentJob.getJobOpeningsString() << "|"
+            << std::setw(columnLengths[11]) << currentJob.getWageString() << "|"
+            << std::setw(columnLengths[12]) << currentJob.getEducation() << "|"
+            << std::setw(columnLengths[13]) << currentJob.getWorkExperience() << "|"
+            << std::setw(columnLengths[14]) << currentJob.getTraining() << "|" << std::endl;
+    // outputs each line of table to the console
+    std::cout << std::left << std::setw(columnLengths[0]) << currentJob.getOccupation() << "|"
+            << std::setw(columnLengths[3]) << currentJob.getEmploymentCurrentString() << "|"
+            << std::setw(columnLengths[11]) << currentJob.getWageString() << "|"
+            << std::setw(columnLengths[12]) << currentJob.getEducation() << "|"
+            << std::setw(columnLengths[13]) << currentJob.getWorkExperience() << "|" << std::endl;
 }
 
 std::string MenuHandler::promptNonNegativeOrDash() {
@@ -47,21 +156,19 @@ std::string MenuHandler::promptNonNegativeOrDash() {
             if (tempFloat >= 0.0f) {
                 break;
             }
-        }
-        catch (const std::exception&) {
+        } catch (const std::exception &) {
             if (valueToReturn == "-") {
                 break;
             }
         }
         std::cout << "\nEnter a non-negative value for employment projection." << std::endl
-               << "Enter '-' if unknown.\n" << std::endl;
+                << "Enter '-' if unknown.\n" << std::endl;
     } while (true);
 
     return valueToReturn;
 }
 
 Occupation MenuHandler::promptJobAttributes(std::string jobTitle) {
-
     // Sets occupation based on previous user input
     jobTitle[0] = toupper(jobTitle[0]);
     jobTitle += " *";
@@ -197,7 +304,7 @@ Occupation MenuHandler::promptJobAttributes(std::string jobTitle) {
             training = "Apprenticeship";
             break;
         case 'F':
-           training = "Internship/residency";
+            training = "Internship/residency";
             break;
         case '-':
             training = "-";
@@ -230,38 +337,28 @@ int MenuHandler::promptMatrixCodePrefix() {
 
         try {
             return stoi(userInput);
-        }
-        catch (const std::invalid_argument&) {
+        } catch (const std::invalid_argument &) {
             std::cout << "\nThe value entered is not an integer. Try again" << std::endl;
-        }
-        catch (const std::out_of_range&) {
+        } catch (const std::out_of_range &) {
             std::cout << "\nThe value entered is out of range. Try again" << std::endl;
         }
     } while (true);
 }
 
 void MenuHandler::handleAddJob() {
-
     std::cout << "\nWhat job do you want to add?\n" << std::endl;
     std::getline(std::cin, jobInput);
     lowerString(jobInput);
 
-    allJobsDatabase.searchByJob()
-
-    // resetting userInput
-    userInput = "";
-
     // outputs existing jobs to console
-    if (searchRows > 0) {
+    if (allJobsDatabase.searchByJob(jobInput)) {
         std::cout << std::endl;
-        for (int i = 0; i < searchRows; i++) {
-            std::cout << "\t- " << searchedJobs[i].getOccupation() << std::endl;
-        }
+        
+        formatAndPrintArray()
+        
         std::cout << "\nWe have these jobs in our database. Do you still want to add an entry? (y/n)\n" << std::endl;
         userInput = yesOrNoMenu();
     }
 
     allJobsDatabase.allJobsArray.viewCategories();
-
-
 }

@@ -39,6 +39,11 @@ public:
 	HashTable(int initialCapacity);
 	// chatGPT informed that a destructor is required as the array is dynamically allocated
 	~HashTable();
+
+	// overloading the [] operator for printing
+	OpenAddressingBucket*& operator[](int index) const;
+
+	int getTableCapacity() const;
 	
 	// search method
 	Occupation* getJobPointer(int key) const;
@@ -46,7 +51,4 @@ public:
 	// methods to modify contents of table
 	bool insertJob(Occupation& jobInserted);
 	bool removeJob(Occupation& jobRemoved);
-
-	// method to display all contents of the hash table
-	void printHashTable();
 };

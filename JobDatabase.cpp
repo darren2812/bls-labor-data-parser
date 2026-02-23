@@ -34,6 +34,10 @@ bool JobDatabase::searchByJob(const std::string &jobToSearch) {
     return false;
 }
 
+void JobDatabase::viewSearchedJobs() const {
+    searchedJobsArray.viewEntries();
+}
+
 
 
 

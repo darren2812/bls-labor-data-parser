@@ -72,6 +72,14 @@ int HashTable::hashJobKey(int key) {
 	return extractedBits;
 }
 
+OpenAddressingBucket *&HashTable::operator[](int index) const {
+	return table[index];
+}
+
+int HashTable::getTableCapacity() const {
+	return tableCapacity;
+}
+
 // function to get job pointer
 Occupation* HashTable::getJobPointer(int key) const {
 	int hashedKey = hashJobKey(key);
@@ -146,25 +154,4 @@ bool HashTable::removeJob(Occupation& jobRemoved) {
 	}
 	// loop finishes once table is full
 	return false;
-}
-
-void HashTable::printHashTable() {
-	short indexWidth = 7;
-	short keyWidth = 10;
-
-	std::cout << std::left << std::setw(indexWidth) << "Index" << "|"
-		<< std::setw(keyWidth) << "Code" << "|"
-		<< "Occupation" << std::endl;
-	for (int i = 0; i < tableCapacity; i++) {
-		if (!table[i]->isEmpty()) {
-			std::cout << std::left << std::setw(indexWidth) << i << "|"
-				<< std::setw(keyWidth) << table[i]->JobPointer->getMatrixCode() << "|"
-				<< table[i]->JobPointer->getOccupation() << std::endl;
-		}
-		else {
-			std::cout << std::left << std::setw(indexWidth) << i << "|"
-				<< std::setw(keyWidth) << "-" << "|"
-				<< "-" << std::endl;
-		}
-	}
 }

@@ -2,8 +2,6 @@
 
 #include <string>
 #include "Occupation.h"
-#include "HashTable.h"
-#include "MenuHandler.h"
 
 class DynamicArray {
 private:
@@ -17,6 +15,8 @@ public:
 
     // overloading the equal operator to copy
     DynamicArray& operator=(const DynamicArray& other);
+    // overloading [] operator to access job at that index
+    Occupation& operator[](int index) const;
 
     ~DynamicArray();
 
@@ -25,11 +25,8 @@ public:
 
     void increaseCapacity();
 
-    // function to read entries
+    // function to read entries from text file
     void readEntries(std::ifstream& rawData, const std::string* headings, int* columnLengths);
-
-    // function to view entries
-    void viewEntries(const std::string* headings, int* columnLengths) const;
 
     void viewCategories() const;
 

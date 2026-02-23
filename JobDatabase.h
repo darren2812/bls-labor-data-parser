@@ -17,4 +17,6 @@ public:
 
     bool generateUniqueKey(const int &codePrefix, std::string &uniqueCode) const;
     bool searchByJob(const std::string& jobToSearch);
+
+    void viewSearchedJobs() const;
 };
