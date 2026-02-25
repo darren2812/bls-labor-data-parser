@@ -1,7 +1,7 @@
 #include "MenuHandler.h"
 
 MenuHandler::MenuHandler()
-    : rawData("./input/rawData.txt"), listData("./input/listData.txt") {
+    : rawData("./input/rawData.txt"), listData("./input/listData.txt"), output("./output/output.txt") {
     std::string dummy;
 
     // sets default table column lengths to the size of the headings + 1
@@ -113,17 +113,18 @@ void MenuHandler::printPrefixAndCategory(const Occupation &jobCategory) const {
             jobCategory.getOccupation() << std::endl;
 }
 
-void MenuHandler::printSearchedJobs(const JobDatabase &database, const std::string *headings,
+void MenuHandler::printSearchedJobs(std::ofstream &output, const JobDatabase &database, const std::string *headings,
                                     int *columnLengths) const {
-    // output to text file
-    std::ofstream output("../output/output.txt");
+
+    int arraySize = searchedJobsArray.getCurrentSize();
+
     // outputs table headings
     printTableHeadings(output, headings, columnLengths);
 
     // passes the print table entry function to the iterator function in the database class
-    allJobsDatabase.forEachSearchedJob([&](const Occupation &currentJob) {
-        printTableEntry(output, columnLengths, currentJob);
-    });
+    for (int i = 0; i < arraySize; i++) {
+        printTableEntry(output, columnLengths, searchedJobsArray[i]);
+    }
 
     output.close();
 }
@@ -343,10 +344,10 @@ void MenuHandler::handleAddJob() {
     lowerString(jobTitle);
 
     // outputs existing jobs to console
-    if (allJobsDatabase.searchByJob(jobTitle)) {
+    if (allJobsDatabase.searchByJob(searchedJobsArray, jobTitle)) {
         std::cout << std::endl;
 
-        printSearchedJobs(allJobsDatabase, headings, columnLengths);
+        printSearchedJobs(output, allJobsDatabase, headings, columnLengths);
 
         std::cout << "\nWe have these jobs in our database. Do you still want to add an entry? (y/n)\n" << std::endl;
 

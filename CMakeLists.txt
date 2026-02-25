@@ -29,4 +29,5 @@ add_executable(bls_labor_data_parser
         DynamicArray.h
         DynamicArray.cpp
         JobDatabase.cpp
-        JobDatabase.h)
+        JobDatabase.h
+)

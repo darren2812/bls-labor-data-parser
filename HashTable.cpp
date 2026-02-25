@@ -50,11 +50,7 @@ HashTable::HashTable(int initialCapacity) {
 
 // defining destructor for the hash table (code based on zyBooks)
 HashTable::~HashTable() {
-	for (int i = 0; i < tableCapacity; i++) {
-		if (!table[i]->isEmpty()) {
-			delete table[i];
-		}
-	}
+	// no need to iterate through hash table because pointers are managed by the dynamic array and job databse classes
 	delete[] table;
 	table = nullptr;
 }

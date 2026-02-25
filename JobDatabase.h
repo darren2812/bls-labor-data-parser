@@ -5,9 +5,7 @@
 
 class JobDatabase {
 private:
-    DynamicArray allJobsArray;
-    DynamicArray searchedJobsArray;
-    DynamicArray allJobsArraySorted;
+    DynamicArray<std::unique_ptr<Occupation>> allJobsArray;
     HashTable allJobsHashTable;
 public:
     JobDatabase() = default;
@@ -17,14 +15,12 @@ public:
     JobDatabase& operator=(const JobDatabase& other) = default;
 
     bool generateUniqueKey(const int &codePrefix, std::string &uniqueCode) const;
-    bool searchByJob(const std::string& jobToSearch);
+    bool searchByJob(DynamicArray<Occupation*> &searchedJobsArray, const std::string& jobToSearch);
     bool categoryExists(int codePrefix) const;
 
-    // for each job iterators for printing
-    void forEachSearchedJob(std::function<void(Occupation const &currentJob)> fn) const;
+    // for each category iterator for printing
     void forEachCategory(const std::function<void(const Occupation& jobCategory)> &fn) const;
 
     void addJobToDatabase(const Occupation &jobToAdd, const std::string &uniqueCode);
 
-    // FINISH ADD FUNCTION
 };

@@ -23,8 +23,8 @@ bool JobDatabase::generateUniqueKey(const int& codePrefix, std::string &uniqueCo
     return true;
 }
 
-bool JobDatabase::searchByJob(const std::string &jobToSearch) {
-    searchedJobsArray = DynamicArray(allJobsArray.getCapacity() / 10);
+bool JobDatabase::searchByJob(DynamicArray<Occupation*> &searchedJobsArray, const std::string &jobToSearch) {
+    searchedJobsArray = DynamicArray<Occupation*>(allJobsArray.getCapacity() / 10);
     searchedJobsArray.searchByJob(allJobsArray, jobToSearch);
     if (searchedJobsArray.getCurrentSize() > 0) {
         return true;
@@ -52,13 +52,6 @@ void JobDatabase::forEachCategory(const std::function<void(const Occupation& job
         if (allJobsArray[i].getMatrixCodeInt() % 10000 == 0) {
            fn(allJobsArray[i]);
         }
-    }
-}
-
-void JobDatabase::forEachSearchedJob(std::function<void(Occupation const &currentJob)> fn) const {
-    const int arraySize = searchedJobsArray.getCurrentSize();
-    for (int i = 0; i < arraySize; i++) {
-        fn(searchedJobsArray[i]);
     }
 }
 
