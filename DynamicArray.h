@@ -35,7 +35,7 @@ public:
     int searchByWage(const DynamicArray& allJobs, const int& jobCounter, const float& lowerLimit,
         const float& upperLimit);
 
-    Occupation addJobToArray(const Occupation &jobToAdd, const std::string &uniqueCode);
+    Occupation addJobToArray(const Occupation &jobToAdd);
 
     // function to readd a deleted job
     void addEntryAgain(Occupation jobAdded, const DynamicArray& allJobs, int& jobCounter);

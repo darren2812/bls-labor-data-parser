@@ -32,12 +32,12 @@ bool JobDatabase::searchByJob(const std::string &jobToSearch) {
     return false;
 }
 
-bool JobDatabase::categoryExists(const DynamicArray& array, int codePrefix) const {
+bool JobDatabase::categoryExists(int codePrefix) const {
 
-    const int arraySize = array.getCurrentSize();
+    const int arraySize = allJobsArray.getCurrentSize();
 
     for (int i = 0; i < arraySize; i++) {
-        if (array[i].getMatrixCodeInt() % 10000 == codePrefix) {
+        if (allJobsArray[i].getMatrixCodeInt() % 10000 == codePrefix) {
             return true;
         }
     }
@@ -63,7 +63,7 @@ void JobDatabase::forEachSearchedJob(std::function<void(Occupation const &curren
 }
 
 void JobDatabase::addJobToDatabase(const Occupation &jobToAdd, const std::string &uniqueCode) {
-    allJobsHashTable.insertJob(allJobsArray.addJobToArray(jobToAdd, uniqueCode));
+    allJobsHashTable.insertJob(allJobsArray.addJobToArray(jobToAdd));
 }
 
 

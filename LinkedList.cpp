@@ -22,7 +22,7 @@ SinglyLinkedList::~SinglyLinkedList() {
 // function to append node
 void SinglyLinkedList::append(Occupation* jobAppended) {
 	// creates a new node and assigns its data
-	SinglyLinkedNode<Occupation>* newNode = new SinglyLinkedNode<Occupation>;
+	auto newNode = new SinglyLinkedNode<Occupation>;
 	// dereferences jobAppended pointer and assigns to data field
 	newNode->data = *jobAppended;
 	// assings head and tail to new node if the list is empty
@@ -41,7 +41,7 @@ void SinglyLinkedList::append(Occupation* jobAppended) {
 // function to prepend node
 void SinglyLinkedList::prepend(Occupation* jobPrepended) {
 	// creates a new node and assigns its data
-	SinglyLinkedNode<Occupation>* newNode = new SinglyLinkedNode<Occupation>;
+	auto newNode = new SinglyLinkedNode<Occupation>;
 	newNode->data = *jobPrepended;
 	// assigns head and tail to new node if the list is empty
 	if (head == nullptr) {

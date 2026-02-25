@@ -191,9 +191,8 @@ int DynamicArray::searchByWage(const DynamicArray &allJobs, const int &jobCounte
     return foundSearches;
 }
 
-Occupation DynamicArray::addJobToArray(const Occupation &jobToAdd, const std::string &uniqueCode) {
+Occupation DynamicArray::addJobToArray(const Occupation &jobToAdd) {
     data[currentSize] = jobToAdd;
-    data[currentSize].setMatrixCode(uniqueCode);
     currentSize++;
     return data[currentSize - 1];
 }

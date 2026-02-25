@@ -18,7 +18,7 @@ public:
 
     bool generateUniqueKey(const int &codePrefix, std::string &uniqueCode) const;
     bool searchByJob(const std::string& jobToSearch);
-    bool categoryExists(const DynamicArray& array, int codePrefix) const;
+    bool categoryExists(int codePrefix) const;
 
     // for each job iterators for printing
     void forEachSearchedJob(std::function<void(Occupation const &currentJob)> fn) const;

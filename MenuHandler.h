@@ -90,7 +90,7 @@ public:
 	void printAllCategories (const JobDatabase &database) const;
 
 	// job adding prompts
-	Occupation promptJobAttributes(std::string jobTitle);
+	Occupation promptJobAttributes(std::string jobTitle, const std::string& matrixCode);
 	std::string promptNonNegativeOrDash();
 	int promptMatrixCodePrefix();
 	void handleAddJob();

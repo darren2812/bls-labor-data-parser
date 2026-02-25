@@ -157,7 +157,7 @@ std::string MenuHandler::promptNonNegativeOrDash() {
     return valueToReturn;
 }
 
-Occupation MenuHandler::promptJobAttributes(std::string jobTitle) {
+Occupation MenuHandler::promptJobAttributes(std::string jobTitle, const std::string& matrixCode) {
     // Sets occupation based on previous user input
     jobTitle[0] = toupper(jobTitle[0]);
     jobTitle += " *";
@@ -313,6 +313,7 @@ Occupation MenuHandler::promptJobAttributes(std::string jobTitle) {
     occupationToReturn.setEducation(education);
     occupationToReturn.setWorkExperience(workExperience);
     occupationToReturn.setTraining(training);
+    occupationToReturn.setMatrixCode(matrixCode);
 
     return occupationToReturn;
 }
@@ -361,8 +362,18 @@ void MenuHandler::handleAddJob() {
 
     do {
         printAllCategories(allJobsDatabase);
+        int prefix;
 
-        int prefix = promptMatrixCodePrefix();
+        do {
+            prefix = promptMatrixCodePrefix();
+
+            if (allJobsDatabase.categoryExists(prefix)) {
+                break;
+            } else {
+                std::cout << "\nThe category does not exist. Please choose a different category." << std::endl;
+            }
+
+        } while (true);
 
         if (allJobsDatabase.generateUniqueKey(prefix, matrixCode)) {
             break;
@@ -372,15 +383,14 @@ void MenuHandler::handleAddJob() {
                 << " Please choose a different category." << std::endl;
     } while (true);
 
-    Occupation jobToAdd = promptJobAttributes(jobTitle);
+    Occupation jobToAdd = promptJobAttributes(jobTitle, matrixCode);
 
     allJobsDatabase.addJobToDatabase(jobToAdd, matrixCode);
-    recentChangesDatabase.push()
+    recentChangesDatabase.push({jobToAdd, "added"});
 
     savedDatabase = false;
-    // outputs job added to the console
-    std::cout << "\n'" << recentChangesDatabase.peek().job.getOccupation()
-            << "' is successfully added to the database." << std::endl;
-}
 
+    // outputs job added to the console
+    std::cout << "\n'" << jobToAdd.getOccupation()
+            << "' is successfully added to the database." << std::endl;
 }
