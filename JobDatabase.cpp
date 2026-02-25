@@ -15,8 +15,6 @@ bool JobDatabase::generateUniqueKey(const int& codePrefix, std::string &uniqueCo
             codeToReturn = codePrefix * 10000 + suffix;
         }
         else {
-            std::cout << "\nThis category already contains the maximum number of jobs."
-            << " Please choose a different category." << std::endl;
             return false;
         }
     }
@@ -34,8 +32,38 @@ bool JobDatabase::searchByJob(const std::string &jobToSearch) {
     return false;
 }
 
-void JobDatabase::viewSearchedJobs() const {
-    searchedJobsArray.viewEntries();
+bool JobDatabase::categoryExists(const DynamicArray& array, int codePrefix) const {
+
+    const int arraySize = array.getCurrentSize();
+
+    for (int i = 0; i < arraySize; i++) {
+        if (array[i].getMatrixCodeInt() % 10000 == codePrefix) {
+            return true;
+        }
+    }
+
+   return false;
+}
+
+void JobDatabase::forEachCategory(const std::function<void(const Occupation& jobCategory)> &fn) const {
+    int arraySize = allJobsArray.getCurrentSize();
+
+    for (int i = 0; i < arraySize; i++) {
+        if (allJobsArray[i].getMatrixCodeInt() % 10000 == 0) {
+           fn(allJobsArray[i]);
+        }
+    }
+}
+
+void JobDatabase::forEachSearchedJob(std::function<void(Occupation const &currentJob)> fn) const {
+    const int arraySize = searchedJobsArray.getCurrentSize();
+    for (int i = 0; i < arraySize; i++) {
+        fn(searchedJobsArray[i]);
+    }
+}
+
+void JobDatabase::addJobToDatabase(const Occupation &jobToAdd, const std::string &uniqueCode) {
+    allJobsHashTable.insertJob(allJobsArray.addJobToArray(jobToAdd, uniqueCode));
 }
 
 

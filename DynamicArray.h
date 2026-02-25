@@ -28,10 +28,6 @@ public:
     // function to read entries from text file
     void readEntries(std::ifstream& rawData, const std::string* headings, int* columnLengths);
 
-    void viewCategories() const;
-
-    bool categoryExists(int& codePrefix) const;
-
     // function to search by job title
     int searchByJob(const DynamicArray& allJobs, const std::string& jobSearched);
 
@@ -39,10 +35,7 @@ public:
     int searchByWage(const DynamicArray& allJobs, const int& jobCounter, const float& lowerLimit,
         const float& upperLimit);
 
-    // function to add entries
-    // Gemini helped fixed a bug because the pointer in the function is changed when creating an expanded array but not in main()
-    // Hence, allJobs has to be passed by reference
-    Occupation addEntry(DynamicArray& allJobs, int& jobCounter, int& totalJobsCapacity, std::string& jobAdded, const int* columnLengths, const std::string& key);
+    Occupation addJobToArray(const Occupation &jobToAdd, const std::string &uniqueCode);
 
     // function to readd a deleted job
     void addEntryAgain(Occupation jobAdded, const DynamicArray& allJobs, int& jobCounter);

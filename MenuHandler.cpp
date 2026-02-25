@@ -36,43 +36,6 @@ void MenuHandler::allocateDataStructures() {
     allJobsDatabase = JobDatabase(totalJobsCapacity);
 }
 
-void MenuHandler::formatAndPrintArray(const DynamicArray &array, std::string *headings, int *columnLengths)
-const {
-    // output to text file
-    std::ofstream output("../output/output.txt");
-    int arraySize = array.getCurrentSize();
-
-    // outputs table headings
-    printTableHeadings(output, headings, columnLengths);
-    // outputs contents of the table
-    for (int i = 0; i < arraySize; i++) {
-        // pass in each instance to the function to print
-        printTableEntry(output, columnLengths, array[i]);
-    }
-    // closes output file
-    output.close();
-}
-
-void MenuHandler::formatAndPrintHashTable(const HashTable &table, std::string *headings, int *columnLengths) const {
-    // output to text file
-    std::ofstream output("../output/output.txt");
-    int hashTableCapacity = table.getTableCapacity();
-
-    // outputs table headings
-    printTableHeadings(output, headings, columnLengths);
-    // outputs contents of the table
-    for (int i = 0; i < hashTableCapacity; i++) {
-        if (!table[i]->isEmpty()) {
-            printTableEntry(output, columnLengths, *table[i]->JobPointer);
-        } else {
-            output << "EMPTY INDEX" << std::endl;
-            std::cout << "EMPTY INDEX" << std::endl;
-        }
-    }
-    // closes output file
-    output.close();
-}
-
 // function to print headings
 void MenuHandler::printTableHeadings(std::ofstream &output, const std::string *headings, int *columnLengths) const {
     // total width of the table in output and console
@@ -80,7 +43,7 @@ void MenuHandler::printTableHeadings(std::ofstream &output, const std::string *h
     int consoleWidth = 0;
 
     // outputs table title in output file and console
-    output << "Table 1.2 Occupational projections, 2023�2033, and worker characteristics, 2023"
+    output << "Table 1.2 Occupational projections, 2023-2033, and worker characteristics, 2023"
             << " (Numbers in thousands, except percentages and median annual wages)" << std::endl
             << "An * after an occupation title represents a user-created occupation.\n" << std::endl
             << "Link to Employment Data Definitions: https://www.bls.gov/emp/documentation/definitions.htm" << std::endl
@@ -121,7 +84,7 @@ void MenuHandler::printTableHeadings(std::ofstream &output, const std::string *h
 }
 
 // function to print table entry
-void MenuHandler::printTableEntry(std::ofstream &output, int *columnLengths, Occupation &currentJob) const {
+void MenuHandler::printTableEntry(std::ofstream &output, const int *columnLengths, const Occupation &currentJob) const {
     // outputs each line of table to the output file
     output << std::left << std::setw(columnLengths[0]) << currentJob.getOccupation() << "|"
             << std::setw(columnLengths[2]) << currentJob.getOccupationType() << "|"
@@ -143,6 +106,32 @@ void MenuHandler::printTableEntry(std::ofstream &output, int *columnLengths, Occ
             << std::setw(columnLengths[11]) << currentJob.getWageString() << "|"
             << std::setw(columnLengths[12]) << currentJob.getEducation() << "|"
             << std::setw(columnLengths[13]) << currentJob.getWorkExperience() << "|" << std::endl;
+}
+
+void MenuHandler::printPrefixAndCategory(const Occupation &jobCategory) const {
+    std::cout << jobCategory.getMatrixCode().substr(0, 2) << ": " <<
+            jobCategory.getOccupation() << std::endl;
+}
+
+void MenuHandler::printSearchedJobs(const JobDatabase &database, const std::string *headings,
+                                    int *columnLengths) const {
+    // output to text file
+    std::ofstream output("../output/output.txt");
+    // outputs table headings
+    printTableHeadings(output, headings, columnLengths);
+
+    // passes the print table entry function to the iterator function in the database class
+    allJobsDatabase.forEachSearchedJob([&](const Occupation &currentJob) {
+        printTableEntry(output, columnLengths, currentJob);
+    });
+
+    output.close();
+}
+
+void MenuHandler::printAllCategories(const JobDatabase &database) const {
+    allJobsDatabase.forEachCategory([&](const Occupation &jobCategory) {
+        printPrefixAndCategory(jobCategory);
+    });
 }
 
 std::string MenuHandler::promptNonNegativeOrDash() {
@@ -346,19 +335,52 @@ int MenuHandler::promptMatrixCodePrefix() {
 }
 
 void MenuHandler::handleAddJob() {
+    std::string jobTitle;
+
     std::cout << "\nWhat job do you want to add?\n" << std::endl;
-    std::getline(std::cin, jobInput);
-    lowerString(jobInput);
+    std::getline(std::cin, jobTitle);
+    lowerString(jobTitle);
 
     // outputs existing jobs to console
-    if (allJobsDatabase.searchByJob(jobInput)) {
+    if (allJobsDatabase.searchByJob(jobTitle)) {
         std::cout << std::endl;
-        
-        formatAndPrintArray()
-        
+
+        printSearchedJobs(allJobsDatabase, headings, columnLengths);
+
         std::cout << "\nWe have these jobs in our database. Do you still want to add an entry? (y/n)\n" << std::endl;
-        userInput = yesOrNoMenu();
+
+        switch (yesOrNoMenu()) {
+            case 'y':
+                break;
+            case 'n':
+                return;
+        }
     }
 
-    allJobsDatabase.allJobsArray.viewCategories();
+    std::string matrixCode;
+
+    do {
+        printAllCategories(allJobsDatabase);
+
+        int prefix = promptMatrixCodePrefix();
+
+        if (allJobsDatabase.generateUniqueKey(prefix, matrixCode)) {
+            break;
+        }
+
+        std::cout << "\nThis category already contains the maximum number of jobs."
+                << " Please choose a different category." << std::endl;
+    } while (true);
+
+    Occupation jobToAdd = promptJobAttributes(jobTitle);
+
+    allJobsDatabase.addJobToDatabase(jobToAdd, matrixCode);
+    recentChangesDatabase.push()
+
+    savedDatabase = false;
+    // outputs job added to the console
+    std::cout << "\n'" << recentChangesDatabase.peek().job.getOccupation()
+            << "' is successfully added to the database." << std::endl;
+}
+
 }

@@ -101,7 +101,7 @@ Occupation* HashTable::getJobPointer(int key) const {
 
 // insert method calls private hashing method
 // Since the hashtable only points to the main array, this implementation rejects identical keys.
-bool HashTable::insertJob(Occupation& jobInserted) {
+bool HashTable::insertJob(const Occupation& jobInserted) {
 	int hashedKey = hashJobKey(jobInserted.getMatrixCodeInt());
 	int bucketIndex;
 	// suggestion from ChatGPT to track the first deleted index for better performance as further searches 

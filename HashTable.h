@@ -49,6 +49,6 @@ public:
 	Occupation* getJobPointer(int key) const;
 
 	// methods to modify contents of table
-	bool insertJob(Occupation& jobInserted);
+	bool insertJob(const Occupation& jobInserted);
 	bool removeJob(Occupation& jobRemoved);
 };

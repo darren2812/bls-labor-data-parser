@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 #include "DynamicArray.h"
 #include "HashTable.h"
 
@@ -17,6 +18,13 @@ public:
 
     bool generateUniqueKey(const int &codePrefix, std::string &uniqueCode) const;
     bool searchByJob(const std::string& jobToSearch);
+    bool categoryExists(const DynamicArray& array, int codePrefix) const;
 
-    void viewSearchedJobs() const;
+    // for each job iterators for printing
+    void forEachSearchedJob(std::function<void(Occupation const &currentJob)> fn) const;
+    void forEachCategory(const std::function<void(const Occupation& jobCategory)> &fn) const;
+
+    void addJobToDatabase(const Occupation &jobToAdd, const std::string &uniqueCode);
+
+    // FINISH ADD FUNCTION
 };

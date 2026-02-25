@@ -25,12 +25,6 @@ private:
 						   "Median Wage 2024", "Typical Education Needed", "Related Work Experience",
 						   "Typical On-the-Job Training", "" };
 
-	// string to take in user input
-	std::string userInput = "-";
-	std::string jobInput;
-	std::string firstHalfKey;
-	std::string secondHalfKey;
-
 	// file stream for data
 	std::ifstream rawData;
 	std::ifstream listData;
@@ -90,10 +84,10 @@ public:
 
 	// table related functions
 	void printTableHeadings(std::ofstream& output, const std::string* headings, int* columnLengths) const;
-	void printTableEntry(std::ofstream& output, int* columnLengths, Occupation& currentJob) const;
-	void formatAndPrintArray(const DynamicArray &array, std::string *headings, int *columnLengths) const;
-	// method to display all contents of the hash table
-	void formatAndPrintHashTable(const HashTable &table, std::string *headings, int *columnLengths) const;
+	void printTableEntry(std::ofstream& output, const int* columnLengths, const Occupation& currentJob) const;
+	void printPrefixAndCategory(const Occupation& jobCategory) const;
+	void printSearchedJobs(const JobDatabase &database, const std::string *headings, int *columnLengths) const;
+	void printAllCategories (const JobDatabase &database) const;
 
 	// job adding prompts
 	Occupation promptJobAttributes(std::string jobTitle);
