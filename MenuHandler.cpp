@@ -1,4 +1,8 @@
+#include <iostream>
+#include <iomanip>
 #include "MenuHandler.h"
+#include "Helpers.h"
+
 
 MenuHandler::MenuHandler()
     : rawData("./input/rawData.txt"), listData("./input/listData.txt"), output("./output/output.txt") {
@@ -32,12 +36,20 @@ MenuHandler::MenuHandler()
     totalJobsCapacity = numberOfRows / NUM_OF_HEADINGS;
 }
 
+MenuHandler::~MenuHandler() {
+    rawData.close();
+    listData.close();
+    output.close();
+}
+
 void MenuHandler::allocateDataStructures() {
     allJobsDatabase = JobDatabase(totalJobsCapacity);
 }
 
 // function to print headings
 void MenuHandler::printTableHeadings(std::ofstream &output, const std::string *headings, int *columnLengths) const {
+    output.clear();
+    output.seekp(0, std::ios::beg);
     // total width of the table in output and console
     int totalWidth = 0;
     int consoleWidth = 0;
@@ -133,6 +145,38 @@ void MenuHandler::printAllCategories(const JobDatabase &database) const {
     allJobsDatabase.forEachCategory([&](const Occupation &jobCategory) {
         printPrefixAndCategory(jobCategory);
     });
+}
+
+// function to handle menu commands
+char menuHandling(char firstLetter, char lastLetter, bool acceptDash) {
+    std::string userInput = "-";
+    std::getline(std::cin, userInput);
+    char tempChar = toupper(userInput[0]);
+
+    // while loop to handle input
+    while (tempChar < firstLetter || tempChar > lastLetter) {
+        std::cout << "\nEnter a letter from " << firstLetter << " to " << lastLetter << ".\n" << std::endl;
+        std::getline(std::cin, userInput);
+        tempChar = toupper(userInput[0]);
+    }
+
+    return tempChar;
+}
+
+// function to handle yes/no commands
+char yesOrNoMenu() {
+    std::string userInput = "-";
+    std::getline(std::cin, userInput);
+    char tempChar = tolower(userInput[0]);
+
+    // while loop to handle input
+    while (tempChar != 'y' && tempChar != 'n') {
+        std::cout << "\nInput y for YES or n for NO\n" << std::endl;
+        std::getline(std::cin, userInput);
+        tempChar = tolower(userInput[0]);
+    }
+
+    return tempChar;
 }
 
 std::string MenuHandler::promptNonNegativeOrDash() {
@@ -344,7 +388,7 @@ void MenuHandler::handleAddJob() {
     lowerString(jobTitle);
 
     // outputs existing jobs to console
-    if (allJobsDatabase.searchByJob(searchedJobsArray, jobTitle)) {
+    if (allJobsDatabase.searchArrayByJob(searchedJobsArray, jobTitle)) {
         std::cout << std::endl;
 
         printSearchedJobs(output, allJobsDatabase, headings, columnLengths);
@@ -386,7 +430,7 @@ void MenuHandler::handleAddJob() {
 
     Occupation jobToAdd = promptJobAttributes(jobTitle, matrixCode);
 
-    allJobsDatabase.addJobToDatabase(jobToAdd, matrixCode);
+    allJobsDatabase.addJobToDatabase(jobToAdd);
     recentChangesDatabase.push({jobToAdd, "added"});
 
     savedDatabase = false;

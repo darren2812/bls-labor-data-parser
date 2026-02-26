@@ -66,38 +66,6 @@ Occupation* selectSpecficIndex(Occupation* searchedJobs, Occupation* allJobs, co
 	return nullptr;
 }
 
-// function to handle menu commands
-char menuHandling(char firstLetter, char lastLetter, bool acceptDash) {
-	std::string userInput = "-";
-	std::getline(std::cin, userInput);
-	char tempChar = toupper(userInput[0]);
-
-	// while loop to handle input
-	while (tempChar < firstLetter || tempChar > lastLetter) {
-		std::cout << "\nEnter a letter from " << firstLetter << " to " << lastLetter << ".\n" << std::endl;
-		std::getline(std::cin, userInput);
-		tempChar = toupper(userInput[0]);
-	}
-	
-	return tempChar;
-}
-
-// function to handle yes/no commands
-char yesOrNoMenu() {
-	std::string userInput = "-";
-	std::getline(std::cin, userInput);
-	char tempChar = tolower(userInput[0]);
-
-	// while loop to handle input
-	while (tempChar != 'y' && tempChar != 'n') {
-		std::cout << "\nInput y for YES or n for NO\n" << std::endl;
-		std::getline(std::cin, userInput);
-		tempChar = tolower(userInput[0]);
-	}
-	
-	return tempChar;
-}
-
 // helper function to handle all search functions
 bool searchFunction(SinglyLinkedList* list, std::string dataStructure, std::string searchType, Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter,
 	const std::string* headings, int* columnLengths, int& searchRows) {

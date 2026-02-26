@@ -8,9 +8,9 @@
 OpenAddressingBucket::OpenAddressingBucket() {
 	JobPointer = nullptr;
 }
-// chatGPT helped debug dynamic memory allocation for JobPointer
-OpenAddressingBucket::OpenAddressingBucket(Occupation& bucketJobPointer) {
-	JobPointer = new Occupation(bucketJobPointer);
+// job pointer does not need
+OpenAddressingBucket::OpenAddressingBucket(Occupation *&bucketJobPointer) {
+	JobPointer = bucketJobPointer;
 }
 OpenAddressingBucket::~OpenAddressingBucket() {
 	delete JobPointer;
@@ -50,13 +50,34 @@ HashTable::HashTable(int initialCapacity) {
 
 // defining destructor for the hash table (code based on zyBooks)
 HashTable::~HashTable() {
-	// no need to iterate through hash table because pointers are managed by the dynamic array and job databse classes
+	// no need to iterate through hash table because pointers are managed by the dynamic array and job database classes
 	delete[] table;
 	table = nullptr;
 }
+OpenAddressingBucket *&HashTable::operator[](int index) const {
+	return table[index];
+}
+
+HashTable& HashTable::operator=(HashTable&& other) noexcept {
+	delete[] table;
+
+	if (this != &other) {
+		this->c1 = other.c1;
+		this->c2 = other.c2;
+		this->tableCapacity = other.tableCapacity;
+		this->table = other.table;
+
+		other.c1 = 0;
+		other.c2 = 0;
+		other.tableCapacity = 0;
+		other.table = nullptr;
+	}
+
+	return *this;
+}
 
 // mid-square hash function copied from zyBooks
-int HashTable::hashJobKey(int key) {
+int HashTable::hashJobKey(int key) const {
 	int R = 24;
 	// although this might cause overflow ChatGPT says it is handled by the compiler
 	int squaredKey = key * key;
@@ -66,10 +87,6 @@ int HashTable::hashJobKey(int key) {
 	extractedBits = extractedBits & (0xFFFFFFFF >> (32 - R));
 
 	return extractedBits;
-}
-
-OpenAddressingBucket *&HashTable::operator[](int index) const {
-	return table[index];
 }
 
 int HashTable::getTableCapacity() const {
@@ -97,8 +114,8 @@ Occupation* HashTable::getJobPointer(int key) const {
 
 // insert method calls private hashing method
 // Since the hashtable only points to the main array, this implementation rejects identical keys.
-bool HashTable::insertJob(const Occupation& jobInserted) {
-	int hashedKey = hashJobKey(jobInserted.getMatrixCodeInt());
+bool HashTable::insertJob(Occupation *&jobInserted) {
+	int hashedKey = hashJobKey(jobInserted->getMatrixCodeInt());
 	int bucketIndex;
 	// suggestion from ChatGPT to track the first deleted index for better performance as further searches 
 	// for the same key will be shorter
@@ -107,8 +124,6 @@ bool HashTable::insertJob(const Occupation& jobInserted) {
 		bucketIndex = (c2 * i * i + c1 * i + hashedKey) % tableCapacity;
 		if (table[bucketIndex]->isEmptySinceStart()) {
 			if (firstDeletedIndex == -1) {
-				// chatGPT helped clear a key misunderstanding of how insertion creates a new OpenAddressingBucket instead of 
-				// modifying the JobPointer directly
 				table[bucketIndex] = new OpenAddressingBucket(jobInserted);
 			}
 			else {
@@ -120,12 +135,12 @@ bool HashTable::insertJob(const Occupation& jobInserted) {
 			firstDeletedIndex = bucketIndex;
 		}
 		else if (!table[bucketIndex]->isEmptyAfterRemoval()) {
-			if (table[bucketIndex]->JobPointer->getMatrixCodeInt() == jobInserted.getMatrixCodeInt()) {
+			if (table[bucketIndex]->JobPointer->getMatrixCodeInt() == jobInserted->getMatrixCodeInt()) {
 				return false;
 			}
 		}
 	}
-	// loop finishes once table is fuill
+	// loop finishes once table is full
 	return false;
 }
 
@@ -140,7 +155,7 @@ bool HashTable::removeJob(Occupation& jobRemoved) {
 			return false;
 		}
 		// changes the bucket index to empty after removal. deletion happens in the main array
-		else if (!table[bucketIndex]->isEmptyAfterRemoval()) {
+		if (!table[bucketIndex]->isEmptyAfterRemoval()) {
 			if (table[bucketIndex]->JobPointer->getMatrixCodeInt() == jobRemoved.getMatrixCodeInt()) {
 				delete table[bucketIndex];
 				table[bucketIndex] = &OpenAddressingBucket::EMPTY_AFTER_REMOVAL;

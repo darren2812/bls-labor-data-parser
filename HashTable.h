@@ -9,10 +9,10 @@ public:
 
 	// declaring constructors and destructor
 	OpenAddressingBucket();
-	OpenAddressingBucket(Occupation& bucketJobPointer);
+	OpenAddressingBucket(Occupation *&bucketJobPointer);
 	~OpenAddressingBucket();
 
-	// Two sentinal buckets based on zyBooks implementation
+	// Two sentinel buckets based on zyBooks implementation
 	static OpenAddressingBucket EMPTY_SINCE_START;
 	static OpenAddressingBucket EMPTY_AFTER_REMOVAL;
 
@@ -32,7 +32,7 @@ private:
 	int tableCapacity;
 
 	// private hashing method
-	int hashJobKey(int key);
+	int hashJobKey(int key) const;
 public:
 	// default constructor takes in default arguments if not defined by the user
 	HashTable();
@@ -43,12 +43,15 @@ public:
 	// overloading the [] operator for printing
 	OpenAddressingBucket*& operator[](int index) const;
 
+	HashTable& operator=(const HashTable&) = delete;
+	HashTable& operator=(HashTable&&) noexcept;
+
 	int getTableCapacity() const;
 	
 	// search method
 	Occupation* getJobPointer(int key) const;
 
 	// methods to modify contents of table
-	bool insertJob(const Occupation& jobInserted);
+	bool insertJob(Occupation *&jobInserted);
 	bool removeJob(Occupation& jobRemoved);
 };

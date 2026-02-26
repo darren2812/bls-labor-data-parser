@@ -1,10 +1,7 @@
 #pragma once
 
-#include <iostream>
 #include <string>
 #include <fstream>
-#include <chrono>
-#include "Helpers.h"
 #include "JobDatabase.h"
 #include "LinkedList.h"
 #include "Sort.h"
@@ -83,6 +80,7 @@ private:
 
 public:
     MenuHandler();
+    ~MenuHandler();
 
     void allocateDataStructures();
 
@@ -97,6 +95,11 @@ public:
                            int *columnLengths) const;
 
     void printAllCategories(const JobDatabase &database) const;
+
+    // function to handle menu selection for reusability
+    char menuHandling(char firstLetter, char lastLetter, bool acceptDash);
+    // function to handle yes/no selection for reusability
+    char yesOrNoMenu();
 
     // job adding prompts
     Occupation promptJobAttributes(std::string jobTitle, const std::string &matrixCode);

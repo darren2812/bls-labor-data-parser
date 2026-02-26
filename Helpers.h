@@ -4,10 +4,8 @@
 #pragma once
 
 #include <string>
-#include <fstream>
 #include "LinkedList.h"
 #include "Occupation.h"
-#include "OldDatabase.h"
 #include "HashTable.h"
 
 // input handler for missing values
@@ -18,10 +16,6 @@ void lowerString(std::string& input);
 extern bool g_catch;
 // function to select a specific index from the database
 Occupation* selectSpecficIndex(Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter, std::string& userInput, std::string command);
-// function to handle menu selection for reusability
-char menuHandling(char firstLetter, char lastLetter, bool acceptDash);
-// function to handle yes/no selection for reusability
-char yesOrNoMenu();
 // helper function to handle all search functions
 bool searchFunction(SinglyLinkedList* list, std::string dataStructure, std::string searchType, Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter,
 	const std::string* headings, int* columnLengths, int& searchRows);
