@@ -15,12 +15,10 @@ void lowerString(std::string& input);
 // global boolean to determine whether catch is called or not
 extern bool g_catch;
 // function to select a specific index from the database
-Occupation* selectSpecficIndex(Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter, std::string& userInput, std::string command);
+Occupation* selectSpecificIndex(Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter, std::string& userInput, std::string command);
 // helper function to handle all search functions
 bool searchFunction(SinglyLinkedList* list, std::string dataStructure, std::string searchType, Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter,
 	const std::string* headings, int* columnLengths, int& searchRows);
-// helper function to search for a particular job in the hash table
-Occupation* buildKeyAndSearch(Occupation* allJobs, int jobCounter, HashTable& hashTable);
 // function to find max value in an array
 float findMax(Occupation**& jobArray, int numberOfJobs, float(*function)(Occupation*&));
 // function to print out bar chart to the console

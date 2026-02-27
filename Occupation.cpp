@@ -4,6 +4,7 @@
 #include "Occupation.h"
 #include "Helpers.h"
 #include <sstream>
+#include <iomanip>
 
 // getters return the specific data field of jobStruct
 std::string Occupation::getOccupation() const {
@@ -14,6 +15,14 @@ int Occupation::getMatrixCodeInt() const {
 }
 std::string Occupation::getMatrixCode() const {
 	return matrixCode;
+}
+std::string Occupation::getMatrixPrefix() const {
+	auto dash = matrixCode.find('-');
+	return matrixCode.substr(0, dash);
+}
+std::string Occupation::getMatrixSuffix() const {
+	auto dash = matrixCode.find('-');
+	return matrixCode.substr(dash + 1);
 }
 std::string Occupation::getOccupationType() const {
 	return occupationType;
@@ -100,13 +109,17 @@ void Occupation::setOccupation(std::string o) {
 }
 void Occupation::setMatrixCode(std::string mc) {
 	if (mc == "-") {
-		matrixCode = mc;
-		matrixCodeInt = 0;
+		int randomNumber = rand();
+		matrixCode = std::to_string(randomNumber);
+		matrixCodeInt = randomNumber;
 	}
 	else {
 		matrixCode = mc;
 		// erases the - character from the matrix code
-		mc.erase(2, 1);
+		auto pos = mc.find("-");
+		if (pos != std::string::npos) {
+			mc.erase(pos, 1);
+		}
 		// converts the modified code to an int
 		matrixCodeInt = stoi(mc);
 	}
@@ -231,14 +244,3 @@ std::string Occupation::formatOneDecimal(float &value) {
 	roundedString << std::fixed << std::setprecision(1) << value;
 	return roundedString.str();
 }
-
-/*
-Make a new function to Generate matrix code
-
-generateUniqueKey
-promptJobAttributes
-calculateOccupationChange
-addEntry
-
-Set the job index of the job when adding the job to the array.auto
-*/

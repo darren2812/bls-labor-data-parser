@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "JobDatabase.h"
 #include "Helpers.h"
 
@@ -148,22 +149,24 @@ void JobDatabase::rewriteListFile(std::fstream &listData, SinglyLinkedList *list
     }
 }
 
-bool JobDatabase::generateUniqueKey(const int& codePrefix, std::string &uniqueCode) const {
+bool JobDatabase::generateUniqueKey(const std::string& codePrefix, std::string &uniqueCode) const {
     int suffix = 1;
-    int codeToReturn = codePrefix * 10000 + suffix;
+    int codeToReturn;
 
     // increments suffix if key is not unique
-    while (allJobsHashTable.getJobPointer(codeToReturn) != nullptr) {
-        if (codeToReturn / 10000 == codePrefix) {
+    do {
+        codeToReturn = std::stoi(codePrefix) * 10000 + suffix;
+        if (codeToReturn / 10000 == std::stoi(codePrefix)) {
             suffix++;
-            codeToReturn = codePrefix * 10000 + suffix;
         }
         else {
             return false;
         }
-    }
+    } while (allJobsHashTable.getJobPointer(codeToReturn) != nullptr);
 
     uniqueCode = std::to_string(codeToReturn);
+    uniqueCode.insert(codePrefix.length(), "-");
+
     return true;
 }
 
@@ -208,17 +211,21 @@ bool JobDatabase::searchArrayByWage(DynamicArray<Occupation *> &searchedJobsArra
     return false;
 }
 
-bool JobDatabase::categoryExists(int codePrefix) const {
+Occupation *JobDatabase::searchJobByCode(const int &matrixCodeInt) const {
+    return allJobsHashTable.getJobPointer(matrixCodeInt);
+}
+
+Occupation* JobDatabase::findCategory(const std::string &codePrefix) const {
 
     const int arraySize = allJobsArray.getCurrentSize();
 
     for (int i = 0; i < arraySize; i++) {
-        if (allJobsArray[i].getMatrixCodeInt() % 10000 == codePrefix) {
-            return true;
+        if (allJobsArray[i].getMatrixCodeInt() / 10000 == stoi(codePrefix)) {
+            return &allJobsArray[i];
         }
     }
 
-   return false;
+   return nullptr;
 }
 
 void JobDatabase::forEachCategory(const std::function<void(const Occupation& jobCategory)> &fn) const {
@@ -227,6 +234,15 @@ void JobDatabase::forEachCategory(const std::function<void(const Occupation& job
     for (int i = 0; i < arraySize; i++) {
         if (allJobsArray[i].getMatrixCodeInt() % 10000 == 0) {
            fn(allJobsArray[i]);
+        }
+    }
+}
+
+void JobDatabase::forEachJobInCategory(const std::string &prefix, const std::function<void(const Occupation& job)> &fn) const {
+    int arraySize = allJobsArray.getCurrentSize();
+    for (int i = 0; i < arraySize; i++) {
+        if (allJobsArray[i].getMatrixPrefix() == prefix) {
+            fn(allJobsArray[i]);
         }
     }
 }

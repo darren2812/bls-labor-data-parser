@@ -32,7 +32,7 @@ private:
     DynamicArray<Occupation*> searchedJobsArray;
     DynamicArray<Occupation*> sortedJobsArray;
     // declaring linked list pointer suggested by chatGPT
-    SinglyLinkedList *list = new SinglyLinkedList;
+    SinglyLinkedList jobsList;
     // creating stacks to track recent changes
     JobStack recentChangesDatabase;
     JobStack recentChangesList;
@@ -90,11 +90,15 @@ public:
     void printTableEntry(std::ofstream &output, const int *columnLengths, const Occupation &currentJob) const;
 
     void printPrefixAndCategory(const Occupation &jobCategory) const;
+    void printSuffixAndJob(const Occupation &job) const;
 
-    void printSearchedJobs(std::ofstream &output, const JobDatabase &database, const std::string *headings,
+    void printSearchedJobs(std::ofstream &output, const std::string *headings,
                            int *columnLengths) const;
 
-    void printAllCategories(const JobDatabase &database) const;
+    void printAllCategories() const;
+    void printCategoryContents(const std::string &prefix) const;
+    void printIndicesInList();
+    void printList(const std::string* headings, int* columnLengths);
 
     // function to handle menu selection for reusability
     char menuHandling(char firstLetter, char lastLetter, bool acceptDash);
@@ -105,8 +109,16 @@ public:
     Occupation promptJobAttributes(std::string jobTitle, const std::string &matrixCode);
 
     std::string promptNonNegativeOrDash();
+    std::string promptNumber(const std::string &messageToDisplay);
 
-    int promptMatrixCodePrefix();
+    void handleAddDatabase();
 
-    void handleAddJob();
+    // function to select a specific index from the database
+    Occupation* selectSpecificIndex(const std::string &command);
+    // helper function to search for a particular job in the hash table
+    Occupation* buildKeyAndSearch();
+    Occupation* chooseJobToAdd();
+    bool placeOccupationInList(Occupation* occupation);
+    void handleListIndexRetrieval();
+    void handleAddList();
 };

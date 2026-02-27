@@ -121,13 +121,17 @@ void MenuHandler::printTableEntry(std::ofstream &output, const int *columnLength
 }
 
 void MenuHandler::printPrefixAndCategory(const Occupation &jobCategory) const {
-    std::cout << jobCategory.getMatrixCode().substr(0, 2) << ": " <<
-            jobCategory.getOccupation() << std::endl;
+    std::cout << jobCategory.getMatrixPrefix()
+              << ": " << jobCategory.getOccupation() << std::endl;
 }
 
-void MenuHandler::printSearchedJobs(std::ofstream &output, const JobDatabase &database, const std::string *headings,
-                                    int *columnLengths) const {
+void MenuHandler::printSuffixAndJob(const Occupation &job) const {
+    std::cout << job.getMatrixSuffix()
+              << ": " << job.getOccupation() << std::endl;
+}
 
+void MenuHandler::printSearchedJobs(std::ofstream &output, const std::string *headings,
+                                    int *columnLengths) const {
     int arraySize = searchedJobsArray.getCurrentSize();
 
     // outputs table headings
@@ -141,30 +145,82 @@ void MenuHandler::printSearchedJobs(std::ofstream &output, const JobDatabase &da
     output.close();
 }
 
-void MenuHandler::printAllCategories(const JobDatabase &database) const {
+void MenuHandler::printAllCategories() const {
     allJobsDatabase.forEachCategory([&](const Occupation &jobCategory) {
         printPrefixAndCategory(jobCategory);
     });
 }
 
-// function to handle menu commands
-char menuHandling(char firstLetter, char lastLetter, bool acceptDash) {
-    std::string userInput = "-";
-    std::getline(std::cin, userInput);
-    char tempChar = toupper(userInput[0]);
+void MenuHandler::printCategoryContents(const std::string &prefix) const {
+    allJobsDatabase.forEachJobInCategory(prefix, [&](const Occupation &job) {
+        printSuffixAndJob(job);
+    });
+}
 
-    // while loop to handle input
-    while (tempChar < firstLetter || tempChar > lastLetter) {
-        std::cout << "\nEnter a letter from " << firstLetter << " to " << lastLetter << ".\n" << std::endl;
-        std::getline(std::cin, userInput);
-        tempChar = toupper(userInput[0]);
+void MenuHandler::printIndicesInList() {
+    jobsList.forEachJobInList([&](Occupation *&job) {
+        std::cout << job->getJobIndex() << ": " << job->getOccupation() << std::endl;
+    });
+}
+
+// function to print the entire list to the console and output file
+void MenuHandler::printList(const std::string *headings, int *columnLengths) {
+    // prints message if list is empty
+    if (head == nullptr) {
+        std::cout << "\nYour list is currently empty." << std::endl;
+        return;
     }
 
-    return tempChar;
+    // time counters, chrono implementation taken from cpp reference website and ChatGPT
+    std::chrono::high_resolution_clock::time_point startTime;
+    std::chrono::high_resolution_clock::time_point endTime;
+    std::chrono::microseconds timeTaken;
+    // opens output file
+    std::ofstream output("output.txt");
+    // sets the current node to the head
+    SinglyLinkedNode<Occupation> * current = head;
+    // prints table headings
+    printTableHeadings(output, headings, columnLengths);
+
+    // start of search algorithm and outputs time taken in microseconds
+    startTime = std::chrono::high_resolution_clock::now();
+    // iterates through the list and prints every single entry line by line
+    while (current != nullptr) {
+        printTableEntry(output, columnLengths, current->data);
+        current = current->next;
+    }
+    endTime = std::chrono::high_resolution_clock::now();
+    timeTaken = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
+
+    // close output file
+    output.close();
+    // reports the number of jobs in the list
+    std::cout << "\nThere are currently " << getListSize() << " occupations in your list." << std::endl;
+    // reports time taken to traverse through list
+    std::cout << "\nTime to traverse and print list: " << timeTaken.count() << " microseconds." << std::endl;
+}
+
+// function to handle menu commands
+char MenuHandler::menuHandling(char firstLetter, char lastLetter, bool acceptDash) {
+    std::string userInput;
+    char tempChar;
+
+    do {
+        std::getline(std::cin, userInput);
+        if (acceptDash && userInput == "-") {
+            return userInput[0];
+        }
+        tempChar = toupper(userInput[0]);
+        if (tempChar < firstLetter || tempChar > lastLetter) {
+            std::cout << "\nEnter a letter from " << firstLetter << " to " << lastLetter << ".\n" << std::endl;
+        } else {
+            return userInput[0];
+        }
+    } while (true);
 }
 
 // function to handle yes/no commands
-char yesOrNoMenu() {
+char MenuHandler::yesOrNoMenu() {
     std::string userInput = "-";
     std::getline(std::cin, userInput);
     char tempChar = tolower(userInput[0]);
@@ -195,14 +251,14 @@ std::string MenuHandler::promptNonNegativeOrDash() {
                 break;
             }
         }
-        std::cout << "\nEnter a non-negative value for employment projection." << std::endl
+        std::cout << "\nEnter a non-negative value." << std::endl
                 << "Enter '-' if unknown.\n" << std::endl;
     } while (true);
 
     return valueToReturn;
 }
 
-Occupation MenuHandler::promptJobAttributes(std::string jobTitle, const std::string& matrixCode) {
+Occupation MenuHandler::promptJobAttributes(std::string jobTitle, const std::string &matrixCode) {
     // Sets occupation based on previous user input
     jobTitle[0] = toupper(jobTitle[0]);
     jobTitle += " *";
@@ -363,15 +419,15 @@ Occupation MenuHandler::promptJobAttributes(std::string jobTitle, const std::str
     return occupationToReturn;
 }
 
-int MenuHandler::promptMatrixCodePrefix() {
+std::string MenuHandler::promptNumber(const std::string &messageToDisplay) {
     std::string userInput;
 
     do {
-        std::cout << "\nEnter a number above to select an existing category for the new occupation.\n" << std::endl;
+        std::cout << "\nEnter a number above to select " + messageToDisplay + "\n" << std::endl;
         std::getline(std::cin, userInput);
 
         try {
-            return stoi(userInput);
+            return userInput;
         } catch (const std::invalid_argument &) {
             std::cout << "\nThe value entered is not an integer. Try again" << std::endl;
         } catch (const std::out_of_range &) {
@@ -380,7 +436,7 @@ int MenuHandler::promptMatrixCodePrefix() {
     } while (true);
 }
 
-void MenuHandler::handleAddJob() {
+void MenuHandler::handleAddDatabase() {
     std::string jobTitle;
 
     std::cout << "\nWhat job do you want to add?\n" << std::endl;
@@ -391,7 +447,7 @@ void MenuHandler::handleAddJob() {
     if (allJobsDatabase.searchArrayByJob(searchedJobsArray, jobTitle)) {
         std::cout << std::endl;
 
-        printSearchedJobs(output, allJobsDatabase, headings, columnLengths);
+        printSearchedJobs(output, headings, columnLengths);
 
         std::cout << "\nWe have these jobs in our database. Do you still want to add an entry? (y/n)\n" << std::endl;
 
@@ -406,17 +462,18 @@ void MenuHandler::handleAddJob() {
     std::string matrixCode;
 
     do {
-        printAllCategories(allJobsDatabase);
-        int prefix;
+        printAllCategories();
+        std::string prefix;
 
         do {
-            prefix = promptMatrixCodePrefix();
-
-            if (allJobsDatabase.categoryExists(prefix)) {
-                break;
-            } else {
-                std::cout << "\nThe category does not exist. Please choose a different category." << std::endl;
+            prefix = promptNumber("a category.");
+            if (prefix == "0") {
+                prefix = "00";
             }
+            if (allJobsDatabase.findCategory(prefix)) {
+                break;
+            }
+            std::cout << "\nThe category does not exist. Please choose a different category." << std::endl;
 
         } while (true);
 
@@ -438,4 +495,143 @@ void MenuHandler::handleAddJob() {
     // outputs job added to the console
     std::cout << "\n'" << jobToAdd.getOccupation()
             << "' is successfully added to the database." << std::endl;
+}
+
+// function to pinpoint the specific index of an occupation
+Occupation* MenuHandler::selectSpecificIndex(const std::string &command) {
+    std::string userInput;
+    std::getline(std::cin, userInput);
+    lowerString(userInput);
+
+    allJobsDatabase.searchArrayByJob(searchedJobsArray, userInput);
+
+    std::cout << std::endl;
+
+    int searchedJobsCount = searchedJobsArray.getCurrentSize();
+    if (searchedJobsCount > 0) {
+        for (int i = 0; i < searchedJobsCount; i++) {
+            std::cout << "Index " << searchedJobsArray[i].getJobIndex() << ": "
+                << searchedJobsArray[i].getOccupation() << std::endl;
+        }
+        while (true) {
+            std::cout << "\nEnter the index (number) that you want to " << command << ":" << std::endl
+                << "If you want to return to the main menu, enter 'menu'.\n" << std::endl;
+            std::getline(std::cin, userInput);
+            lowerString(userInput);
+            if (userInput == "menu") {
+                return nullptr;
+            }
+            for (int i = 0; i < searchedJobsCount; i++) {
+                if (userInput == std::to_string(searchedJobsArray[i].getJobIndex())) {
+                    return &searchedJobsArray[i];
+                }
+            }
+        }
+    }
+
+    std::cout << "Sorry, we cannot find that job in our database." << std::endl;
+    return nullptr;
+}
+
+Occupation* MenuHandler::buildKeyAndSearch() {
+    std::string matrixCode;
+    std::string prefix;
+    Occupation* jobCategory;
+
+    do {
+        printAllCategories();
+        std::cout << "\nThese are the major occupation groups in the database." << std::endl;
+
+        prefix = promptMatrixCodePrefix();
+        jobCategory = allJobsDatabase.findCategory(prefix);
+
+        if (jobCategory != nullptr) {
+            break;
+        }
+        std::cout << "\nThe category does not exist. Please choose a different category." << std::endl;
+    } while (true);
+    
+    do {
+        printCategoryContents(prefix);
+        std::cout << "\nThese are the specific jobs under the " << jobCategory->getOccupation() << " category." << std::endl;
+
+        std::string suffix = promptNumber("a specific occupation.");
+        if (suffix == "0") {
+            suffix = "0000";
+        }
+
+        Occupation* jobToReturn = allJobsDatabase.searchJobByCode(stoi(prefix + suffix));
+
+        if (jobToReturn != nullptr) {
+            return jobToReturn;
+        }
+        std::cout << "\nOccupation not found. Try again." << std::endl;
+
+    } while (true);
+}
+
+Occupation *MenuHandler::chooseJobToAdd() {
+    std::cout << "\nDo you want to search for the occupation to add by title or by matrix code?" << std::endl
+           << "A: Title" << std::endl
+           << "B: Matrix Code\n" << std::endl;
+    switch (menuHandling('A', 'B', false)) {
+        case 'A':
+            std::cout << "\nEnter the name of the occupation.\n" << std::endl;
+            // function returns a pointer to the specific object in the dynamic array
+            return selectSpecificIndex("add");
+        case 'B':
+            // buildKeyAndSearch returns nullptr if user wants to return to the main menu
+            return buildKeyAndSearch();
+        default:
+            return nullptr;
+    }
+}
+
+void MenuHandler::handleListIndexRetrieval() {
+    do {
+        std::cout << "\nWhich occupation do you want to add after?" << std::endl;
+        printIndicesInList();
+
+        int jobIndex = stoi(promptNumber("a specific occupation."));
+
+        if (jobsList.searchListByIndex(jobIndex)) {
+            // return the code
+        }
+    } while (true);
+}
+
+bool MenuHandler::placeOccupationInList(Occupation *occupation) {
+    std::cout << "\nWhere in the list would you like to place the occupation?" << std::endl
+                << "A: Start of List" << std::endl
+                << "B: End of List" << std::endl
+                << "C: Middle of List" << std::endl
+                << "D: Return to List Menu\n" << std::endl;
+    switch (menuHandling('A', 'D', false)) {
+        case 'A':
+            // prepends object ot the list and prints list
+            jobsList.prepend(occupation);
+            return true;
+        case 'B':
+            // appends object to the list and prints list
+            jobsList.append(occupation);
+            return true;
+            break;
+        case 'C':
+            // calls the insert after function
+            jobsList.insertAfter(occupation);
+            return true;
+        case 'D':
+            return false;
+    }
+}
+
+void MenuHandler::handleAddList() {
+
+
+    if (result) {
+
+        }
+    } else {
+        std::cout << "\nFailed to add item to list. Returning to list menu..." << std::endl;
+    }
 }

@@ -31,41 +31,6 @@ void lowerString(std::string& input) {
 	}
 }
 
-// function to pinpoint the specific index of an occupation
-Occupation* selectSpecficIndex(Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter, std::string& userInput, std::string command) {
-	std::getline(std::cin, userInput);
-	lowerString(userInput);
-	int searchRows = searchByJob(searchedJobs, allJobs, jobCounter, userInput);
-	std::cout << std::endl;
-	if (searchRows > 0) {
-		for (int i = 0; i < searchRows; i++) {
-			std::cout << "Index " << searchedJobs[i].getJobIndex() << ": "
-				<< searchedJobs[i].getOccupation() << std::endl;
-		}
-		// chatGPT suggested using while(true) instead of using an additional boolean
-		while (true) {
-			std::cout << "\nEnter the index (number) that you want to " << command << ":" << std::endl
-				<< "If you want to return to the main menu, enter 'menu'.\n" << std::endl;
-			std::getline(std::cin, userInput);
-			lowerString(userInput);
-			if (userInput == "menu") {
-				return nullptr;
-			}
-			for (int i = 0; i < searchRows; i++) {
-				if (userInput == std::to_string(searchedJobs[i].getJobIndex())) {
-					// return address of job from original array (solution by ChatGPT)
-					return &allJobs[searchedJobs[i].getJobIndex()];
-
-				}
-			}
-		}
-	}
-	else {
-		std::cout << "Sorry, we cannot find that job in our database." << std::endl;
-	}
-	return nullptr;
-}
-
 // helper function to handle all search functions
 bool searchFunction(SinglyLinkedList* list, std::string dataStructure, std::string searchType, Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter,
 	const std::string* headings, int* columnLengths, int& searchRows) {
@@ -166,97 +131,6 @@ bool searchFunction(SinglyLinkedList* list, std::string dataStructure, std::stri
 	else {
 		std::cout << "\nNo search functions were called." << std::endl;
 		return false;
-	}
-}
-
-Occupation* buildKeyAndSearch(Occupation* allJobs, int jobCounter, HashTable& hashTable) {
-	std::string firstHalfKey = "00";
-	std::string userInput;
-	Occupation* jobSearched = nullptr;
-	int searchCode;
-
-	// displays the major occupation groups in the table (https://www.bls.gov/oes/2023/may/oes_stru.htm)
-	std::cout << std::endl;
-	for (int i = 0; i < jobCounter; i++) {
-		// major groups are denoted by four 0s at the end of the code, hence a modulo of 10000 will result in 0
-		if (allJobs[i].getMatrixCodeInt() % 10000 == 0) {
-			std::cout << allJobs[i].getMatrixCode().substr(0, 2) << ": " <<
-				allJobs[i].getOccupation() << std::endl;
-		}
-	}
-
-	std::cout << "\nThese are the major occupation groups in the database." << std::endl;
-
-	// while loop to handle input
-	while (true) {
-		std::cout << "\nEnter a number above to search a job in a category." << std::endl
-			<< "If you want to return to the main menu, enter 'menu'.\n" << std::endl;
-		std::getline(std::cin, userInput);
-		lowerString(userInput);
-		if (userInput == "menu") {
-			return nullptr;
-		}
-		else {
-			try {
-				// length check, to make sure that value is contained within an int
-				if (userInput.length() < 5) {
-					// multiplication by 10000 to search for specific category in the hash table
-					searchCode = stoi(userInput) * 10000;
-					jobSearched = hashTable.getJobPointer(searchCode);
-					if (jobSearched != nullptr) {
-						break;
-					}
-					else {
-						std::cout << "\nMajor occupation group not found. Try again." << std::endl;
-					}
-				}
-				else {
-					std::cout << "\nInput is too long. Try again." << std::endl;
-				}
-			}
-			catch (std::invalid_argument) {
-				std::cout << "\nThe value entered is not an integer. Try again" << std::endl;
-			}
-		}
-	}
-	// assigning jobInput with userInput to construct first half of the key
-	if (stoi(userInput) != 0) {
-		firstHalfKey = userInput;
-	}
-	std::cout << std::endl;
-	for (int i = 0; i < jobCounter; i++) {
-		// displaying specific jobs now
-		if (allJobs[i].getMatrixCode().substr(0, 2) == firstHalfKey) {
-			std::cout << allJobs[i].getMatrixCode().substr(3, 4) << ": " <<
-				allJobs[i].getOccupation() << std::endl;
-		}
-	}
-	std::cout << "\nThese are the specific jobs under the " << jobSearched->getOccupation() << " category." << std::endl;
-
-	// second while loop to handle input
-	while (true) {
-		std::cout << "\nEnter a number above to search a job in a category." << std::endl
-			<< "If you want to return to the main menu, enter 'menu'.\n" << std::endl;
-		std::getline(std::cin, userInput);
-		lowerString(userInput);
-		if (userInput == "menu") {
-			return nullptr;
-		}
-		// length check to make sure that the input is contained within an int
-		if (userInput.length() < 7) {
-			// userInput becomes the second half of the key and is concatenated to firstHalfKey to make the full key
-			searchCode = stoi(firstHalfKey + userInput);
-			jobSearched = hashTable.getJobPointer(searchCode);
-			if (jobSearched != nullptr) {
-				return &allJobs[jobSearched->getJobIndex()];
-			}
-			else {
-				std::cout << "\nMajor occupation group not found. Try again." << std::endl;
-			}
-		}
-		else {
-			std::cout << "\nInput is too long. Try again." << std::endl;
-		}
 	}
 }
 

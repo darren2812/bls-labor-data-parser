@@ -46,6 +46,8 @@ public:
 	std::string getOccupation() const;
 	int getMatrixCodeInt() const;
 	std::string getMatrixCode() const;
+	std::string getMatrixPrefix() const;
+	std::string getMatrixSuffix() const;
 	std::string getOccupationType() const;
 	float getEmploymentCurrent() const;
 	std::string getEmploymentCurrentString() const;

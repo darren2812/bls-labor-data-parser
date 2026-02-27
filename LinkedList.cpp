@@ -10,10 +10,10 @@
 // destructor for linked list
 SinglyLinkedList::~SinglyLinkedList() {
 	// sets the current node as the head
-	SinglyLinkedNode<Occupation>* current = head;
+	SinglyLinkedNode* current = head;
 	while (current) {
 		// traverses through the list and sets nodeToDelete for each node
-		SinglyLinkedNode<Occupation>* nodeToDelete = current;
+		SinglyLinkedNode* nodeToDelete = current;
 		current = current->next;
 		delete nodeToDelete;
 	}
@@ -22,27 +22,27 @@ SinglyLinkedList::~SinglyLinkedList() {
 // function to append node
 void SinglyLinkedList::append(Occupation* jobAppended) {
 	// creates a new node and assigns its data
-	auto newNode = new SinglyLinkedNode<Occupation>;
+	auto newNode = new SinglyLinkedNode;
 	// dereferences jobAppended pointer and assigns to data field
-	newNode->data = *jobAppended;
-	// assings head and tail to new node if the list is empty
+	newNode->data = jobAppended;
+	// assigns head and tail to new node if the list is empty
 	if (head == nullptr) {
 		head = newNode;
 		tail = newNode;
 	}
-	// sets the next of tail to new node and reassings tail to new node
+	// sets the next of tail to new node and reassigns tail to new node
 	else {
 		tail->next = newNode;
 		tail = newNode;
 	}
-	incrementListSize();
+	listSize++;
 }
 
 // function to prepend node
 void SinglyLinkedList::prepend(Occupation* jobPrepended) {
 	// creates a new node and assigns its data
-	auto newNode = new SinglyLinkedNode<Occupation>;
-	newNode->data = *jobPrepended;
+	auto newNode = new SinglyLinkedNode;
+	newNode->data = jobPrepended;
 	// assigns head and tail to new node if the list is empty
 	if (head == nullptr) {
 		head = newNode;
@@ -53,63 +53,23 @@ void SinglyLinkedList::prepend(Occupation* jobPrepended) {
 		newNode->next = head;
 		head = newNode;
 	}
-	incrementListSize();
+	listSize++;
 }
 
 // function to insert a node after another node
-bool SinglyLinkedList::insertAfter(Occupation* jobInserted) {
-	if (head == nullptr) {
-		std::cout << "\nThere are no jobs to display. Use another method to add the occupation." << std::endl;
-		return false;
-	}
-	// creates a new node and assigns its data
-	SinglyLinkedNode<Occupation>* newNode = new SinglyLinkedNode<Occupation>;
-	newNode->data = *jobInserted;
-	// assigns head to current
-	SinglyLinkedNode<Occupation>* current = head;
-	int index = 0;
-	int targetIndex;
-	std::string userInput = "-";
-	// traverses through list and prints out each job
-	std::cout << std::endl;
+void SinglyLinkedList::insertAfter(Occupation* jobInserted, const std::string &matrixCode) {
+	SinglyLinkedNode* current = head;
 	while (current) {
-		std::cout << "Index " << index << ": " << current->data.getOccupation() << std::endl;
-		current = current->next;
-		index++;
-	}
-	// looping to ensure that user correctly inputs number
-	while (true) {
-		std::cout << "\nAfter which index do you want to insert the occupation?" << std::endl
-			<< "If you want to return to the list menu, enter 'menu'\n" << std::endl;
-		std::getline(std::cin, userInput);
-		lowerString(userInput);
-		if (userInput == "menu") {
-			return false;
-		}
-		if (toFloat(userInput) >= 0 && toFloat(userInput) <= index && g_catch == false)
-		{
-			break;
-		}
-	}
-	// resets current and index and sets target index
-	current = head;
-	index = 0;
-	targetIndex = stoi(userInput);
-	// nodeDeleted traverses through the list
-	while (current) {
-		// if the indices match, insert current node to the list
-		if (index == targetIndex) {
+		if (current->data->getMatrixCode() == matrixCode) {
+			auto newNode = new SinglyLinkedNode;
 			newNode->next = current->next;
 			current->next = newNode;
-			incrementListSize();
-			return true;
+			newNode->data = jobInserted;
+			listSize++;
+			return;
 		}
 		current = current->next;
-		index++;
 	}
-	// returns false if node cannot be found
-	std::cout << "Could not find node to insert after." << std::endl;
-	return false;
 }
 
 // undo remove  removes node based on node counter value
@@ -181,7 +141,7 @@ SinglyLinkedNode<Occupation> SinglyLinkedList::removeFromList() {
 		}
 		try {
 			targetNodeCount = stoi(userInput);
-			if (searchListByCounter(targetNodeCount)) {
+			if (searchListByIndex(targetNodeCount)) {
 				return removeByIndex(targetNodeCount);
 				break;
 			}
@@ -235,7 +195,7 @@ int SinglyLinkedList::searchListByWage(const float& lowerLimit, const float& upp
 	 return jobCounter;
  }
 
-bool SinglyLinkedList::searchListByCounter(int nodeCount) {
+bool SinglyLinkedList::searchListByIndex(int nodeCount) {
 	// sets the current pointer of the list to the head
 	SinglyLinkedNode<Occupation>* current = head;
 	while (current) {
@@ -248,41 +208,12 @@ bool SinglyLinkedList::searchListByCounter(int nodeCount) {
 	return false;
 }
 
-// function to print the entire list to the console and output file
-void SinglyLinkedList::printList(const std::string* headings, int* columnLengths) {
-	// prints message if list is empty
-	if (head == nullptr) {
-		std::cout << "\nYour list is currently empty." << std::endl;
-		return;
-	}
-	
-	// time counters, chrono implementation taken from cpp reference website and ChatGPT
-	std::chrono::high_resolution_clock::time_point startTime;
-	std::chrono::high_resolution_clock::time_point endTime;
-	std::chrono::microseconds timeTaken;
-	// opens output file
-	std::ofstream output("output.txt");
-	// sets the current node to the head
-	SinglyLinkedNode<Occupation>* current = head;
-	// prints table headings
-	printTableHeadings(output, headings, columnLengths);
-	
-	// start of search algorithm and outputs time taken in microseconds
-	startTime = std::chrono::high_resolution_clock::now();
-	// iterates through the list and prints every single entry line by line
-	while (current != nullptr) {
-		printTableEntry(output, columnLengths, current->data);
+void SinglyLinkedList::forEachJobInList(const std::function<void(Occupation *&job)> &fn) const {
+	SinglyLinkedNode* current = head;
+	while (current) {
+		fn(current->data);
 		current = current->next;
 	}
-	endTime = std::chrono::high_resolution_clock::now();
-	timeTaken = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
-	
-	// close output file
-	output.close();
-	// reports the number of jobs in the list
-	std::cout << "\nThere are currently " << getListSize() << " occupations in your list." << std::endl;
-	// reports time taken to traverse through list
-	std::cout << "\nTime to traverse and print list: " << timeTaken.count() << " microseconds." << std::endl;
 }
 
 // function to get size of list

@@ -5,38 +5,37 @@
 #include "Occupation.h"
 #include "Stack.h"
 
-// function template for node to take in any data type
-template<typename T>
 class SinglyLinkedNode {
 public:
-	// each node will store an Occupation object 
-	T data;
+	// each node will store a pointer to the main occupation objects (uniqueptrs held by dynamic array)
+	Occupation* data;
 	SinglyLinkedNode* next = nullptr;
 };
 
 // linked list class
 class SinglyLinkedList {
 private:
-	SinglyLinkedNode<Occupation>* head = nullptr;
-	SinglyLinkedNode<Occupation>* tail = nullptr;
+	SinglyLinkedNode* head = nullptr;
+	SinglyLinkedNode* tail = nullptr;
 	int listSize = 0;
 	int nodeCounter = 0;
 public:
 	~SinglyLinkedList();
 	void append(Occupation* jobAppended);
 	void prepend(Occupation* jobPrepended);
-	bool insertAfter(Occupation* jobInserted);
-	SinglyLinkedNode<Occupation> removeFromList();
-	SinglyLinkedNode<Occupation> removeByIndex(int jobIndex);
+	void insertAfter(Occupation* jobInserted, const std::string &matrixCodeInt);
+	SinglyLinkedNode removeFromList();
+	SinglyLinkedNode removeByIndex(int jobIndex);
 	int searchListByJob(std::string& jobSearched, Occupation* searchedJobs);
 	int searchListByWage(const float& lowerLimit, const float& upperLimit, Occupation* searchedJobs);
-	bool searchListByCounter(int nodeCount);
-	void printList(const std::string* headings, int* columnLengths);
-	
+	bool searchListByIndex(int nodeCount);
+
+	void forEachJobInList(const std::function<void(Occupation *&job)> &fn) const;
+
 	// getters
 	int getListSize() const;
 	int getNodeCounter() const;
-	SinglyLinkedNode<Occupation>* getListHead();
+	SinglyLinkedNode* getListHead();
 
 	// incrementers and decrementers
 	void incrementListSize();

@@ -354,7 +354,7 @@ int main() {
 				// asks user what job they want to remove and displays jobs if they are found in the database
 				std::cout << "\nWhat job do you want to remove?\n" << std::endl;
 				// if statement is executed if a specific job index was found
-				jobSearchedPtr = selectSpecficIndex(searchedJobs, allJobs, jobCounter, userInput, "remove");
+				jobSearchedPtr = selectSpecificIndex(searchedJobs, allJobs, jobCounter, userInput, "remove");
 				if (jobSearchedPtr) {
 					// selectSpecificIndex takes in a reference of userInput which becomes an argument to remove entry
 					// this line pushes a job-string pair of the job being removed
@@ -475,66 +475,7 @@ int main() {
 					}
 					break;
 				case 'C':
-					std::cout << "\nDo you want to search for the occupation to add by title or by matrix code?" << std::endl
-						<< "A: Title" << std::endl
-						<< "B: Matrix Code\n" << std::endl;
-					switch (menuHandling('A', 'B', userInput)) {
-					case 'A':
-						std::cout << "\nEnter the name of the occupation.\n" << std::endl;
-						// function returns a pointer to the specific object in the dynamic array
-						result = selectSpecficIndex(searchedJobs, allJobs, jobCounter, userInput, "add");
-						break;
-					case 'B':
-						// buildKeyAndSearch returns nullptr if user wants to return to the main menu
-						result = buildKeyAndSearch(allJobs, jobCounter, hashTable);
-						break;
-					default:
-						result = nullptr;
-						break;
-					}
-					if (result) {
-						std::cout << "\nWhere in the list would you like to place the occupation?" << std::endl
-							<< "A: Start of List" << std::endl
-							<< "B: End of List" << std::endl
-							<< "C: Middle of List" << std::endl
-							<< "D: Return to List Menu\n" << std::endl;
-						switch (menuHandling('A', 'D', userInput)) {
-						case 'A':
-							// prepends object ot the list and prints list
-							list->prepend(result);
-							// pushes job along with string as a pair
-							std::cout << "\n'" << result->getOccupation()
-								<< "' is successfully added to the list." << std::endl;
-							// changing save status of list
-							savedList = false;
-							recentChangesList.push({ *result, "added", result->getJobIndex() });
-							break;
-						case 'B':
-							// appends object to the list and prints list
-							list->append(result);
-							std::cout << "\n'" << result->getOccupation()
-								<< "' is successfully added to the list." << std::endl;
-							savedList = false;
-							recentChangesList.push({ *result, "added", result->getJobIndex() });
-							break;
-						case 'C':
-							// calls the insert after function
-							list->insertAfter(result);
-							std::cout << "\n'" << result->getOccupation()
-								<< "' is successfully added to the list." << std::endl;
-							savedList = false;
-							recentChangesList.push({ *result, "added", result->getJobIndex() });
-							break;
-						case 'D':
-							break;
-						default:
-							break;
-						}
-					}
-					else {
-						std::cout << "\nFailed to add item to list. Returning to list menu..." << std::endl;
-					}
-					break;
+					// CODE MOVED TO MENU HANDLER
 				case 'D':
 					// calls the remove function and checks if current node count is -1
 					nodeRemoved = list->removeFromList();
@@ -642,7 +583,7 @@ int main() {
 					// asks user what job they want to remove and displays jobs if they are found in the database
 					std::cout << "\nWhat job do you want to select?\n" << std::endl;
 					// if statement is executed if a specific job index was found
-					jobSearchedPtr = selectSpecficIndex(searchedJobs, allJobs, jobCounter, userInput, "select");
+					jobSearchedPtr = selectSpecificIndex(searchedJobs, allJobs, jobCounter, userInput, "select");
 					// if job is found, then assign the pointer to the array and increment selectionCount
 					if (jobSearchedPtr) {
 						comparedJobs[selectionCounter] = jobSearchedPtr;
