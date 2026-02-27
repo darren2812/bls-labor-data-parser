@@ -10,10 +10,9 @@ MenuHandler::MenuHandler()
 
     // sets default table column lengths to the size of the headings + 1
     for (int i = 0; i < NUM_OF_HEADINGS; i++) {
-        columnLengths[i] = headings[i].size() + 1;
+        tableColumnLengths[i] = tableHeadings[i].size() + 1;
     }
 
-    // code from zybooks to read file
     if (!rawData.is_open()) {
         std::cout << "\nThe file rawData.txt could not be opened" << std::endl;
         return;
@@ -47,7 +46,7 @@ void MenuHandler::allocateDataStructures() {
 }
 
 // function to print headings
-void MenuHandler::printTableHeadings(std::ofstream &output, const std::string *headings, int *columnLengths) const {
+void MenuHandler::printTableHeadings() {
     output.clear();
     output.seekp(0, std::ios::beg);
     // total width of the table in output and console
@@ -70,12 +69,12 @@ void MenuHandler::printTableHeadings(std::ofstream &output, const std::string *h
     // outputs headings to the output file and skips over column 2 and 16
     for (int i = 0; i < NUM_OF_HEADINGS; i++) {
         if (i != 1 && i != 15) {
-            output << std::left << std::setw(columnLengths[i]) << headings[i] << "|";
-            totalWidth += columnLengths[i];
+            output << std::left << std::setw(tableColumnLengths[i]) << tableHeadings[i] << "|";
+            totalWidth += tableColumnLengths[i];
             // takes widths from job title, employment, wage, education, and work experience columns for console summary
             if (i == 0 || i == 3 || i == 11 || i == 12 || i == 13) {
-                std::cout << std::left << std::setw(columnLengths[i]) << headings[i] << "|";
-                consoleWidth += columnLengths[i];
+                std::cout << std::left << std::setw(tableColumnLengths[i]) << tableHeadings[i] << "|";
+                consoleWidth += tableColumnLengths[i];
             }
         }
     }
@@ -96,50 +95,49 @@ void MenuHandler::printTableHeadings(std::ofstream &output, const std::string *h
 }
 
 // function to print table entry
-void MenuHandler::printTableEntry(std::ofstream &output, const int *columnLengths, const Occupation &currentJob) const {
+void MenuHandler::printTableEntry(const Occupation &currentJob) {
     // outputs each line of table to the output file
-    output << std::left << std::setw(columnLengths[0]) << currentJob.getOccupation() << "|"
-            << std::setw(columnLengths[2]) << currentJob.getOccupationType() << "|"
-            << std::setw(columnLengths[3]) << currentJob.getEmploymentCurrentString() << "|"
-            << std::setw(columnLengths[4]) << currentJob.getEmploymentFutureString() << "|"
-            << std::setw(columnLengths[5]) << currentJob.getDistributionCurrentString() << "|"
-            << std::setw(columnLengths[6]) << currentJob.getDistributionFutureString() << "|"
-            << std::setw(columnLengths[7]) << currentJob.getNumericChangeString() << "|"
-            << std::setw(columnLengths[8]) << currentJob.getPercentageChangeString() << "|"
-            << std::setw(columnLengths[9]) << currentJob.getPercentSelfEmployedString() << "|"
-            << std::setw(columnLengths[10]) << currentJob.getJobOpeningsString() << "|"
-            << std::setw(columnLengths[11]) << currentJob.getWageString() << "|"
-            << std::setw(columnLengths[12]) << currentJob.getEducation() << "|"
-            << std::setw(columnLengths[13]) << currentJob.getWorkExperience() << "|"
-            << std::setw(columnLengths[14]) << currentJob.getTraining() << "|" << std::endl;
+    output << std::left << std::setw(tableColumnLengths[0]) << currentJob.getOccupation() << "|"
+            << std::setw(tableColumnLengths[2]) << currentJob.getOccupationType() << "|"
+            << std::setw(tableColumnLengths[3]) << currentJob.getEmploymentCurrentString() << "|"
+            << std::setw(tableColumnLengths[4]) << currentJob.getEmploymentFutureString() << "|"
+            << std::setw(tableColumnLengths[5]) << currentJob.getDistributionCurrentString() << "|"
+            << std::setw(tableColumnLengths[6]) << currentJob.getDistributionFutureString() << "|"
+            << std::setw(tableColumnLengths[7]) << currentJob.getNumericChangeString() << "|"
+            << std::setw(tableColumnLengths[8]) << currentJob.getPercentageChangeString() << "|"
+            << std::setw(tableColumnLengths[9]) << currentJob.getPercentSelfEmployedString() << "|"
+            << std::setw(tableColumnLengths[10]) << currentJob.getJobOpeningsString() << "|"
+            << std::setw(tableColumnLengths[11]) << currentJob.getWageString() << "|"
+            << std::setw(tableColumnLengths[12]) << currentJob.getEducation() << "|"
+            << std::setw(tableColumnLengths[13]) << currentJob.getWorkExperience() << "|"
+            << std::setw(tableColumnLengths[14]) << currentJob.getTraining() << "|" << std::endl;
     // outputs each line of table to the console
-    std::cout << std::left << std::setw(columnLengths[0]) << currentJob.getOccupation() << "|"
-            << std::setw(columnLengths[3]) << currentJob.getEmploymentCurrentString() << "|"
-            << std::setw(columnLengths[11]) << currentJob.getWageString() << "|"
-            << std::setw(columnLengths[12]) << currentJob.getEducation() << "|"
-            << std::setw(columnLengths[13]) << currentJob.getWorkExperience() << "|" << std::endl;
+    std::cout << std::left << std::setw(tableColumnLengths[0]) << currentJob.getOccupation() << "|"
+            << std::setw(tableColumnLengths[3]) << currentJob.getEmploymentCurrentString() << "|"
+            << std::setw(tableColumnLengths[11]) << currentJob.getWageString() << "|"
+            << std::setw(tableColumnLengths[12]) << currentJob.getEducation() << "|"
+            << std::setw(tableColumnLengths[13]) << currentJob.getWorkExperience() << "|" << std::endl;
 }
 
 void MenuHandler::printPrefixAndCategory(const Occupation &jobCategory) const {
     std::cout << jobCategory.getMatrixPrefix()
-              << ": " << jobCategory.getOccupation() << std::endl;
+            << ": " << jobCategory.getOccupation() << std::endl;
 }
 
 void MenuHandler::printSuffixAndJob(const Occupation &job) const {
     std::cout << job.getMatrixSuffix()
-              << ": " << job.getOccupation() << std::endl;
+            << ": " << job.getOccupation() << std::endl;
 }
 
-void MenuHandler::printSearchedJobs(std::ofstream &output, const std::string *headings,
-                                    int *columnLengths) const {
+void MenuHandler::printSearchedJobs() {
     int arraySize = searchedJobsArray.getCurrentSize();
 
     // outputs table headings
-    printTableHeadings(output, headings, columnLengths);
+    printTableHeadings();
 
     // passes the print table entry function to the iterator function in the database class
     for (int i = 0; i < arraySize; i++) {
-        printTableEntry(output, columnLengths, searchedJobsArray[i]);
+        printTableEntry(searchedJobsArray[i]);
     }
 
     output.close();
@@ -157,47 +155,28 @@ void MenuHandler::printCategoryContents(const std::string &prefix) const {
     });
 }
 
-void MenuHandler::printIndicesInList() {
+void MenuHandler::printIndicesInList() const {
     jobsList.forEachJobInList([&](Occupation *&job) {
         std::cout << job->getJobIndex() << ": " << job->getOccupation() << std::endl;
     });
 }
 
 // function to print the entire list to the console and output file
-void MenuHandler::printList(const std::string *headings, int *columnLengths) {
+void MenuHandler::printList() {
     // prints message if list is empty
-    if (head == nullptr) {
+    if (jobsList.getListSize() == 0) {
         std::cout << "\nYour list is currently empty." << std::endl;
         return;
     }
 
-    // time counters, chrono implementation taken from cpp reference website and ChatGPT
-    std::chrono::high_resolution_clock::time_point startTime;
-    std::chrono::high_resolution_clock::time_point endTime;
-    std::chrono::microseconds timeTaken;
-    // opens output file
-    std::ofstream output("output.txt");
-    // sets the current node to the head
-    SinglyLinkedNode<Occupation> * current = head;
-    // prints table headings
-    printTableHeadings(output, headings, columnLengths);
+    printTableHeadings();
 
-    // start of search algorithm and outputs time taken in microseconds
-    startTime = std::chrono::high_resolution_clock::now();
-    // iterates through the list and prints every single entry line by line
-    while (current != nullptr) {
-        printTableEntry(output, columnLengths, current->data);
-        current = current->next;
-    }
-    endTime = std::chrono::high_resolution_clock::now();
-    timeTaken = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
+    jobsList.forEachJobInList([&](Occupation *&job) {
+        printTableEntry(*job);
+    });
 
-    // close output file
-    output.close();
     // reports the number of jobs in the list
-    std::cout << "\nThere are currently " << getListSize() << " occupations in your list." << std::endl;
-    // reports time taken to traverse through list
-    std::cout << "\nTime to traverse and print list: " << timeTaken.count() << " microseconds." << std::endl;
+    std::cout << "\nThere are currently " << jobsList.getListSize() << " occupations in your list." << std::endl;
 }
 
 // function to handle menu commands
@@ -447,7 +426,7 @@ void MenuHandler::handleAddDatabase() {
     if (allJobsDatabase.searchArrayByJob(searchedJobsArray, jobTitle)) {
         std::cout << std::endl;
 
-        printSearchedJobs(output, headings, columnLengths);
+        printSearchedJobs();
 
         std::cout << "\nWe have these jobs in our database. Do you still want to add an entry? (y/n)\n" << std::endl;
 
@@ -474,7 +453,6 @@ void MenuHandler::handleAddDatabase() {
                 break;
             }
             std::cout << "\nThe category does not exist. Please choose a different category." << std::endl;
-
         } while (true);
 
         if (allJobsDatabase.generateUniqueKey(prefix, matrixCode)) {
@@ -498,7 +476,7 @@ void MenuHandler::handleAddDatabase() {
 }
 
 // function to pinpoint the specific index of an occupation
-Occupation* MenuHandler::selectSpecificIndex(const std::string &command) {
+Occupation *MenuHandler::selectSpecificIndex(const std::string &command) {
     std::string userInput;
     std::getline(std::cin, userInput);
     lowerString(userInput);
@@ -511,11 +489,11 @@ Occupation* MenuHandler::selectSpecificIndex(const std::string &command) {
     if (searchedJobsCount > 0) {
         for (int i = 0; i < searchedJobsCount; i++) {
             std::cout << "Index " << searchedJobsArray[i].getJobIndex() << ": "
-                << searchedJobsArray[i].getOccupation() << std::endl;
+                    << searchedJobsArray[i].getOccupation() << std::endl;
         }
         while (true) {
             std::cout << "\nEnter the index (number) that you want to " << command << ":" << std::endl
-                << "If you want to return to the main menu, enter 'menu'.\n" << std::endl;
+                    << "If you want to return to the main menu, enter 'menu'.\n" << std::endl;
             std::getline(std::cin, userInput);
             lowerString(userInput);
             if (userInput == "menu") {
@@ -533,16 +511,19 @@ Occupation* MenuHandler::selectSpecificIndex(const std::string &command) {
     return nullptr;
 }
 
-Occupation* MenuHandler::buildKeyAndSearch() {
+Occupation *MenuHandler::buildKeyAndSearch() {
     std::string matrixCode;
     std::string prefix;
-    Occupation* jobCategory;
+    Occupation *jobCategory;
 
     do {
         printAllCategories();
         std::cout << "\nThese are the major occupation groups in the database." << std::endl;
 
-        prefix = promptMatrixCodePrefix();
+        prefix = promptNumber("a category.");
+        if (prefix == "0") {
+            prefix = "00";
+        }
         jobCategory = allJobsDatabase.findCategory(prefix);
 
         if (jobCategory != nullptr) {
@@ -550,30 +531,32 @@ Occupation* MenuHandler::buildKeyAndSearch() {
         }
         std::cout << "\nThe category does not exist. Please choose a different category." << std::endl;
     } while (true);
-    
+
     do {
         printCategoryContents(prefix);
-        std::cout << "\nThese are the specific jobs under the " << jobCategory->getOccupation() << " category." << std::endl;
+        std::cout << "\nThese are the specific jobs under the " << jobCategory->getOccupation() << " category." <<
+                std::endl;
 
         std::string suffix = promptNumber("a specific occupation.");
         if (suffix == "0") {
             suffix = "0000";
         }
 
-        Occupation* jobToReturn = allJobsDatabase.searchJobByCode(stoi(prefix + suffix));
+        Occupation *jobToReturn = allJobsDatabase.searchJobByCode(stoi(prefix + suffix));
 
         if (jobToReturn != nullptr) {
             return jobToReturn;
         }
         std::cout << "\nOccupation not found. Try again." << std::endl;
-
     } while (true);
 }
 
 Occupation *MenuHandler::chooseJobToAdd() {
     std::cout << "\nDo you want to search for the occupation to add by title or by matrix code?" << std::endl
-           << "A: Title" << std::endl
-           << "B: Matrix Code\n" << std::endl;
+            << "A: Title" << std::endl
+            << "B: Matrix Code" << std::endl
+            << "C: Return to List Menu\n" <<
+            std::endl;
     switch (menuHandling('A', 'B', false)) {
         case 'A':
             std::cout << "\nEnter the name of the occupation.\n" << std::endl;
@@ -587,7 +570,7 @@ Occupation *MenuHandler::chooseJobToAdd() {
     }
 }
 
-void MenuHandler::handleListIndexRetrieval() {
+int MenuHandler::handleListIndexRetrieval() {
     do {
         std::cout << "\nWhich occupation do you want to add after?" << std::endl;
         printIndicesInList();
@@ -595,17 +578,18 @@ void MenuHandler::handleListIndexRetrieval() {
         int jobIndex = stoi(promptNumber("a specific occupation."));
 
         if (jobsList.searchListByIndex(jobIndex)) {
-            // return the code
+            return jobIndex;
         }
+        std::cout << "\nThat index does not exist in the list. Try again." << std::endl;
     } while (true);
 }
 
 bool MenuHandler::placeOccupationInList(Occupation *occupation) {
     std::cout << "\nWhere in the list would you like to place the occupation?" << std::endl
-                << "A: Start of List" << std::endl
-                << "B: End of List" << std::endl
-                << "C: Middle of List" << std::endl
-                << "D: Return to List Menu\n" << std::endl;
+            << "A: Start of List" << std::endl
+            << "B: End of List" << std::endl
+            << "C: Middle of List" << std::endl
+            << "D: Return to List Menu\n" << std::endl;
     switch (menuHandling('A', 'D', false)) {
         case 'A':
             // prepends object ot the list and prints list
@@ -618,20 +602,21 @@ bool MenuHandler::placeOccupationInList(Occupation *occupation) {
             break;
         case 'C':
             // calls the insert after function
-            jobsList.insertAfter(occupation);
+            jobsList.insertAfter(occupation, handleListIndexRetrieval());
             return true;
-        case 'D':
+        default:
             return false;
     }
 }
 
 void MenuHandler::handleAddList() {
-
-
-    if (result) {
-
+    Occupation *occupationToAdd = chooseJobToAdd();
+    if (occupationToAdd != nullptr) {
+        if (placeOccupationInList(occupationToAdd)) {
+            recentChangesDatabase.push({*occupationToAdd, "added"});
+            savedDatabase = false;
+            return;
         }
-    } else {
-        std::cout << "\nFailed to add item to list. Returning to list menu..." << std::endl;
     }
+    std::cout << "\nFailed to add occupation to list. Returning to list menu..." << std::endl;
 }

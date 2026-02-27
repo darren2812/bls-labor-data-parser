@@ -105,7 +105,7 @@ void JobDatabase::readInputFile(std::fstream &rawData, const std::string *headin
     }
 }
 
-void JobDatabase::importList(std::fstream &listData, SinglyLinkedList *list, const HashTable &hashTable) {
+void JobDatabase::readListFile(std::fstream &listData, SinglyLinkedList list, const HashTable &hashTable) {
     // setting the cursor position back to the start
     listData.clear();
     listData.seekg(0, std::ios::beg);
@@ -129,7 +129,7 @@ void JobDatabase::importList(std::fstream &listData, SinglyLinkedList *list, con
             // searches for that code in the string
             jobPointer = hashTable.getJobPointer(matrixCode);
             if (jobPointer) {
-                list->append(jobPointer);
+                list.append(jobPointer);
             } else {
                 std::cout << "\nFailed to find occupation with matrix code " << initialString << std::endl;
             }
@@ -139,14 +139,18 @@ void JobDatabase::importList(std::fstream &listData, SinglyLinkedList *list, con
     }
 }
 
-void JobDatabase::rewriteListFile(std::fstream &listData, SinglyLinkedList *list) {
+void JobDatabase::rewriteListFile(std::fstream &listData, const SinglyLinkedList &list) {
     listData.clear();
-    listData.seekp(0, std::ios::beg);    SinglyLinkedNode<Occupation> *current = list->getListHead();
-    // iterates through the list and outputs the matrix codes
-    while (current) {
-        listData << current->data.getMatrixCode() << std::endl;
-        current = current->next;
+    listData.seekp(0, std::ios::beg);
+
+    if (list.getListSize() > 0) {
+        list.forEachJobInList([&](Occupation *&job) {
+            listData << job->getMatrixCode() << std::endl;
+        });
+        return;
     }
+
+    std::cout << "\nThe list is empty." << std::endl;
 }
 
 bool JobDatabase::generateUniqueKey(const std::string& codePrefix, std::string &uniqueCode) const {

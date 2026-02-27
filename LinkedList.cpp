@@ -57,10 +57,10 @@ void SinglyLinkedList::prepend(Occupation* jobPrepended) {
 }
 
 // function to insert a node after another node
-void SinglyLinkedList::insertAfter(Occupation* jobInserted, const std::string &matrixCode) {
+void SinglyLinkedList::insertAfter(Occupation* jobInserted, int jobIndex) {
 	SinglyLinkedNode* current = head;
 	while (current) {
-		if (current->data->getMatrixCode() == matrixCode) {
+		if (current->data->getJobIndex() == jobIndex) {
 			auto newNode = new SinglyLinkedNode;
 			newNode->next = current->next;
 			current->next = newNode;

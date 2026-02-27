@@ -20,8 +20,8 @@ public:
     JobDatabase &operator=(JobDatabase &&other) noexcept = default;
 
     void readInputFile(std::fstream& rawData, const std::string* headings, int* columnLengths);
-    void importList(std::fstream &listData, SinglyLinkedList *list, const HashTable &hashTable);
-    void rewriteListFile(std::fstream &listData, SinglyLinkedList* list);
+    void readListFile(std::fstream &listData, SinglyLinkedList list, const HashTable &hashTable);
+    void rewriteListFile(std::fstream &listData, const SinglyLinkedList &list);
 
     bool generateUniqueKey(const std::string &codePrefix, std::string &uniqueCode) const;
 

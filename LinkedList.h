@@ -23,7 +23,7 @@ public:
 	~SinglyLinkedList();
 	void append(Occupation* jobAppended);
 	void prepend(Occupation* jobPrepended);
-	void insertAfter(Occupation* jobInserted, const std::string &matrixCodeInt);
+	void insertAfter(Occupation* jobInserted, int jobIndex);
 	SinglyLinkedNode removeFromList();
 	SinglyLinkedNode removeByIndex(int jobIndex);
 	int searchListByJob(std::string& jobSearched, Occupation* searchedJobs);

@@ -14,13 +14,15 @@ private:
     // float to store the maximum length of a bar chart when comparing jobs
     float MAX_BAR_CHART_LENGTH = 100;
     // headings in indexes 1 and 15 are null to skip columns 2 and 16 in data file
-    const std::string headings[NUM_OF_HEADINGS] = {
+    const std::string tableHeadings[NUM_OF_HEADINGS] = {
         "Occupation", "SOC Matrix Code", "Type", "Employment 2023", "Employment 2033",
         "% Distribution 2023", "% Distribution 2033", "Change 2023-33",
         "% Change 2023-33", "% Self Employed", "Annual Openings 2023-33",
         "Median Wage 2024", "Typical Education Needed", "Related Work Experience",
         "Typical On-the-Job Training", ""
     };
+    // array to assign different lengths for each column and setting everything to 0
+    int tableColumnLengths[NUM_OF_HEADINGS] = {};
 
     // file stream for data
     std::fstream rawData;
@@ -45,8 +47,6 @@ private:
     int numberOfRows = 0;
     // max number of jobs analyzed
     int totalJobsCapacity = 0;
-    // array to assign different lengths for each column and setting everything to 0
-    int columnLengths[NUM_OF_HEADINGS] = {};
     // int to store matrix code when searching
     int searchCode;
 
@@ -85,20 +85,19 @@ public:
     void allocateDataStructures();
 
     // table related functions
-    void printTableHeadings(std::ofstream &output, const std::string *headings, int *columnLengths) const;
+    void printTableHeadings();
 
-    void printTableEntry(std::ofstream &output, const int *columnLengths, const Occupation &currentJob) const;
+    void printTableEntry(const Occupation &currentJob);
 
     void printPrefixAndCategory(const Occupation &jobCategory) const;
     void printSuffixAndJob(const Occupation &job) const;
 
-    void printSearchedJobs(std::ofstream &output, const std::string *headings,
-                           int *columnLengths) const;
+    void printSearchedJobs();
 
     void printAllCategories() const;
     void printCategoryContents(const std::string &prefix) const;
-    void printIndicesInList();
-    void printList(const std::string* headings, int* columnLengths);
+    void printIndicesInList() const;
+    void printList();
 
     // function to handle menu selection for reusability
     char menuHandling(char firstLetter, char lastLetter, bool acceptDash);
@@ -119,6 +118,6 @@ public:
     Occupation* buildKeyAndSearch();
     Occupation* chooseJobToAdd();
     bool placeOccupationInList(Occupation* occupation);
-    void handleListIndexRetrieval();
+    int handleListIndexRetrieval();
     void handleAddList();
 };
