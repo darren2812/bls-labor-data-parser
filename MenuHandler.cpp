@@ -95,28 +95,28 @@ void MenuHandler::printTableHeadings() {
 }
 
 // function to print table entry
-void MenuHandler::printTableEntry(const Occupation &currentJob) {
+void MenuHandler::printTableEntry(const Occupation *currentJob) {
     // outputs each line of table to the output file
-    output << std::left << std::setw(tableColumnLengths[0]) << currentJob.getOccupation() << "|"
-            << std::setw(tableColumnLengths[2]) << currentJob.getOccupationType() << "|"
-            << std::setw(tableColumnLengths[3]) << currentJob.getEmploymentCurrentString() << "|"
-            << std::setw(tableColumnLengths[4]) << currentJob.getEmploymentFutureString() << "|"
-            << std::setw(tableColumnLengths[5]) << currentJob.getDistributionCurrentString() << "|"
-            << std::setw(tableColumnLengths[6]) << currentJob.getDistributionFutureString() << "|"
-            << std::setw(tableColumnLengths[7]) << currentJob.getNumericChangeString() << "|"
-            << std::setw(tableColumnLengths[8]) << currentJob.getPercentageChangeString() << "|"
-            << std::setw(tableColumnLengths[9]) << currentJob.getPercentSelfEmployedString() << "|"
-            << std::setw(tableColumnLengths[10]) << currentJob.getJobOpeningsString() << "|"
-            << std::setw(tableColumnLengths[11]) << currentJob.getWageString() << "|"
-            << std::setw(tableColumnLengths[12]) << currentJob.getEducation() << "|"
-            << std::setw(tableColumnLengths[13]) << currentJob.getWorkExperience() << "|"
-            << std::setw(tableColumnLengths[14]) << currentJob.getTraining() << "|" << std::endl;
+    output << std::left << std::setw(tableColumnLengths[0]) << currentJob->getOccupation() << "|"
+            << std::setw(tableColumnLengths[2]) << currentJob->getOccupationType() << "|"
+            << std::setw(tableColumnLengths[3]) << currentJob->getEmploymentCurrentString() << "|"
+            << std::setw(tableColumnLengths[4]) << currentJob->getEmploymentFutureString() << "|"
+            << std::setw(tableColumnLengths[5]) << currentJob->getDistributionCurrentString() << "|"
+            << std::setw(tableColumnLengths[6]) << currentJob->getDistributionFutureString() << "|"
+            << std::setw(tableColumnLengths[7]) << currentJob->getNumericChangeString() << "|"
+            << std::setw(tableColumnLengths[8]) << currentJob->getPercentageChangeString() << "|"
+            << std::setw(tableColumnLengths[9]) << currentJob->getPercentSelfEmployedString() << "|"
+            << std::setw(tableColumnLengths[10]) << currentJob->getJobOpeningsString() << "|"
+            << std::setw(tableColumnLengths[11]) << currentJob->getWageString() << "|"
+            << std::setw(tableColumnLengths[12]) << currentJob->getEducation() << "|"
+            << std::setw(tableColumnLengths[13]) << currentJob->getWorkExperience() << "|"
+            << std::setw(tableColumnLengths[14]) << currentJob->getTraining() << "|" << std::endl;
     // outputs each line of table to the console
-    std::cout << std::left << std::setw(tableColumnLengths[0]) << currentJob.getOccupation() << "|"
-            << std::setw(tableColumnLengths[3]) << currentJob.getEmploymentCurrentString() << "|"
-            << std::setw(tableColumnLengths[11]) << currentJob.getWageString() << "|"
-            << std::setw(tableColumnLengths[12]) << currentJob.getEducation() << "|"
-            << std::setw(tableColumnLengths[13]) << currentJob.getWorkExperience() << "|" << std::endl;
+    std::cout << std::left << std::setw(tableColumnLengths[0]) << currentJob->getOccupation() << "|"
+            << std::setw(tableColumnLengths[3]) << currentJob->getEmploymentCurrentString() << "|"
+            << std::setw(tableColumnLengths[11]) << currentJob->getWageString() << "|"
+            << std::setw(tableColumnLengths[12]) << currentJob->getEducation() << "|"
+            << std::setw(tableColumnLengths[13]) << currentJob->getWorkExperience() << "|" << std::endl;
 }
 
 void MenuHandler::printPrefixAndCategory(const Occupation &jobCategory) const {
@@ -133,7 +133,7 @@ void MenuHandler::printMainArray() {
     printTableHeadings();
 
     allJobsDatabase.forEachJobInMainArray([&](const Occupation *job) {
-        printTableEntry(*job);
+        printTableEntry(job);
     });
 }
 
@@ -141,7 +141,7 @@ void MenuHandler::printHashTable() {
     printTableHeadings();
 
     allJobsDatabase.forEachEntryInHashTable([&](const Occupation *job) {
-        printTableEntry(*job);
+        printTableEntry(job);
     });
 }
 
@@ -153,7 +153,7 @@ void MenuHandler::printSearchSortResults(DynamicArray<const Occupation *> &array
 
     // passes the print table entry function to the iterator function in the database class
     for (int i = 0; i < arraySize; i++) {
-        printTableEntry(*array[i]);
+        printTableEntry(array[i]);
     }
 }
 
@@ -218,7 +218,7 @@ void MenuHandler::printList() {
     printTableHeadings();
 
     jobsList.forEachJobInList([&](const Occupation *job) {
-        printTableEntry(*job);
+        printTableEntry(job);
     });
 
     // reports the number of jobs in the list
@@ -443,11 +443,10 @@ OccupationRow MenuHandler::promptJobAttributes(std::string jobTitle, const std::
     return row;
 }
 
-std::string MenuHandler::promptNumber(const std::string &messageToDisplay) const {
+std::string MenuHandler::promptNumber() const {
     std::string userInput;
 
     do {
-        std::cout << "\nEnter a number above to select " + messageToDisplay + "\n" << std::endl;
         std::getline(std::cin, userInput);
 
         try {
@@ -459,6 +458,23 @@ std::string MenuHandler::promptNumber(const std::string &messageToDisplay) const
             std::cout << "\nThe value entered is out of range. Try again" << std::endl;
         }
     } while (true);
+}
+
+char MenuHandler::promptOptionToSearch(StructureToSearch dataset) {
+    if (dataset == StructureToSearch::MAIN_ARRAY) {
+        std::cout << "\nWhat do you want to searched based on?" << std::endl
+                 << "A: Job Title" << std::endl
+                 << "B: Wage" << std::endl
+                 << "C: Matrix Code" << std::endl
+                 << "D: Return to Main Menu\n" << std::endl;
+        return menuHandling('A', 'D', false);
+    }
+
+    std::cout << "\nWhat do you want to searched based on?" << std::endl
+                 << "A: Job Title" << std::endl
+                 << "B: Wage" << std::endl
+                 << "C: Return to Main Menu\n" << std::endl;
+    return menuHandling('A', 'C', false);
 }
 
 void MenuHandler::copyMainArray(DynamicArray<const Occupation *> &outputArray) {
@@ -489,66 +505,6 @@ void MenuHandler::copyList(DynamicArray<const Occupation *> &outputArray) {
         outputArray[i] = job;
         i++;
     });
-}
-
-void MenuHandler::handleAddDatabase() {
-    std::string jobTitle;
-
-    std::cout << "\nWhat job do you want to add?\n" << std::endl;
-    std::getline(std::cin, jobTitle);
-    lowerString(jobTitle);
-
-    // outputs existing jobs to console
-    if (allJobsDatabase.searchArrayByJob(searchedJobsArray, jobTitle)) {
-        std::cout << std::endl;
-
-        printSearchSortResults(searchedJobsArray);
-
-        std::cout << "\nWe have these jobs in our database. Do you still want to add an entry? (y/n)\n" << std::endl;
-
-        switch (yesOrNoMenu()) {
-            case 'y':
-                break;
-            case 'n':
-                return;
-        }
-    }
-
-    std::string matrixCode;
-
-    do {
-        printAllCategories();
-        std::string prefix;
-
-        do {
-            prefix = promptNumber("a category.");
-            if (prefix == "0") {
-                prefix = "00";
-            }
-            if (allJobsDatabase.findCategory(prefix)) {
-                break;
-            }
-            std::cout << "\nThe category does not exist. Please choose a different category." << std::endl;
-        } while (true);
-
-        if (allJobsDatabase.generateUniqueKey(prefix, matrixCode)) {
-            break;
-        }
-
-        std::cout << "\nThis category already contains the maximum number of jobs."
-                << " Please choose a different category." << std::endl;
-    } while (true);
-
-    OccupationRow jobToAdd = promptJobAttributes(jobTitle, matrixCode);
-    Occupation *jobToPush = allJobsDatabase.addNewJobToDatabase(jobToAdd);
-
-    recentChangesDatabase.push({*jobToPush, "added"});
-
-    savedDatabase = false;
-
-    // outputs job added to the console
-    std::cout << "\n'" << jobToPush->getOccupation()
-            << "' is successfully added to the database." << std::endl;
 }
 
 // function to pinpoint the specific index of an occupation
@@ -597,8 +553,9 @@ const Occupation *MenuHandler::buildKeyAndSearch() const {
     do {
         printAllCategories();
         std::cout << "\nThese are the major occupation groups in the database." << std::endl;
+        std::cout << "\nEnter a number above to select a category." << std::endl;
 
-        prefix = promptNumber("a category.");
+        prefix = promptNumber();
         if (prefix == "0") {
             prefix = "00";
         }
@@ -614,8 +571,9 @@ const Occupation *MenuHandler::buildKeyAndSearch() const {
         printCategoryContents(prefix);
         std::cout << "\nThese are the specific jobs under the " << jobCategory->getOccupation() << " category." <<
                 std::endl;
+        std::cout << "\nEnter a number above to select a specific occupation." << std::endl;
 
-        std::string suffix = promptNumber("a specific occupation.");
+        std::string suffix = promptNumber();
         if (suffix == "0") {
             suffix = "0000";
         }
@@ -648,20 +606,6 @@ const Occupation *MenuHandler::chooseJobToModify(const std::string &command) {
     }
 }
 
-int MenuHandler::handleListIndexRetrieval() {
-    do {
-        std::cout << "\nWhich occupation do you want to add after?" << std::endl;
-        printIndicesInList();
-
-        int jobIndex = stoi(promptNumber("a specific occupation."));
-
-        if (jobsList.searchListByIndex(jobIndex)) {
-            return jobIndex;
-        }
-        std::cout << "\nThat index does not exist in the list. Try again." << std::endl;
-    } while (true);
-}
-
 bool MenuHandler::placeOccupationInList(const Occupation *occupation) {
     std::cout << "\nWhere in the list would you like to place the occupation?" << std::endl
             << "A: Start of List" << std::endl
@@ -687,12 +631,92 @@ bool MenuHandler::placeOccupationInList(const Occupation *occupation) {
     }
 }
 
+
+void MenuHandler::handleAddDatabase() {
+    std::string jobTitle;
+
+    std::cout << "\nWhat job do you want to add?\n" << std::endl;
+    std::getline(std::cin, jobTitle);
+    lowerString(jobTitle);
+
+    // outputs existing jobs to console
+    if (allJobsDatabase.searchArrayByJob(searchedJobsArray, jobTitle)) {
+        std::cout << std::endl;
+
+        printSearchSortResults(searchedJobsArray);
+
+        std::cout << "\nWe have these jobs in our database. Do you still want to add an entry? (y/n)\n" << std::endl;
+
+        switch (yesOrNoMenu()) {
+            case 'y':
+                break;
+            case 'n':
+                std::cout << "\nReturning to main menu..." << std::endl;
+                return;
+        }
+    }
+
+    std::string matrixCode;
+
+    do {
+        printAllCategories();
+        std::string prefix;
+
+        do {
+            std::cout << "\nEnter a number above to select a category." << std::endl;
+            prefix = promptNumber();
+
+            if (prefix == "0") {
+                prefix = "00";
+            }
+            if (allJobsDatabase.findCategory(prefix)) {
+                break;
+            }
+            std::cout << "\nThe category does not exist. Please choose a different category." << std::endl;
+        } while (true);
+
+        if (allJobsDatabase.generateUniqueKey(prefix, matrixCode)) {
+            break;
+        }
+
+        std::cout << "\nThis category already contains the maximum number of jobs."
+                << " Please choose a different category." << std::endl;
+    } while (true);
+
+    OccupationRow jobToAdd = promptJobAttributes(jobTitle, matrixCode);
+    Occupation *jobToPush = allJobsDatabase.addNewJobToDatabase(jobToAdd);
+
+    recentChangesDatabase.push({*jobToPush, "added"});
+
+    savedDatabase = false;
+
+    // outputs job added to the console
+    std::cout << "\n'" << jobToPush->getOccupation()
+            << "' is successfully added to the database. Returning to main menu..." << std::endl;
+}
+
+int MenuHandler::handleListIndexRetrieval() {
+    do {
+        std::cout << "\nWhich occupation do you want to add after?" << std::endl;
+        printIndicesInList();
+
+        std::cout << "\nEnter a number above to select a specific occupation." << std::endl;
+        int jobIndex = stoi(promptNumber());
+
+        if (jobsList.searchListByIndex(jobIndex)) {
+            return jobIndex;
+        }
+        std::cout << "\nThat index does not exist in the list. Try again." << std::endl;
+    } while (true);
+}
+
 void MenuHandler::handleAddList() {
     const Occupation *occupationToAdd = chooseJobToModify("add");
     if (occupationToAdd != nullptr) {
         if (placeOccupationInList(occupationToAdd)) {
             recentChangesDatabase.push({*occupationToAdd, "added"});
             savedDatabase = false;
+            std::cout << "\nOccupation successfully added to list. Returning to list menu..." << std::endl;
             return;
         }
     }
@@ -717,8 +741,22 @@ void MenuHandler::handleRemoveList() {
     std::cout << "\nFailed to remove occupation from list. Returning to list menu..." << std::endl;
 }
 
+void MenuHandler::handleRemoveDatabase() {
+    const Occupation *occupationToRemove = chooseJobToModify("remove");
+
+    if (occupationToRemove != nullptr) {
+        if (allJobsDatabase.removeJobFromDatabase(occupationToRemove)) {
+            recentChangesDatabase.push({*occupationToRemove, "removed"});
+            savedDatabase = false;
+            std::cout << "\nOccupation successfully removed from database. Returning to main menu..." << std::endl;
+            return;
+        }
+    }
+    std::cout << "\nFailed to remove occupation from database. Returning to main menu..." << std::endl;
+}
+
 // sorting dialogue function to ask if user wants to see the data sorted
-void MenuHandler::handleSort(DynamicArray<const Occupation *> &sortedJobs, StructureToSort dataset) {
+void MenuHandler::handleSort(DynamicArray<const Occupation *> &sortedJobs, const StructureToSort dataset) {
 
     // copying the necessary dataset to the sorted jobs array
     switch (dataset) {
@@ -801,12 +839,12 @@ void MenuHandler::handleSort(DynamicArray<const Occupation *> &sortedJobs, Struc
                        });
                     break;
                 default: // break to main menu
+                    std::cout << "\nReturning to menu..." << std::endl;
                     return;
             }
             break;
-        case 'n':
-            return;
         default:
+            std::cout << "\nReturning to menu..." << std::endl;
             return;
     }
 
@@ -814,5 +852,53 @@ void MenuHandler::handleSort(DynamicArray<const Occupation *> &sortedJobs, Struc
 
     std::cout << "\nData successfully sorted based on " << sortCategory << " in " << sortOrder << " order." <<
             std::endl;
-    std::cout << "\nCheck output file for full table." << std::endl;
+    std::cout << "\nCheck output file for full table. Returning to main menu..." << std::endl;
+}
+
+void MenuHandler::handleSearch(const StructureToSearch dataset) {
+
+    int lowerLimit;
+    int upperLimit;
+    const Occupation* jobSearched;
+    std::string searchValue;
+
+    switch (promptOptionToSearch(dataset)) {
+        case 'A': // search job title
+            std::cout << "\nEnter the job title you want to search for:\n" << std::endl;
+            std::getline(std::cin, searchValue);
+
+            if (dataset == StructureToSearch::LIST) {
+                jobsList.searchListByJob(searchValue, searchedJobsArray);
+            }
+            else {
+                allJobsDatabase.searchArrayByJob(searchedJobsArray, searchValue);
+            }
+            break;
+        case 'B': // search wage
+            std::cout << "\nEnter lower limit for median annual wage to search:\n" << std::endl;
+            lowerLimit = stoi(promptNumber());
+            std::cout << "\nEnter upper limit for median annual wage to search:\n" << std::endl;
+            upperLimit = stoi(promptNumber());
+
+            if (dataset == StructureToSearch::LIST) {
+                jobsList.searchListByWage(lowerLimit, upperLimit, searchedJobsArray);
+            }
+            else {
+                allJobsDatabase.searchArrayByWage(searchedJobsArray, lowerLimit, upperLimit);
+            }
+            break;
+        case 'C': // search matrix code / exit
+            if (dataset == StructureToSearch::LIST) {
+                std::cout << "\nReturning to list menu..." << std::endl;
+                return;
+            }
+
+            // prints out single job
+            printTableHeadings();
+            printTableEntry(buildKeyAndSearch());
+            break;
+        default:
+            std::cout << "\nReturning to main menu..." << std::endl;
+            return;
+    }
 }

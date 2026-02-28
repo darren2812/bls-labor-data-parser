@@ -2,6 +2,8 @@
 #include <fstream>
 #include "DynamicArray.h"
 
+#include <iostream>
+
 template<typename T>
 DynamicArray<T>::DynamicArray(int capacity) : capacity(capacity) {
     data = new T[capacity];
@@ -106,19 +108,21 @@ void DynamicArray<T>::append(const Occupation *jobToAppend) {
 }
 
 template <typename T>
-void DynamicArray<T>::removeEntry(const Occupation *jobToRemove) {
+bool DynamicArray<T>::removeEntry(const Occupation *jobToRemove) {
 
-    int indexRemoved = jobToRemove->getJobIndex();
-    Occupation* occupationRemoved = data[indexRemoved];
+    const int indexRemoved = jobToRemove->getJobIndex();
 
     if (indexRemoved < 0 || indexRemoved >= currentSize) {
-        throw std::out_of_range("Invalid index");
+        std::cout << "Error: index out of bounds" << std::endl;
+        return false;
     }
 
     for (int i = indexRemoved; i < currentSize - 1; i++) {
         data[i] = data[i + 1];
         data[i]->setJobIndex(i);
     }
+    currentSize--;
+    return true;
 }
 
 

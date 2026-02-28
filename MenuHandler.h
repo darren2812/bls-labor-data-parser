@@ -45,6 +45,10 @@ private:
         SEARCH_ARRAY,
         LIST
     };
+    enum class StructureToSearch {
+        MAIN_ARRAY,
+        LIST
+    };
 
     // jobCounter counter in main to store the jobCounter of the last job
     int jobCounter = 0;
@@ -92,7 +96,7 @@ public:
     void allocateDataStructures();
 
     void printTableHeadings();
-    void printTableEntry(const Occupation &currentJob);
+    void printTableEntry(const Occupation *currentJob);
 
     void printPrefixAndCategory(const Occupation &jobCategory) const;
     void printSuffixAndJob(const Occupation &job) const;
@@ -116,7 +120,8 @@ public:
     OccupationRow promptJobAttributes(std::string jobTitle, const std::string &matrixCode);
 
     std::string promptNonNegativeOrDash();
-    std::string promptNumber(const std::string &messageToDisplay) const;
+    std::string promptNumber() const;
+    char promptOptionToSearch(StructureToSearch dataset);
 
     // function to select a specific index from the database
     const Occupation* selectSpecificIndex(const std::string &command);
@@ -134,5 +139,7 @@ public:
     int handleListIndexRetrieval();
     void handleAddList();
     void handleRemoveList();
+    void handleRemoveDatabase();
     void handleSort(DynamicArray<const Occupation *> &sortedJobs, StructureToSort dataset);
+    void handleSearch(StructureToSearch dataset);
 };

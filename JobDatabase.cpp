@@ -147,7 +147,7 @@ void JobDatabase::rewriteListFile(std::fstream &listData, const SinglyLinkedList
     listData.seekp(0, std::ios::beg);
 
     if (list.getListSize() > 0) {
-        list.forEachJobInList([&](Occupation *job) {
+        list.forEachJobInList([&](const Occupation *job) {
             listData << job->getMatrixCode() << std::endl;
         });
         return;
@@ -200,7 +200,7 @@ bool JobDatabase::searchArrayByJob(DynamicArray<const Occupation*> &searchedJobs
     return false;
 }
 
-bool JobDatabase::searchArrayByWage(DynamicArray<const Occupation *> &searchedJobsArray, const float &lowerLimit, const float &upperLimit) const {
+bool JobDatabase::searchArrayByWage(DynamicArray<const Occupation *> &searchedJobsArray, const int lowerLimit, const int upperLimit) const {
 
     int mainArraySize = allJobsArray.getCurrentSize();
     searchedJobsArray = DynamicArray<const Occupation*>(mainArraySize);
@@ -301,9 +301,11 @@ Occupation* JobDatabase::addNewJobToDatabase(const OccupationRow& r) {
     return rawPointer;
 }
 
-void JobDatabase::removeJobFromDatabase(const Occupation* jobPointer) {
-    allJobsArray.removeEntry(jobPointer);
-    allJobsHashTable.removeJob(jobPointer);
+bool JobDatabase::removeJobFromDatabase(const Occupation *jobPointer) {
+    if (allJobsArray.removeEntry(jobPointer) && allJobsHashTable.removeJob(jobPointer)) {
+        return true;
+    }
+    return false;
 }
 
 

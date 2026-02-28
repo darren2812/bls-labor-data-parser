@@ -34,7 +34,7 @@ public:
 
     bool searchListByJob(const std::string &jobToSearch, DynamicArray<const Occupation *> &searchedJobsArray);
 
-    bool searchListByWage(const float &lowerLimit, const float &upperLimit,
+    bool searchListByWage(int lowerLimit, int upperLimit,
                           DynamicArray<const Occupation *> &searchedJobsArray);
 
     bool searchListByIndex(int jobIndex);

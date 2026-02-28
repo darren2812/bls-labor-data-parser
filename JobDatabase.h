@@ -33,14 +33,15 @@ public:
 
     bool searchArrayByJob(DynamicArray<const Occupation *> &searchedJobsArray, const std::string &jobToSearch) const;
 
-    bool searchArrayByWage(DynamicArray<const Occupation *> &searchedJobsArray, const float &lowerLimit,
-                      const float &upperLimit) const;
+    bool searchArrayByWage(DynamicArray<const Occupation *> &searchedJobsArray, int lowerLimit,
+                      int upperLimit) const;
     Occupation* searchJobByCode(const int &matrixCodeInt) const;
 
     const Occupation* findCategory(const std::string &codePrefix) const;
 
     Occupation* addNewJobToDatabase(const OccupationRow& r);
-    void removeJobFromDatabase(const Occupation* jobPointer);
+
+    bool removeJobFromDatabase(const Occupation *jobPointer);
 
     // iterators for printing
     void forEachJobInMainArray(const std::function<void(const Occupation *job)> &fn) const;

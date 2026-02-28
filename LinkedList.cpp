@@ -134,7 +134,7 @@ bool SinglyLinkedList::searchListByJob(const std::string &jobToSearch, DynamicAr
 }
 
 // function to search by wage
-bool SinglyLinkedList::searchListByWage(const float &lowerLimit, const float &upperLimit,
+bool SinglyLinkedList::searchListByWage(const int lowerLimit, const int upperLimit,
                                        DynamicArray<const Occupation *> &searchedJobsArray) {
 
     searchedJobsArray = DynamicArray<const Occupation*>(listSize);
