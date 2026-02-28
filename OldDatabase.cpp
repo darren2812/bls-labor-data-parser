@@ -158,7 +158,7 @@ int searchByWage(Occupation* searchedJobs, Occupation* allJobs, const int& jobCo
 	return foundSearches;
 }
 
-Occupation addEntry(Occupation*& allJobs, int& jobCounter, int& totalJobsCapacity, std::string& jobAdded, int* columnLengths, std::string key) {
+Occupation addEntry(Occupation* allJobs, int& jobCounter, int& totalJobsCapacity, std::string& jobAdded, int* columnLengths, std::string key) {
 	// temporary std::string and float to store user input
 	std::string tempString = "";
 	float tempFloat = 0.0f;
@@ -461,7 +461,7 @@ Occupation addEntry(Occupation*& allJobs, int& jobCounter, int& totalJobsCapacit
 	return allJobs[jobCounter - 1];
 }
 
-void addEntryAgain(Occupation jobAdded, Occupation*& allJobs, int& jobCounter) {
+void addEntryAgain(Occupation jobAdded, Occupation* allJobs, int& jobCounter) {
 	int indexAdded = jobAdded.getJobIndex();
 	// add entry shifts elements to the right
 	for (int i = jobCounter - 1; i >= indexAdded; i--) {
@@ -474,7 +474,7 @@ void addEntryAgain(Occupation jobAdded, Occupation*& allJobs, int& jobCounter) {
 	jobCounter++;
 }
 
-Occupation removeEntry(Occupation*& allJobs, int& jobCounter, int& totalJobsCapacity, int indexRemoved) {
+Occupation removeEntry(Occupation* allJobs, int& jobCounter, int& totalJobsCapacity, int indexRemoved) {
 	Occupation jobToReturn = allJobs[indexRemoved];
 	// remove entry shifts elements to the left instead of resizing
 	for (int i = indexRemoved + 1; i < jobCounter; i++) {

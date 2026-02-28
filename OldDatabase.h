@@ -22,16 +22,16 @@ int searchByWage(Occupation* searchedJobs, Occupation* allJobs, const int& jobCo
 // function to add entries
 // Gemini helped fixed a bug because the pointer in the function is changed when creating an expanded array but not in main()
 // Hence, allJobs has to be passed by reference
-Occupation addEntry(Occupation*& allJobs, int& jobCounter, int& totalJobsCapacity, std::string& jobAdded, int* columnLengths, std::string key);
+Occupation addEntry(Occupation* allJobs, int& jobCounter, int& totalJobsCapacity, std::string& jobAdded, int* columnLengths, std::string key);
 
 // function to readd a deleted job
-void addEntryAgain(Occupation jobAdded, Occupation*& allJobs, int& jobCounter);
+void addEntryAgain(Occupation jobAdded, Occupation* allJobs, int& jobCounter);
 
 // function to modify job input file
 void rewriteJobFile(Occupation* allJobs, const int& jobCounter);
 
 // function to remove an entry
-Occupation removeEntry(Occupation*& allJobs, int& jobCounter, int& totalJobsCapacity, int indexRemoved);
+Occupation removeEntry(Occupation* allJobs, int& jobCounter, int& totalJobsCapacity, int indexRemoved);
 
 // function to read list from file
 void importList(std::ifstream& listData, Occupation* allJobs, SinglyLinkedList* list, int jobCounter, HashTable& hashTable);

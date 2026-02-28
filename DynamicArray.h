@@ -25,14 +25,8 @@ public:
 
     void increaseCapacity();
 
-    Occupation *&addJobToArray(const Occupation &jobToAdd);
-
-    // function to readd a deleted job
-    void addEntryAgain(const Occupation &jobAdded);
-
-    // function to modify job input file
-    void rewriteInputFile(std::fstream& modifiedData);
+    Occupation *addJobToArray(T jobToAdd, int index);
 
     // function to remove an entry
-    Occupation removeEntry(int indexRemoved);
+    Occupation *removeEntry(int indexRemoved);
 };

@@ -156,7 +156,7 @@ void MenuHandler::printCategoryContents(const std::string &prefix) const {
 }
 
 void MenuHandler::printIndicesInList() const {
-    jobsList.forEachJobInList([&](Occupation *&job) {
+    jobsList.forEachJobInList([&](Occupation *job) {
         std::cout << job->getJobIndex() << ": " << job->getOccupation() << std::endl;
     });
 }
@@ -171,7 +171,7 @@ void MenuHandler::printList() {
 
     printTableHeadings();
 
-    jobsList.forEachJobInList([&](Occupation *&job) {
+    jobsList.forEachJobInList([&](Occupation *job) {
         printTableEntry(*job);
     });
 
@@ -237,7 +237,7 @@ std::string MenuHandler::promptNonNegativeOrDash() {
     return valueToReturn;
 }
 
-Occupation MenuHandler::promptJobAttributes(std::string jobTitle, const std::string &matrixCode) {
+OccupationRow MenuHandler::promptJobAttributes(std::string jobTitle, const std::string &matrixCode) {
     // Sets occupation based on previous user input
     jobTitle[0] = toupper(jobTitle[0]);
     jobTitle += " *";
@@ -382,20 +382,20 @@ Occupation MenuHandler::promptJobAttributes(std::string jobTitle, const std::str
             break;
     }
 
-    Occupation occupationToReturn = Occupation();
+    OccupationRow row;
 
-    occupationToReturn.setOccupation(jobTitle);
-    occupationToReturn.setOccupationType(occupationType);
-    occupationToReturn.setEmploymentCurrent(employmentCurrent);
-    occupationToReturn.setEmploymentFuture(employmentFuture);
-    occupationToReturn.setJobOpenings(jobOpenings);
-    occupationToReturn.setWage(wage);
-    occupationToReturn.setEducation(education);
-    occupationToReturn.setWorkExperience(workExperience);
-    occupationToReturn.setTraining(training);
-    occupationToReturn.setMatrixCode(matrixCode);
+    row.occupation = jobTitle;
+    row.occupationType = occupationType;
+    row.employmentCurrent = employmentCurrent;
+    row.employmentFuture = employmentFuture;
+    row.jobOpenings = jobOpenings;
+    row.wage = wage;
+    row.education = education;
+    row.workExperience = workExperience;
+    row.training = training;
+    row.matrixCode = matrixCode;
 
-    return occupationToReturn;
+    return row;
 }
 
 std::string MenuHandler::promptNumber(const std::string &messageToDisplay) {
@@ -463,15 +463,15 @@ void MenuHandler::handleAddDatabase() {
                 << " Please choose a different category." << std::endl;
     } while (true);
 
-    Occupation jobToAdd = promptJobAttributes(jobTitle, matrixCode);
+    OccupationRow jobToAdd = promptJobAttributes(jobTitle, matrixCode);
+    Occupation* jobToPush = allJobsDatabase.addNewJobToDatabase(jobToAdd);
 
-    allJobsDatabase.addJobToDatabase(jobToAdd);
-    recentChangesDatabase.push({jobToAdd, "added"});
+    recentChangesDatabase.push({*jobToPush, "added"});
 
     savedDatabase = false;
 
     // outputs job added to the console
-    std::cout << "\n'" << jobToAdd.getOccupation()
+    std::cout << "\n'" << jobToPush->getOccupation()
             << "' is successfully added to the database." << std::endl;
 }
 

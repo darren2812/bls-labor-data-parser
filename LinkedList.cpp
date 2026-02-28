@@ -72,10 +72,10 @@ void SinglyLinkedList::insertAfter(Occupation* jobInserted, int jobIndex) {
 	}
 }
 
-// undo remove  removes node based on node counter value
-SinglyLinkedNode<Occupation> SinglyLinkedList::removeByIndex(int jobIndex) {
-	SinglyLinkedNode<Occupation>* current = head;
-	SinglyLinkedNode<Occupation>* before = nullptr;
+// removes node based on node counter value
+SinglyLinkedNode SinglyLinkedList::removeByIndex(int jobIndex) {
+	SinglyLinkedNode* current = head;
+	SinglyLinkedNode* before = nullptr;
 	SinglyLinkedNode<Occupation> nodeRemoved;
 	while (current && current->data.getJobIndex() != jobIndex) {
 		before = current;
@@ -208,7 +208,7 @@ bool SinglyLinkedList::searchListByIndex(int nodeCount) {
 	return false;
 }
 
-void SinglyLinkedList::forEachJobInList(const std::function<void(Occupation *&job)> &fn) const {
+void SinglyLinkedList::forEachJobInList(const std::function<void(Occupation *job)> &fn) const {
 	SinglyLinkedNode* current = head;
 	while (current) {
 		fn(current->data);

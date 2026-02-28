@@ -40,7 +40,7 @@ void DynamicArray<T>::increaseCapacity() {
     if (currentSize < capacity) return;
 
     const int newCapacity = (capacity == 0) ? 1 : capacity * 2;
-    auto newData = new std::unique_ptr<Occupation>[newCapacity];
+    auto newData = new T[newCapacity];
 
     for (int i = 0; i < currentSize; i++) {
         newData[i] = std::move(data[i]);
@@ -62,56 +62,39 @@ int DynamicArray<T>::getCapacity() const {
 }
 
 template <typename T>
-Occupation *&DynamicArray<T>::addJobToArray(const Occupation &jobToAdd) {
-    data[currentSize] = jobToAdd;
+Occupation *DynamicArray<T>::addJobToArray(T jobToAdd, const int index) {
+    if (currentSize >= capacity) {
+        increaseCapacity();
+    }
+
+    // shift right
+    for (int i = currentSize; i > index; i--) {
+        data[i] = data[i - 1];
+        data[i]->setJobIndex(i);
+    }
+
+    data[index] = jobToAdd;
+    data[index]->setJobIndex(index);
+
     currentSize++;
-    return data[currentSize - 1];
+    return data[index];
 }
 
 template <typename T>
-void DynamicArray<T>::addEntryAgain(const Occupation &jobAdded) {
-    int indexAdded = jobAdded.getJobIndex();
-    // iterates from the last job in the array (currentSize always < capacity in this case)
-    for (int i = currentSize - 1; i >= indexAdded; i--) {
-        data[i].setJobIndex(data[i].getJobIndex() + 1);
-        data[i + 1] = data[i];
-    }
-    data[indexAdded] = jobAdded;
-    currentSize++;
-}
+Occupation *DynamicArray<T>::removeEntry(const int indexRemoved) {
 
-template <typename T>
-Occupation DynamicArray<T>::removeEntry(const int indexRemoved) {
-    // remove entry and shifts elements to the left
-    for (int i = indexRemoved + 1; i < currentSize; i++) {
-        data[i].setJobIndex(data[i].getJobIndex() - 1);
-        data[i - 1] = data[i];
+    Occupation* occupationRemoved = data[indexRemoved];
+
+    if (indexRemoved < 0 || indexRemoved >= currentSize) {
+        throw std::out_of_range("Invalid index");
     }
 
-    currentSize--;
-    return data[indexRemoved];
+    for (int i = indexRemoved; i < currentSize - 1; i++) {
+        data[i] = data[i + 1];
+        data[i].setJobIndex(i);
+    }
+
+    return occupationRemoved;
 }
 
-template <typename T>
-void DynamicArray<T>::rewriteInputFile(std::fstream &modifiedData) {
-    for (int i = 0; i < currentSize; i++) {
-        modifiedData << data[i].getOccupation() << std::endl
-                << data[i].getMatrixCode() << std::endl
-                << data[i].getOccupationType() << std::endl
-                << data[i].getEmploymentCurrentString() << std::endl
-                << data[i].getEmploymentFutureString() << std::endl
-                << data[i].getDistributionCurrentString() << std::endl
-                << data[i].getDistributionFutureString() << std::endl
-                << data[i].getNumericChangeString() << std::endl
-                << data[i].getPercentageChangeString() << std::endl
-                << data[i].getPercentSelfEmployedString() << std::endl
-                << data[i].getJobOpeningsString() << std::endl
-                << data[i].getWageString() << std::endl
-                << data[i].getEducation() << std::endl
-                << data[i].getWorkExperience() << std::endl
-                << data[i].getTraining() << std::endl
-                << data[i].getHandbookContent() << std::endl;
-    }
-    // closes file
-    modifiedData.close();
-}
+

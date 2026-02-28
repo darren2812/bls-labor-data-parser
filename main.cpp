@@ -635,7 +635,7 @@ int main() {
 					case 3:
 					{
 						// finds the max value and divides it by the max bar chart length for scaling
-						auto getterLambda = [](Occupation*& job) {return job->getEmploymentCurrent(); };
+						auto getterLambda = [](Occupation* job) {return job->getEmploymentCurrent(); };
 						printBarChart(comparedJobs,
 							findMax(comparedJobs, jobsToCompare, getterLambda),
 							MAX_BAR_CHART_LENGTH,
@@ -646,7 +646,7 @@ int main() {
 					case 4:
 					{
 						// finds the max value and divides it by the max bar chart length for scaling
-						auto getterLambda = [](Occupation*& job) {return job->getEmploymentFuture(); };
+						auto getterLambda = [](Occupation* job) {return job->getEmploymentFuture(); };
 						printBarChart(comparedJobs,
 							findMax(comparedJobs, jobsToCompare, getterLambda),
 							MAX_BAR_CHART_LENGTH,
@@ -657,7 +657,7 @@ int main() {
 					case 5:
 					{
 						// finds the max value and divides it by the max bar chart length for scaling
-						auto getterLambda = [](Occupation*& job) {return job->getDistributionCurrent(); };
+						auto getterLambda = [](Occupation* job) {return job->getDistributionCurrent(); };
 						printBarChart(comparedJobs,
 							findMax(comparedJobs, jobsToCompare, getterLambda),
 							MAX_BAR_CHART_LENGTH,
@@ -668,7 +668,7 @@ int main() {
 					case 6:
 					{
 						// finds the max value and divides it by the max bar chart length for scaling
-						auto getterLambda = [](Occupation*& job) {return job->getDistributionFuture(); };
+						auto getterLambda = [](Occupation* job) {return job->getDistributionFuture(); };
 						printBarChart(comparedJobs,
 							findMax(comparedJobs, jobsToCompare, getterLambda),
 							MAX_BAR_CHART_LENGTH,
@@ -679,7 +679,7 @@ int main() {
 					case 7:
 					{
 						// finds the max value and divides it by the max bar chart length for scaling
-						auto getterLambda = [](Occupation*& job) {return job->getNumericChange(); };
+						auto getterLambda = [](Occupation* job) {return job->getNumericChange(); };
 						printBarChart(comparedJobs,
 							findMax(comparedJobs, jobsToCompare, getterLambda),
 							MAX_BAR_CHART_LENGTH,
@@ -690,7 +690,7 @@ int main() {
 					case 8:
 					{
 						// finds the max value and divides it by the max bar chart length for scaling
-						auto getterLambda = [](Occupation*& job) {return job->getPercentageChange(); };
+						auto getterLambda = [](Occupation* job) {return job->getPercentageChange(); };
 						printBarChart(comparedJobs,
 							findMax(comparedJobs, jobsToCompare, getterLambda),
 							MAX_BAR_CHART_LENGTH,
@@ -701,7 +701,7 @@ int main() {
 					case 9:
 					{
 						// finds the max value and divides it by the max bar chart length for scaling
-						auto getterLambda = [](Occupation*& job) {return job->getPercentSelfEmployed(); };
+						auto getterLambda = [](Occupation* job) {return job->getPercentSelfEmployed(); };
 						printBarChart(comparedJobs,
 							findMax(comparedJobs, jobsToCompare, getterLambda),
 							MAX_BAR_CHART_LENGTH,
@@ -712,7 +712,7 @@ int main() {
 					case 10:
 					{
 						// finds the max value and divides it by the max bar chart length for scaling
-						auto getterLambda = [](Occupation*& job) {return job->getJobOpenings(); };
+						auto getterLambda = [](Occupation* job) {return job->getJobOpenings(); };
 						printBarChart(comparedJobs,
 							findMax(comparedJobs, jobsToCompare, getterLambda),
 							MAX_BAR_CHART_LENGTH,
@@ -723,7 +723,7 @@ int main() {
 					case 11:
 					{
 						// finds the max value and divides it by the max bar chart length for scaling
-						auto getterLambda = [](Occupation*& job) {return job->getWage(); };
+						auto getterLambda = [](Occupation* job) {return job->getWage(); };
 						printBarChart(comparedJobs,
 							findMax(comparedJobs, jobsToCompare, getterLambda),
 							MAX_BAR_CHART_LENGTH,

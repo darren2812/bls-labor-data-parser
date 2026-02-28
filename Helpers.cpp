@@ -135,7 +135,7 @@ bool searchFunction(SinglyLinkedList* list, std::string dataStructure, std::stri
 }
 
 // function to mind max value in an array
-float findMax(Occupation**& jobArray, int numberOfJobs, float(*function)(Occupation*&)) {
+float findMax(Occupation** jobArray, int numberOfJobs, float(*function)(Occupation*)) {
 	float maxValue = 0;
 	for (int i = 0; i < numberOfJobs; i++) {
 		if (maxValue < function(jobArray[i])) {
@@ -146,7 +146,7 @@ float findMax(Occupation**& jobArray, int numberOfJobs, float(*function)(Occupat
 }
 
 // function to print bar chart to the console
-void printBarChart(Occupation**& comparedJobs, float maxValue, float maxChartLength, int jobsToCompare, float(*function)(Occupation*&)) {
+void printBarChart(Occupation** comparedJobs, float maxValue, float maxChartLength, int jobsToCompare, float(*function)(Occupation*)) {
 	float valueOfHashTag = maxValue / maxChartLength;
 	int numberOfHashTags;
 	std::cout << "One # represents " << valueOfHashTag << std::endl;

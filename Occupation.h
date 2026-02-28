@@ -3,6 +3,26 @@
 #pragma once
 #include <string>
 
+struct OccupationRow {
+	std::string occupation = "-";
+	std::string matrixCode = "-";
+	std::string occupationType = "-";
+	std::string employmentCurrent = "-";
+	std::string employmentFuture = "-";
+	std::string distributionCurrent = "-";
+	std::string distributionFuture = "-";
+	std::string numericChange = "-";
+	std::string percentageChange = "-";
+	std::string percentSelfEmployed = "-";
+	std::string jobOpenings = "-";
+	std::string wage = "-";
+	std::string education = "-";
+	std::string workExperience = "-";
+	std::string training = "-";
+	std::string handbookContent = "-";
+};
+
+
 // Create occupations class with a private struct containing different variables
 class Occupation {
 
@@ -38,6 +58,11 @@ private:
 	int jobIndex = -1;
 
 public:
+	Occupation() {
+		if (employmentCurrentString == "-" || employmentFutureString == "-") {
+			calculateChanges();
+		}
+	};
 
 	// some data fields have string and corresponding numerical return types.
 	// This is due to some blank data from the original website. In this implementation,

@@ -9,7 +9,7 @@ public:
 
 	// declaring constructors and destructor
 	OpenAddressingBucket();
-	OpenAddressingBucket(Occupation *&bucketJobPointer);
+	OpenAddressingBucket(Occupation *bucketJobPointer);
 	~OpenAddressingBucket();
 
 	// Two sentinel buckets based on zyBooks implementation
@@ -41,7 +41,7 @@ public:
 	~HashTable();
 
 	// overloading the [] operator for printing
-	OpenAddressingBucket*& operator[](int index) const;
+	OpenAddressingBucket* operator[](int index) const;
 
 	HashTable& operator=(const HashTable&) = delete;
 	HashTable& operator=(HashTable&&) noexcept;
@@ -52,6 +52,6 @@ public:
 	Occupation* getJobPointer(int key) const;
 
 	// methods to modify contents of table
-	bool insertJob(Occupation *&jobInserted);
+	bool insertJob(Occupation *jobInserted);
 	bool removeJob(Occupation& jobRemoved);
 };

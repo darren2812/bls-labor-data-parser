@@ -105,7 +105,7 @@ public:
     char yesOrNoMenu();
 
     // job adding prompts
-    Occupation promptJobAttributes(std::string jobTitle, const std::string &matrixCode);
+    OccupationRow promptJobAttributes(std::string jobTitle, const std::string &matrixCode);
 
     std::string promptNonNegativeOrDash();
     std::string promptNumber(const std::string &messageToDisplay);

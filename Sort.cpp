@@ -22,7 +22,7 @@ int getThisWorkExperienceScore(const Occupation& job) {
 
 
 // sorting dialogue function to ask if user wants to see the data sorted
-void sortingDialogue(Occupation*& allJobs, Occupation*& sortedJobs, int jobCounter, const std::string* headings, int* columnLengths) {
+void sortingDialogue(Occupation* allJobs, Occupation* sortedJobs, int jobCounter, const std::string* headings, int* columnLengths) {
 	std::string userInput = "-";
 	bool ascending = false;
 	char menuOption;

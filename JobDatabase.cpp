@@ -15,7 +15,7 @@ void JobDatabase::readInputFile(std::fstream &rawData, const std::string *headin
     int currentSize = 0;
     short columnCount = 0;
 
-    Occupation jobToAdd;
+    OccupationRow row;
 
     /*
         Case 0: Occupation
@@ -37,63 +37,29 @@ void JobDatabase::readInputFile(std::fstream &rawData, const std::string *headin
                  and increment jobCounter to move to the next jobCounter of the dynamic array
         */
 
-    // reads through the entire text file line by line
     while (std::getline(rawData, tempString)) {
         switch (columnCount) {
-            case 0:
-                jobToAdd.setOccupation(tempString);
-                break;
-            case 1:
-                jobToAdd.setMatrixCode(tempString);
-                break;
-            case 2:
-                jobToAdd.setOccupationType(tempString);
-                break;
-            case 3:
-                jobToAdd.setEmploymentCurrent(tempString);
-                break;
-            case 4:
-                jobToAdd.setEmploymentFuture(tempString);
-                break;
-            case 5:
-                jobToAdd.setDistributionCurrent(tempString);
-                break;
-            case 6:
-                jobToAdd.setDistributionFuture(tempString);
-                break;
-            case 7:
-                jobToAdd.setNumericChange(tempString);
-                break;
-            case 8:
-                jobToAdd.setPercentageChange(tempString);
-                break;
-            case 9:
-                jobToAdd.setPercentSelfEmployed(tempString);
-                break;
-            case 10:
-                jobToAdd.setJobOpenings(tempString);
-                break;
-            case 11:
-                jobToAdd.setWage(tempString);
-                break;
-            case 12:
-                jobToAdd.setEducation(tempString);
-                break;
-            case 13:
-                jobToAdd.setWorkExperience(tempString);
-                break;
-            case 14:
-                jobToAdd.setTraining(tempString);
-                break;
+            case 0:  row.occupation = tempString; break;
+            case 1:  row.matrixCode = tempString; break;
+            case 2:  row.occupationType = tempString; break;
+            case 3:  row.employmentCurrent = tempString; break;
+            case 4:  row.employmentFuture  = tempString; break;
+            case 5:  row.distributionCurrent = tempString; break;
+            case 6:  row.distributionFuture  = tempString; break;
+            case 7:  row.numericChange = tempString; break;
+            case 8:  row.percentageChange = tempString; break;
+            case 9:  row.percentSelfEmployed = tempString; break;
+            case 10: row.jobOpenings = tempString; break;
+            case 11: row.wage = tempString; break;
+            case 12: row.education = tempString; break;
+            case 13: row.workExperience = tempString; break;
+            case 14: row.training = tempString; break;
             case 15:
-                jobToAdd.setHandbookContent(tempString);
-                jobToAdd.setJobIndex(currentSize);
-                // adds job to database at the end of every table row
-                addJobToDatabase(jobToAdd);
+                row.handbookContent = tempString;
+                addNewJobToDatabase(row);
+                row = {};           // reset to defaults
                 columnCount = -1;
                 currentSize++;
-                break;
-            default:
                 break;
         }
         // skips matrix and handbook columns in file and finds the longest std::string from input to adjust for column size
@@ -139,12 +105,37 @@ void JobDatabase::readListFile(std::fstream &listData, SinglyLinkedList list, co
     }
 }
 
+void JobDatabase::rewriteInputFile(std::fstream &modifiedData) {
+    int arraySize = allJobsArray.getCurrentSize();
+
+    for (int i = 0; i < arraySize; i++) {
+        modifiedData << allJobsArray[i].getOccupation() << std::endl
+                << allJobsArray[i].getMatrixCode() << std::endl
+                << allJobsArray[i].getOccupationType() << std::endl
+                << allJobsArray[i].getEmploymentCurrentString() << std::endl
+                << allJobsArray[i].getEmploymentFutureString() << std::endl
+                << allJobsArray[i].getDistributionCurrentString() << std::endl
+                << allJobsArray[i].getDistributionFutureString() << std::endl
+                << allJobsArray[i].getNumericChangeString() << std::endl
+                << allJobsArray[i].getPercentageChangeString() << std::endl
+                << allJobsArray[i].getPercentSelfEmployedString() << std::endl
+                << allJobsArray[i].getJobOpeningsString() << std::endl
+                << allJobsArray[i].getWageString() << std::endl
+                << allJobsArray[i].getEducation() << std::endl
+                << allJobsArray[i].getWorkExperience() << std::endl
+                << allJobsArray[i].getTraining() << std::endl
+                << allJobsArray[i].getHandbookContent() << std::endl;
+    }
+    // closes file
+    modifiedData.close();
+}
+
 void JobDatabase::rewriteListFile(std::fstream &listData, const SinglyLinkedList &list) {
     listData.clear();
     listData.seekp(0, std::ios::beg);
 
     if (list.getListSize() > 0) {
-        list.forEachJobInList([&](Occupation *&job) {
+        list.forEachJobInList([&](Occupation *job) {
             listData << job->getMatrixCode() << std::endl;
         });
         return;
@@ -187,7 +178,7 @@ bool JobDatabase::searchArrayByJob(DynamicArray<Occupation*> &searchedJobsArray,
         lowerString(currentEntry);
 
         if (currentEntry.find(query) != std::string::npos) {
-            searchedJobsArray.addJobToArray(allJobsArray[i]);
+            searchedJobsArray.addJobToArray(&allJobsArray[i], searchedJobsArray.getCurrentSize());
         }
     }
 
@@ -205,7 +196,7 @@ bool JobDatabase::searchArrayByWage(DynamicArray<Occupation *> &searchedJobsArra
     // linear search to find whether wage sits between the upper and lower bounds inclusive
     for (int i = 0; i < mainArraySize; i++) {
         if (allJobsArray[i].getWage() >= lowerLimit && allJobsArray[i].getWage() <= upperLimit) {
-            searchedJobsArray.addJobToArray(allJobsArray[i]);
+            searchedJobsArray.addJobToArray(&allJobsArray[i], searchedJobsArray.getCurrentSize());
         }
     }
 
@@ -251,10 +242,34 @@ void JobDatabase::forEachJobInCategory(const std::string &prefix, const std::fun
     }
 }
 
-void JobDatabase::addJobToDatabase(const Occupation &jobToAdd) {
-    allJobsHashTable.insertJob(allJobsArray.addJobToArray(jobToAdd));
-}
+Occupation* JobDatabase::addNewJobToDatabase(const OccupationRow& r) {
 
+    auto uniquePointer = std::make_unique<Occupation>();
+
+    uniquePointer->setOccupation(r.occupation);
+    uniquePointer->setMatrixCode(r.matrixCode);
+    uniquePointer->setOccupationType(r.occupationType);
+    uniquePointer->setEmploymentCurrent(r.employmentCurrent);
+    uniquePointer->setEmploymentFuture(r.employmentFuture);
+    uniquePointer->setDistributionCurrent(r.distributionCurrent);
+    uniquePointer->setDistributionFuture(r.distributionFuture);
+    uniquePointer->setNumericChange(r.numericChange);
+    uniquePointer->setPercentageChange(r.percentageChange);
+    uniquePointer->setPercentSelfEmployed(r.percentSelfEmployed);
+    uniquePointer->setJobOpenings(r.jobOpenings);
+    uniquePointer->setWage(r.wage);
+    uniquePointer->setEducation(r.education);
+    uniquePointer->setWorkExperience(r.workExperience);
+    uniquePointer->setTraining(r.training);
+    uniquePointer->setHandbookContent(r.handbookContent);
+    uniquePointer->calculateChanges();
+
+    Occupation* rawPointer = uniquePointer.get();
+    allJobsArray.addJobToArray(std::move(uniquePointer), allJobsArray.getCurrentSize());
+    allJobsHashTable.insertJob(rawPointer);
+
+    return rawPointer;
+}
 
 
 

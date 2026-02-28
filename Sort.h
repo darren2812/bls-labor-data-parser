@@ -11,7 +11,7 @@ int getThisEducationScore(const Occupation& job);
 int getThisWorkExperienceScore(const Occupation& job);
 
 template <typename T>
-void sortJob(Occupation* allJobs, Occupation*& sortedJobs, int jobCounter, bool ascending, T(*function)(const Occupation& job)) {
+void sortJob(Occupation* allJobs, Occupation* sortedJobs, int jobCounter, bool ascending, T(*function)(const Occupation& job)) {
 	// assigning the sortedJobs pointer to a dynamic array
 	sortedJobs = new Occupation[jobCounter];
 	for (int i = 0; i < jobCounter; i++) {
@@ -22,7 +22,7 @@ void sortJob(Occupation* allJobs, Occupation*& sortedJobs, int jobCounter, bool 
 	mergeSortJob(sortedJobs, lowIndex, highIndex, ascending, function);
 }
 template <typename T>
-void mergeSortJob(Occupation*& sortedJobs, int lowIndex, int highIndex, bool ascending, T(*function)(const Occupation& job)) {
+void mergeSortJob(Occupation* sortedJobs, int lowIndex, int highIndex, bool ascending, T(*function)(const Occupation& job)) {
 	if (lowIndex >= highIndex) {
 		return;
 	}
@@ -32,7 +32,7 @@ void mergeSortJob(Occupation*& sortedJobs, int lowIndex, int highIndex, bool asc
 	mergeJob(sortedJobs, lowIndex, midIndex, highIndex, ascending, function);
 }
 template <typename T>
-void mergeJob(Occupation*& sortedJobs, int lowIndex, int midIndex, int highIndex, bool ascending, T(*function)(const Occupation& job)) {
+void mergeJob(Occupation* sortedJobs, int lowIndex, int midIndex, int highIndex, bool ascending, T(*function)(const Occupation& job)) {
 	int leftPos = lowIndex;
 	int rightPos = midIndex + 1;
 	int mergePos = 0;
@@ -75,4 +75,4 @@ void mergeJob(Occupation*& sortedJobs, int lowIndex, int midIndex, int highIndex
 }
 
 // helper function to ask for user sorting preferences
-void sortingDialogue(Occupation*& allJobs, Occupation*& sortedJobs, int jobCounter, const std::string* headings, int* columnLengths);
+void sortingDialogue(Occupation* allJobs, Occupation* sortedJobs, int jobCounter, const std::string* headings, int* columnLengths);

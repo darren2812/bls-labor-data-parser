@@ -30,7 +30,7 @@ public:
 	int searchListByWage(const float& lowerLimit, const float& upperLimit, Occupation* searchedJobs);
 	bool searchListByIndex(int nodeCount);
 
-	void forEachJobInList(const std::function<void(Occupation *&job)> &fn) const;
+	void forEachJobInList(const std::function<void(Occupation *job)> &fn) const;
 
 	// getters
 	int getListSize() const;

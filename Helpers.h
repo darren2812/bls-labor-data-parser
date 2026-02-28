@@ -20,6 +20,6 @@ Occupation* selectSpecificIndex(Occupation* searchedJobs, Occupation* allJobs, c
 bool searchFunction(SinglyLinkedList* list, std::string dataStructure, std::string searchType, Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter,
 	const std::string* headings, int* columnLengths, int& searchRows);
 // function to find max value in an array
-float findMax(Occupation**& jobArray, int numberOfJobs, float(*function)(Occupation*&));
+float findMax(Occupation** jobArray, int numberOfJobs, float(*function)(Occupation*));
 // function to print out bar chart to the console
-void printBarChart(Occupation**& comparedJobs, float maxValue, float maxChartLength, int jobsToCompare, float(*function)(Occupation*&));
+void printBarChart(Occupation** comparedJobs, float maxValue, float maxChartLength, int jobsToCompare, float(*function)(Occupation*));

@@ -6,7 +6,7 @@
 
 class JobDatabase {
 private:
-    DynamicArray<std::unique_ptr<Occupation> > allJobsArray;
+    DynamicArray<std::unique_ptr<Occupation>> allJobsArray;
     HashTable allJobsHashTable;
 
 public:
@@ -21,6 +21,7 @@ public:
 
     void readInputFile(std::fstream& rawData, const std::string* headings, int* columnLengths);
     void readListFile(std::fstream &listData, SinglyLinkedList list, const HashTable &hashTable);
+    void rewriteInputFile(std::fstream& modifiedData);
     void rewriteListFile(std::fstream &listData, const SinglyLinkedList &list);
 
     bool generateUniqueKey(const std::string &codePrefix, std::string &uniqueCode) const;
@@ -35,7 +36,7 @@ public:
 
     // for each category iterator for printing
     void forEachCategory(const std::function<void(const Occupation &jobCategory)> &fn) const;
-    void forEachJobInCategory(const std::string &prefix, const std::function<void(const Occupation &jobCategory)> &fn) const;
+    void forEachJobInCategory(const std::string &prefix, const std::function<void(const Occupation &job)> &fn) const;
 
-    void addJobToDatabase(const Occupation &jobToAdd);
+    Occupation* addNewJobToDatabase(const OccupationRow& r);
 };
