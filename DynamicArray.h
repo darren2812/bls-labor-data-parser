@@ -28,5 +28,5 @@ public:
     Occupation *addJobToArray(T jobToAdd, int index);
 
     // function to remove an entry
-    Occupation *removeEntry(int indexRemoved);
+    void removeEntry(const Occupation *jobToRemove);
 };

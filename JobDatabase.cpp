@@ -63,7 +63,7 @@ void JobDatabase::readInputFile(std::fstream &rawData, const std::string *headin
                 break;
         }
         // skips matrix and handbook columns in file and finds the longest std::string from input to adjust for column size
-        if (columnCount != 1 && columnCount != 15 && tempString.size() + 1 > columnLengths[columnCount]) {
+        if (columnCount != 1 && tempString.size() + 1 > columnLengths[columnCount]) {
             columnLengths[columnCount] = tempString.size() + 1;
         }
         // increments columnCount
@@ -223,6 +223,24 @@ Occupation* JobDatabase::findCategory(const std::string &codePrefix) const {
    return nullptr;
 }
 
+void JobDatabase::forEachJobInMainArray(const std::function<void(const Occupation &job)> &fn) const {
+    int arraySize = allJobsArray.getCurrentSize();
+
+    for (int i = 0; i < arraySize; i++) {
+        fn(allJobsArray[i]);
+    }
+}
+
+void JobDatabase::forEachEntryInHashTable(const std::function<void(const Occupation &job)> &fn) const {
+    int hashTableSize = allJobsHashTable.getTableCapacity();
+
+    for (int i = 0; i < hashTableSize; i++) {
+        if (allJobsHashTable.getJobPointer(i)) {
+            fn(*allJobsHashTable.getJobPointer(i));
+        }
+    }
+}
+
 void JobDatabase::forEachCategory(const std::function<void(const Occupation& jobCategory)> &fn) const {
     int arraySize = allJobsArray.getCurrentSize();
 
@@ -269,6 +287,11 @@ Occupation* JobDatabase::addNewJobToDatabase(const OccupationRow& r) {
     allJobsHashTable.insertJob(rawPointer);
 
     return rawPointer;
+}
+
+void JobDatabase::removeJobFromDatabase(const Occupation* jobPointer) {
+    allJobsArray.removeEntry(jobPointer);
+    allJobsHashTable.removeJob(jobPointer);
 }
 
 

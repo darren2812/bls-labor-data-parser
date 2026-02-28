@@ -92,6 +92,8 @@ public:
     void printPrefixAndCategory(const Occupation &jobCategory) const;
     void printSuffixAndJob(const Occupation &job) const;
 
+    void printMainArray();
+    void printHashTable();
     void printSearchedJobs();
 
     void printAllCategories() const;
@@ -116,8 +118,9 @@ public:
     Occupation* selectSpecificIndex(const std::string &command);
     // helper function to search for a particular job in the hash table
     Occupation* buildKeyAndSearch();
-    Occupation* chooseJobToAdd();
+    Occupation* chooseJobToModify(const std::string &command);
     bool placeOccupationInList(Occupation* occupation);
     int handleListIndexRetrieval();
     void handleAddList();
+    void handleRemoveList();
 };

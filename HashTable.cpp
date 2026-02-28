@@ -145,8 +145,8 @@ bool HashTable::insertJob(Occupation *jobInserted) {
 }
 
 // remove method takes in a key as its argument
-bool HashTable::removeJob(Occupation& jobRemoved) {
-	int hashedKey = hashJobKey(jobRemoved.getMatrixCodeInt());
+bool HashTable::removeJob(const Occupation *jobRemoved) {
+	int hashedKey = hashJobKey(jobRemoved->getMatrixCodeInt());
 	int bucketIndex;
 	for (int i = 0; i < tableCapacity; i++) {
 		bucketIndex = (c2 * i * i + c1 * i + hashedKey) % tableCapacity;
@@ -156,7 +156,7 @@ bool HashTable::removeJob(Occupation& jobRemoved) {
 		}
 		// changes the bucket index to empty after removal. deletion happens in the main array
 		if (!table[bucketIndex]->isEmptyAfterRemoval()) {
-			if (table[bucketIndex]->JobPointer->getMatrixCodeInt() == jobRemoved.getMatrixCodeInt()) {
+			if (table[bucketIndex]->JobPointer->getMatrixCodeInt() == jobRemoved->getMatrixCodeInt()) {
 				delete table[bucketIndex];
 				table[bucketIndex] = &OpenAddressingBucket::EMPTY_AFTER_REMOVAL;
 				return true;

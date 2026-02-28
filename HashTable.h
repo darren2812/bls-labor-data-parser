@@ -53,5 +53,5 @@ public:
 
 	// methods to modify contents of table
 	bool insertJob(Occupation *jobInserted);
-	bool removeJob(Occupation& jobRemoved);
+	bool removeJob(const Occupation *jobRemoved);
 };

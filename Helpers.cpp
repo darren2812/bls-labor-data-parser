@@ -27,7 +27,7 @@ float toFloat(std::string& s) {
 // function to make std::string lowercase
 void lowerString(std::string& input) {
 	for (int i = 0; i < input.length(); i++) {
-		input[i] = tolower(input[i]);
+		input[i] = std::tolower(input[i]);
 	}
 }
 

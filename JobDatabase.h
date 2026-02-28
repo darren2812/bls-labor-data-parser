@@ -35,8 +35,11 @@ public:
     Occupation* findCategory(const std::string &codePrefix) const;
 
     // for each category iterator for printing
+    void forEachJobInMainArray(const std::function<void(const Occupation &job)> &fn) const;
+    void forEachEntryInHashTable(const std::function<void(const Occupation &job)> &fn) const;
     void forEachCategory(const std::function<void(const Occupation &jobCategory)> &fn) const;
     void forEachJobInCategory(const std::string &prefix, const std::function<void(const Occupation &job)> &fn) const;
 
     Occupation* addNewJobToDatabase(const OccupationRow& r);
+    void removeJobFromDatabase(const Occupation* jobPointer);
 };

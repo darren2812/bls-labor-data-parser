@@ -81,8 +81,9 @@ Occupation *DynamicArray<T>::addJobToArray(T jobToAdd, const int index) {
 }
 
 template <typename T>
-Occupation *DynamicArray<T>::removeEntry(const int indexRemoved) {
+void DynamicArray<T>::removeEntry(const Occupation *jobToRemove) {
 
+    int indexRemoved = jobToRemove->getJobIndex();
     Occupation* occupationRemoved = data[indexRemoved];
 
     if (indexRemoved < 0 || indexRemoved >= currentSize) {
@@ -91,10 +92,8 @@ Occupation *DynamicArray<T>::removeEntry(const int indexRemoved) {
 
     for (int i = indexRemoved; i < currentSize - 1; i++) {
         data[i] = data[i + 1];
-        data[i].setJobIndex(i);
+        data[i]->setJobIndex(i);
     }
-
-    return occupationRemoved;
 }
 
 

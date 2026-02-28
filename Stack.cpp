@@ -69,7 +69,7 @@ bool JobStack::printEntireStack(int firstColumnLength, std::string dataset) {
 		// printing the rest of the table
 		for (int i = 0; i < currentLength; i++) {
 			capitalizedState = array[i].recentState;
-			capitalizedState[0] = toupper(array[i].recentState[0]);
+			capitalizedState[0] = std::toupper(array[i].recentState[0]);
 			std::cout << std::left << std::setw(firstColumnLength) << array[i].job.getOccupation() << "|"
 				<< std::setw(secondColumnLength) << capitalizedState << "|" << std::endl;
 		}
@@ -88,14 +88,14 @@ bool JobStack::searchStack(std::string jobSearched) {
 
 	for (int i = 0; i < currentLength; i++) {
 		// search for jobs that do not start with the word being searched
-		jobSearched[0] = tolower(jobSearched[0]);
+		jobSearched[0] = std::tolower(jobSearched[0]);
 		// Chat GPT suggested using .find() instead of making own substring search algorithm
 		if (array[i].job.getOccupation().find(jobSearched) != std::string::npos) {
 			std::cout << "- " << array[i].job.getOccupation() << std::endl;
 			jobFound = true;
 		}
 		// search for jobs that start with the word being searched (capitalized first letter)
-		jobSearched[0] = toupper(jobSearched[0]);
+		jobSearched[0] = std::toupper(jobSearched[0]);
 		if (array[i].job.getOccupation().find(jobSearched) != std::string::npos) {
 			std::cout << "- " << array[i].job.getOccupation() << std::endl;
 			jobFound = true;

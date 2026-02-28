@@ -129,6 +129,22 @@ void MenuHandler::printSuffixAndJob(const Occupation &job) const {
             << ": " << job.getOccupation() << std::endl;
 }
 
+void MenuHandler::printMainArray() {
+    printTableHeadings();
+
+    allJobsDatabase.forEachJobInMainArray([&](const Occupation &job) {
+        printTableEntry(job);
+    });
+}
+
+void MenuHandler::printHashTable() {
+    printTableHeadings();
+
+    allJobsDatabase.forEachEntryInHashTable([&](const Occupation &job) {
+        printTableEntry(job);
+    });
+}
+
 void MenuHandler::printSearchedJobs() {
     int arraySize = searchedJobsArray.getCurrentSize();
 
@@ -189,7 +205,7 @@ char MenuHandler::menuHandling(char firstLetter, char lastLetter, bool acceptDas
         if (acceptDash && userInput == "-") {
             return userInput[0];
         }
-        tempChar = toupper(userInput[0]);
+        tempChar = std::toupper(userInput[0]);
         if (tempChar < firstLetter || tempChar > lastLetter) {
             std::cout << "\nEnter a letter from " << firstLetter << " to " << lastLetter << ".\n" << std::endl;
         } else {
@@ -202,13 +218,13 @@ char MenuHandler::menuHandling(char firstLetter, char lastLetter, bool acceptDas
 char MenuHandler::yesOrNoMenu() {
     std::string userInput = "-";
     std::getline(std::cin, userInput);
-    char tempChar = tolower(userInput[0]);
+    char tempChar = std::tolower(userInput[0]);
 
     // while loop to handle input
     while (tempChar != 'y' && tempChar != 'n') {
         std::cout << "\nInput y for YES or n for NO\n" << std::endl;
         std::getline(std::cin, userInput);
-        tempChar = tolower(userInput[0]);
+        tempChar = std::tolower(userInput[0]);
     }
 
     return tempChar;
@@ -239,7 +255,7 @@ std::string MenuHandler::promptNonNegativeOrDash() {
 
 OccupationRow MenuHandler::promptJobAttributes(std::string jobTitle, const std::string &matrixCode) {
     // Sets occupation based on previous user input
-    jobTitle[0] = toupper(jobTitle[0]);
+    jobTitle[0] = std::toupper(jobTitle[0]);
     jobTitle += " *";
 
     // Gives user option to set occupation type as line item or summary
@@ -477,6 +493,9 @@ void MenuHandler::handleAddDatabase() {
 
 // function to pinpoint the specific index of an occupation
 Occupation *MenuHandler::selectSpecificIndex(const std::string &command) {
+
+    std::cout << "\nEnter the name of the occupation to " + command + ".\n" << std::endl;
+
     std::string userInput;
     std::getline(std::cin, userInput);
     lowerString(userInput);
@@ -551,17 +570,16 @@ Occupation *MenuHandler::buildKeyAndSearch() {
     } while (true);
 }
 
-Occupation *MenuHandler::chooseJobToAdd() {
-    std::cout << "\nDo you want to search for the occupation to add by title or by matrix code?" << std::endl
+Occupation *MenuHandler::chooseJobToModify(const std::string &command) {
+    std::cout << "\nDo you want to search for the occupation to " + command + " by title or by matrix code?" << std::endl
             << "A: Title" << std::endl
             << "B: Matrix Code" << std::endl
             << "C: Return to List Menu\n" <<
             std::endl;
     switch (menuHandling('A', 'B', false)) {
         case 'A':
-            std::cout << "\nEnter the name of the occupation.\n" << std::endl;
             // function returns a pointer to the specific object in the dynamic array
-            return selectSpecificIndex("add");
+            return selectSpecificIndex(command);
         case 'B':
             // buildKeyAndSearch returns nullptr if user wants to return to the main menu
             return buildKeyAndSearch();
@@ -610,7 +628,7 @@ bool MenuHandler::placeOccupationInList(Occupation *occupation) {
 }
 
 void MenuHandler::handleAddList() {
-    Occupation *occupationToAdd = chooseJobToAdd();
+    Occupation *occupationToAdd = chooseJobToModify("add");
     if (occupationToAdd != nullptr) {
         if (placeOccupationInList(occupationToAdd)) {
             recentChangesDatabase.push({*occupationToAdd, "added"});
@@ -619,4 +637,22 @@ void MenuHandler::handleAddList() {
         }
     }
     std::cout << "\nFailed to add occupation to list. Returning to list menu..." << std::endl;
+}
+
+void MenuHandler::handleRemoveList() {
+    if (jobsList.getListSize() == 0) {
+        std::cout << "\nThe list is empty. Returning to list menu..." << std::endl;
+        return;
+    }
+
+    int indexToRemove = handleListIndexRetrieval();
+
+    Occupation* jobRemoved = jobsList.removeByIndex(indexToRemove)->data;
+
+    if (jobRemoved != nullptr) {
+        recentChangesDatabase.push({*jobRemoved, "removed"});
+        savedDatabase = false;
+        return;
+    }
+    std::cout << "\nFailed to remove occupation from list. Returning to list menu..." << std::endl;
 }

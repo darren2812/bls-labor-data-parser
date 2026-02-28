@@ -124,7 +124,7 @@ int main() {
 	importList(listData, allJobs, list, jobCounter, hashTable);
 	listData.close();
 
-	while (toupper(userInput[0]) != 'J') {
+	while (std::toupper(userInput[0]) != 'J') {
 		// dynamic array for search list
 		Occupation* searchedJobs = new Occupation[jobCounter];
 		// dynamic array for sorted list
@@ -428,7 +428,7 @@ int main() {
 			break;
 		
 		case 'H':
-			while (toupper(userInput[0]) != 'I') {
+			while (std::toupper(userInput[0]) != 'I') {
 				// list management user interface
 				std::cout << "\nInput a letter to manage your LIST." << std::endl
 					<< "A: View Your Current List" << std::endl

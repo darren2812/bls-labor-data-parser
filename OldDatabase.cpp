@@ -127,14 +127,14 @@ int searchByJob(Occupation* searchedJobs, Occupation* allJobs, const int& jobCou
 	// linear search for substrings
 	for (int i = 0; i < jobCounter; i++) {
 		// search for jobs that do not start with the word being searched
-		jobSearched[0] = tolower(jobSearched[0]);
+		jobSearched[0] = std::tolower(jobSearched[0]);
 		// Chat GPT suggested using .find() instead of making own substring search algorithm
 		if (allJobs[i].getOccupation().find(jobSearched) != std::string::npos) {
 			searchedJobs[foundSearches] = allJobs[i];
 			foundSearches++;
 		}
 		// search for jobs that start with the word being searched (capitalized first letter)
-		jobSearched[0] = toupper(jobSearched[0]);
+		jobSearched[0] = std::toupper(jobSearched[0]);
 		if (allJobs[i].getOccupation().find(jobSearched) != std::string::npos) {
 			searchedJobs[foundSearches] = allJobs[i];
 			foundSearches++;
@@ -175,7 +175,7 @@ Occupation addEntry(Occupation* allJobs, int& jobCounter, int& totalJobsCapacity
 	}
 
 	// Sets occupation based on previous user input
-	jobAdded[0] = toupper(jobAdded[0]);
+	jobAdded[0] = std::toupper(jobAdded[0]);
 	allJobs[jobCounter].setOccupation(jobAdded + " *");
 
 	allJobs[jobCounter].setMatrixCode(key);
@@ -184,12 +184,12 @@ Occupation addEntry(Occupation* allJobs, int& jobCounter, int& totalJobsCapacity
 	std::cout << "\nEnter A for a summary occupation (a larger group for other jobs)." << std::endl
 		<< "Enter B for a line-item occupation (a single job).\n" << std::endl;
 	std::getline(std::cin, tempString);
-	tempString[0] = toupper(tempString[0]);
+	tempString[0] = std::toupper(tempString[0]);
 	// Error handling while loop
 	while (tempString != "A" && tempString != "B") {
 		std::cout << "\nEnter A or B.\n" << std::endl;
 		std::getline(std::cin, tempString);
-		tempString[0] = toupper(tempString[0]);
+		tempString[0] = std::toupper(tempString[0]);
 	}
 	switch (tempString[0]) {
 	case 'A': // assigns "Summary" occupation type
@@ -339,12 +339,12 @@ Occupation addEntry(Occupation* allJobs, int& jobCounter, int& totalJobsCapacity
 		<< "H: Doctoral or professional degree" << std::endl
 		<< "-: Unknown / No Data\n" << std::endl;
 	std::getline(std::cin, tempString);
-	tempString[0] = toupper(tempString[0]);
+	tempString[0] = std::toupper(tempString[0]);
 	// input handling
 	while ((tempString < "A" || tempString > "H") && tempString != "-") {
 		std::cout << "\nEnter a letter from A to H or '-'.\n" << std::endl;
 		std::getline(std::cin, tempString);
-		tempString[0] = toupper(tempString[0]);
+		tempString[0] = std::toupper(tempString[0]);
 	}
 	switch (tempString[0]) {
 	case 'A':
@@ -385,12 +385,12 @@ Occupation addEntry(Occupation* allJobs, int& jobCounter, int& totalJobsCapacity
 		<< "C: 5 years or more" << std::endl
 		<< "-: Unknown / No Data\n" << std::endl;
 	std::getline(std::cin, tempString);
-	tempString[0] = toupper(tempString[0]);
+	tempString[0] = std::toupper(tempString[0]);
 	// input handling
 	while ((tempString < "A" || tempString > "C") && tempString != "-") {
 		std::cout << "\nEnter a letter from A to C or '-'.\n" << std::endl;
 		std::getline(std::cin, tempString);
-		tempString[0] = toupper(tempString[0]);
+		tempString[0] = std::toupper(tempString[0]);
 	}
 	switch (tempString[0]) {
 	case 'A':
@@ -419,12 +419,12 @@ Occupation addEntry(Occupation* allJobs, int& jobCounter, int& totalJobsCapacity
 		<< "F: Internship/residency" << std::endl
 		<< "-: Unknown / No Data\n" << std::endl;
 	std::getline(std::cin, tempString);
-	tempString[0] = toupper(tempString[0]);
+	tempString[0] = std::toupper(tempString[0]);
 	// input handling
 	while ((tempString < "A" || tempString > "F") && tempString != "-") {
 		std::cout << "\nEnter a letter from A to F or '-'.\n" << std::endl;
 		std::getline(std::cin, tempString);
-		tempString[0] = toupper(tempString[0]);
+		tempString[0] = std::toupper(tempString[0]);
 	}
 	switch (tempString[0]) {
 	case 'A':
