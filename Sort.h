@@ -3,53 +3,53 @@
 
 #pragma once
 #include "Occupation.h"
+#include "DynamicArray.h"
 
-// getters to act as different arguments when being passed to the mergesort function
-std::string getThisOccupation(const Occupation& job);
-float getThisWage(const Occupation& job);
-int getThisEducationScore(const Occupation& job);
-int getThisWorkExperienceScore(const Occupation& job);
+template <typename Lambda>
+void sortJob(DynamicArray<const Occupation *> &sortedJobs, bool ascending, Lambda &&getData) {
 
-template <typename T>
-void sortJob(Occupation* allJobs, Occupation* sortedJobs, int jobCounter, bool ascending, T(*function)(const Occupation& job)) {
-	// assigning the sortedJobs pointer to a dynamic array
-	sortedJobs = new Occupation[jobCounter];
-	for (int i = 0; i < jobCounter; i++) {
-		sortedJobs[i] = allJobs[i];
-	}
 	int lowIndex = 0;
-	int highIndex = jobCounter - 1;
-	mergeSortJob(sortedJobs, lowIndex, highIndex, ascending, function);
+	int highIndex = sortedJobs.getCurrentSize() - 1;
+
+	// based on ascending / descending, function compares and returns the right element
+	auto compare = [&](const Occupation *a, const Occupation *b) {
+		if (ascending) {
+			return getData(a) <= getData(b);
+		}
+		return getData(a) > getData(b);
+	};
+
+	mergeSortJob(sortedJobs, lowIndex, highIndex, compare);
 }
-template <typename T>
-void mergeSortJob(Occupation* sortedJobs, int lowIndex, int highIndex, bool ascending, T(*function)(const Occupation& job)) {
+template <typename Lambda>
+void mergeSortJob(DynamicArray<const Occupation *> &sortedJobs, int lowIndex, int highIndex, Lambda compare) {
 	if (lowIndex >= highIndex) {
 		return;
 	}
 	int midIndex = (lowIndex + highIndex) / 2;
-	mergeSortJob(sortedJobs, lowIndex, midIndex, ascending, function);
-	mergeSortJob(sortedJobs, midIndex + 1, highIndex, ascending, function);
-	mergeJob(sortedJobs, lowIndex, midIndex, highIndex, ascending, function);
+	mergeSortJob(sortedJobs, lowIndex, midIndex, compare);
+	mergeSortJob(sortedJobs, midIndex + 1, highIndex, compare);
+	mergeJob(sortedJobs, lowIndex, midIndex, highIndex, compare);
 }
-template <typename T>
-void mergeJob(Occupation* sortedJobs, int lowIndex, int midIndex, int highIndex, bool ascending, T(*function)(const Occupation& job)) {
+
+template <typename Lambda>
+void mergeJob(DynamicArray<const Occupation *> &sortedJobs, int lowIndex, int midIndex, int highIndex, Lambda compare) {
 	int leftPos = lowIndex;
 	int rightPos = midIndex + 1;
 	int mergePos = 0;
 	int mergedSize = highIndex - lowIndex + 1;
-	Occupation* tempArray = new Occupation[mergedSize];
+	auto tempArray = new const Occupation* [mergedSize];
 
 	while (leftPos <= midIndex && rightPos <= highIndex) {
 		// if ascending, compare and take smaller or equal element
 		// if not ascending, compare and take larger element
-		if ((function(sortedJobs[leftPos]) > function(sortedJobs[rightPos]) && ascending)
-			|| (function(sortedJobs[leftPos]) <= function(sortedJobs[rightPos]) && !ascending)) {
-			tempArray[mergePos] = sortedJobs[rightPos];
-			rightPos++;
-		}
-		else {
+		if (compare(sortedJobs[leftPos], sortedJobs[rightPos])) {
 			tempArray[mergePos] = sortedJobs[leftPos];
 			leftPos++;
+		}
+		else {
+			tempArray[mergePos] = sortedJobs[rightPos];
+			rightPos++;
 		}
 		mergePos++;
 	}
@@ -73,6 +73,3 @@ void mergeJob(Occupation* sortedJobs, int lowIndex, int midIndex, int highIndex,
 	delete[] tempArray;
 	tempArray = nullptr;
 }
-
-// helper function to ask for user sorting preferences
-void sortingDialogue(Occupation* allJobs, Occupation* sortedJobs, int jobCounter, const std::string* headings, int* columnLengths);

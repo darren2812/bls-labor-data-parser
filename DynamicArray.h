@@ -13,9 +13,12 @@ public:
     DynamicArray() = default;
     ~DynamicArray();
     DynamicArray(int capacity);
+    DynamicArray(const DynamicArray&) = delete;
+    DynamicArray(DynamicArray&& other) noexcept;
 
     // overloading [] operator to access job at that index
-    Occupation& operator[](int index) const;
+    T& operator[](int index);
+    const T& operator[](int index) const;
 
     DynamicArray& operator=(const DynamicArray&) = delete;
     DynamicArray& operator=(DynamicArray&& other) noexcept;
@@ -25,7 +28,8 @@ public:
 
     void increaseCapacity();
 
-    Occupation *addJobToArray(T jobToAdd, int index);
+    Occupation *addJobToMainArray(std::unique_ptr<Occupation> jobToAdd, int index);
+    void append(const Occupation* jobToAppend);
 
     // function to remove an entry
     void removeEntry(const Occupation *jobToRemove);

@@ -20,7 +20,7 @@ SinglyLinkedList::~SinglyLinkedList() {
 }
 
 // function to append node
-void SinglyLinkedList::append(Occupation *jobAppended) {
+void SinglyLinkedList::append(const Occupation *jobAppended) {
     // creates a new node and assigns its data
     auto newNode = new SinglyLinkedNode;
     // dereferences jobAppended pointer and assigns to data field
@@ -39,7 +39,7 @@ void SinglyLinkedList::append(Occupation *jobAppended) {
 }
 
 // function to prepend node
-void SinglyLinkedList::prepend(Occupation *jobPrepended) {
+void SinglyLinkedList::prepend(const Occupation *jobPrepended) {
     // creates a new node and assigns its data
     auto newNode = new SinglyLinkedNode;
     newNode->data = jobPrepended;
@@ -57,7 +57,7 @@ void SinglyLinkedList::prepend(Occupation *jobPrepended) {
 }
 
 // function to insert a node after another node
-void SinglyLinkedList::insertAfter(Occupation *jobInserted, int jobIndex) {
+void SinglyLinkedList::insertAfter(const Occupation *jobInserted, int jobIndex) {
     SinglyLinkedNode *current = head;
     while (current) {
         if (current->data->getJobIndex() == jobIndex) {
@@ -107,9 +107,9 @@ SinglyLinkedNode *SinglyLinkedList::removeByIndex(int jobIndex) {
     return nullptr;
 }
 
-bool SinglyLinkedList::searchListByJob(const std::string &jobToSearch, DynamicArray<Occupation *> &searchedJobsArray) {
+bool SinglyLinkedList::searchListByJob(const std::string &jobToSearch, DynamicArray<const Occupation *> &searchedJobsArray) {
 
-    searchedJobsArray = DynamicArray<Occupation*>(listSize);
+    searchedJobsArray = DynamicArray<const Occupation*>(listSize);
 
     SinglyLinkedNode *current = head;
 
@@ -122,7 +122,7 @@ bool SinglyLinkedList::searchListByJob(const std::string &jobToSearch, DynamicAr
         currentEntry = current->data->getOccupation();
         lowerString(currentEntry);
         if (query == currentEntry) {
-            searchedJobsArray.addJobToArray(current->data, searchedJobsArray.getCurrentSize());
+            searchedJobsArray.append(current->data);
         }
         current = current->next;
     }
@@ -135,14 +135,14 @@ bool SinglyLinkedList::searchListByJob(const std::string &jobToSearch, DynamicAr
 
 // function to search by wage
 bool SinglyLinkedList::searchListByWage(const float &lowerLimit, const float &upperLimit,
-                                       DynamicArray<Occupation *> &searchedJobsArray) {
+                                       DynamicArray<const Occupation *> &searchedJobsArray) {
 
-    searchedJobsArray = DynamicArray<Occupation*>(listSize);
+    searchedJobsArray = DynamicArray<const Occupation*>(listSize);
 
     SinglyLinkedNode* current = head;
     while (current != nullptr) {
         if (current->data->getWage() >= lowerLimit && current->data->getWage() <= upperLimit) {
-            searchedJobsArray.addJobToArray(current->data, searchedJobsArray.getCurrentSize());
+            searchedJobsArray.append(current->data);
         }
         current = current->next;
     }
@@ -166,7 +166,7 @@ bool SinglyLinkedList::searchListByIndex(int jobIndex) {
     return false;
 }
 
-void SinglyLinkedList::forEachJobInList(const std::function<void(Occupation *job)> &fn) const {
+void SinglyLinkedList::forEachJobInList(const std::function<void(const Occupation *job)> &fn) const {
     SinglyLinkedNode *current = head;
     while (current) {
         fn(current->data);

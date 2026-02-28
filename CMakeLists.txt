@@ -20,7 +20,6 @@ add_executable(bls_labor_data_parser
         main.cpp
         Occupation.cpp
         Occupation.h
-        Sort.cpp
         Sort.h
         Stack.cpp
         Stack.h

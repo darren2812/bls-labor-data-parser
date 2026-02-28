@@ -132,35 +132,32 @@ void MenuHandler::printSuffixAndJob(const Occupation &job) const {
 void MenuHandler::printMainArray() {
     printTableHeadings();
 
-    allJobsDatabase.forEachJobInMainArray([&](const Occupation &job) {
-        printTableEntry(job);
+    allJobsDatabase.forEachJobInMainArray([&](const Occupation *job) {
+        printTableEntry(*job);
     });
 }
 
 void MenuHandler::printHashTable() {
     printTableHeadings();
 
-    allJobsDatabase.forEachEntryInHashTable([&](const Occupation &job) {
-        printTableEntry(job);
+    allJobsDatabase.forEachEntryInHashTable([&](const Occupation *job) {
+        printTableEntry(*job);
     });
 }
 
-void MenuHandler::printSearchedJobs() {
-    int arraySize = searchedJobsArray.getCurrentSize();
+void MenuHandler::printSearchSortResults(DynamicArray<const Occupation *> &array) {
+    int arraySize = array.getCurrentSize();
 
     // outputs table headings
     printTableHeadings();
 
     // passes the print table entry function to the iterator function in the database class
     for (int i = 0; i < arraySize; i++) {
-        printTableEntry(searchedJobsArray[i]);
+        printTableEntry(*array[i]);
     }
-
-    output.close();
 }
 
 void MenuHandler::printEntireStack(JobStack &stack, const std::string &dataset) {
-
     // making sure that the stack is not empty
     if (stack.getCurrentLength() == 0) {
         std::cout << "\nThere are no changes to display at the moment." << std::endl;
@@ -184,7 +181,7 @@ void MenuHandler::printEntireStack(JobStack &stack, const std::string &dataset) 
 
     int stackLength = stack.getCurrentLength();
 
-    stack.forEachJobInStack([&](const JobPair &pair){
+    stack.forEachJobInStack([&](const JobPair &pair) {
         capitalizedState = pair.recentState;
         capitalizeFirst(capitalizedState);
         std::cout << std::left << std::setw(firstColumnLength) << pair.job.getOccupation() << "|"
@@ -193,19 +190,19 @@ void MenuHandler::printEntireStack(JobStack &stack, const std::string &dataset) 
 }
 
 void MenuHandler::printAllCategories() const {
-    allJobsDatabase.forEachCategory([&](const Occupation &jobCategory) {
-        printPrefixAndCategory(jobCategory);
+    allJobsDatabase.forEachCategory([&](const Occupation *jobCategory) {
+        printPrefixAndCategory(*jobCategory);
     });
 }
 
 void MenuHandler::printCategoryContents(const std::string &prefix) const {
-    allJobsDatabase.forEachJobInCategory(prefix, [&](const Occupation &job) {
-        printSuffixAndJob(job);
+    allJobsDatabase.forEachJobInCategory(prefix, [&](const Occupation *job) {
+        printSuffixAndJob(*job);
     });
 }
 
 void MenuHandler::printIndicesInList() const {
-    jobsList.forEachJobInList([&](Occupation *job) {
+    jobsList.forEachJobInList([&](const Occupation *job) {
         std::cout << job->getJobIndex() << ": " << job->getOccupation() << std::endl;
     });
 }
@@ -220,7 +217,7 @@ void MenuHandler::printList() {
 
     printTableHeadings();
 
-    jobsList.forEachJobInList([&](Occupation *job) {
+    jobsList.forEachJobInList([&](const Occupation *job) {
         printTableEntry(*job);
     });
 
@@ -446,7 +443,7 @@ OccupationRow MenuHandler::promptJobAttributes(std::string jobTitle, const std::
     return row;
 }
 
-std::string MenuHandler::promptNumber(const std::string &messageToDisplay) {
+std::string MenuHandler::promptNumber(const std::string &messageToDisplay) const {
     std::string userInput;
 
     do {
@@ -454,6 +451,7 @@ std::string MenuHandler::promptNumber(const std::string &messageToDisplay) {
         std::getline(std::cin, userInput);
 
         try {
+            stoi(userInput);
             return userInput;
         } catch (const std::invalid_argument &) {
             std::cout << "\nThe value entered is not an integer. Try again" << std::endl;
@@ -461,6 +459,36 @@ std::string MenuHandler::promptNumber(const std::string &messageToDisplay) {
             std::cout << "\nThe value entered is out of range. Try again" << std::endl;
         }
     } while (true);
+}
+
+void MenuHandler::copyMainArray(DynamicArray<const Occupation *> &outputArray) {
+    outputArray = DynamicArray<const Occupation *>(allJobsDatabase.getSize());
+
+    int i = 0;
+    allJobsDatabase.forEachJobInMainArray([&](const Occupation *job) {
+        outputArray[i] = job;
+        i++;
+    });
+}
+
+void MenuHandler::copySearchArray(DynamicArray<const Occupation *> &outputArray) {
+    int searchArraySize = searchedJobsArray.getCurrentSize();
+    outputArray = DynamicArray<const Occupation *>(searchArraySize);
+
+    for (int i = 0; i < searchArraySize; i++) {
+        outputArray[i] = searchedJobsArray[i];
+    }
+}
+
+void MenuHandler::copyList(DynamicArray<const Occupation *> &outputArray) {
+    int listSize = jobsList.getListSize();
+    outputArray = DynamicArray<const Occupation *>(listSize);
+
+    int i = 0;
+    jobsList.forEachJobInList([&](const Occupation *job) {
+        outputArray[i] = job;
+        i++;
+    });
 }
 
 void MenuHandler::handleAddDatabase() {
@@ -474,7 +502,7 @@ void MenuHandler::handleAddDatabase() {
     if (allJobsDatabase.searchArrayByJob(searchedJobsArray, jobTitle)) {
         std::cout << std::endl;
 
-        printSearchedJobs();
+        printSearchSortResults(searchedJobsArray);
 
         std::cout << "\nWe have these jobs in our database. Do you still want to add an entry? (y/n)\n" << std::endl;
 
@@ -524,7 +552,7 @@ void MenuHandler::handleAddDatabase() {
 }
 
 // function to pinpoint the specific index of an occupation
-Occupation *MenuHandler::selectSpecificIndex(const std::string &command) {
+const Occupation *MenuHandler::selectSpecificIndex(const std::string &command)  {
     std::cout << "\nEnter the name of the occupation to " + command + ".\n" << std::endl;
 
     std::string userInput;
@@ -538,8 +566,8 @@ Occupation *MenuHandler::selectSpecificIndex(const std::string &command) {
     int searchedJobsCount = searchedJobsArray.getCurrentSize();
     if (searchedJobsCount > 0) {
         for (int i = 0; i < searchedJobsCount; i++) {
-            std::cout << "Index " << searchedJobsArray[i].getJobIndex() << ": "
-                    << searchedJobsArray[i].getOccupation() << std::endl;
+            std::cout << "Index " << searchedJobsArray[i]->getJobIndex() << ": "
+                    << searchedJobsArray[i]->getOccupation() << std::endl;
         }
         while (true) {
             std::cout << "\nEnter the index (number) that you want to " << command << ":" << std::endl
@@ -550,8 +578,8 @@ Occupation *MenuHandler::selectSpecificIndex(const std::string &command) {
                 return nullptr;
             }
             for (int i = 0; i < searchedJobsCount; i++) {
-                if (userInput == std::to_string(searchedJobsArray[i].getJobIndex())) {
-                    return &searchedJobsArray[i];
+                if (userInput == std::to_string(searchedJobsArray[i]->getJobIndex())) {
+                    return searchedJobsArray[i];
                 }
             }
         }
@@ -561,10 +589,10 @@ Occupation *MenuHandler::selectSpecificIndex(const std::string &command) {
     return nullptr;
 }
 
-Occupation *MenuHandler::buildKeyAndSearch() {
+const Occupation *MenuHandler::buildKeyAndSearch() const {
     std::string matrixCode;
     std::string prefix;
-    Occupation *jobCategory;
+    const Occupation *jobCategory;
 
     do {
         printAllCategories();
@@ -601,7 +629,7 @@ Occupation *MenuHandler::buildKeyAndSearch() {
     } while (true);
 }
 
-Occupation *MenuHandler::chooseJobToModify(const std::string &command) {
+const Occupation *MenuHandler::chooseJobToModify(const std::string &command) {
     std::cout << "\nDo you want to search for the occupation to " + command + " by title or by matrix code?" <<
             std::endl
             << "A: Title" << std::endl
@@ -634,7 +662,7 @@ int MenuHandler::handleListIndexRetrieval() {
     } while (true);
 }
 
-bool MenuHandler::placeOccupationInList(Occupation *occupation) {
+bool MenuHandler::placeOccupationInList(const Occupation *occupation) {
     std::cout << "\nWhere in the list would you like to place the occupation?" << std::endl
             << "A: Start of List" << std::endl
             << "B: End of List" << std::endl
@@ -660,7 +688,7 @@ bool MenuHandler::placeOccupationInList(Occupation *occupation) {
 }
 
 void MenuHandler::handleAddList() {
-    Occupation *occupationToAdd = chooseJobToModify("add");
+    const Occupation *occupationToAdd = chooseJobToModify("add");
     if (occupationToAdd != nullptr) {
         if (placeOccupationInList(occupationToAdd)) {
             recentChangesDatabase.push({*occupationToAdd, "added"});
@@ -679,7 +707,7 @@ void MenuHandler::handleRemoveList() {
 
     int indexToRemove = handleListIndexRetrieval();
 
-    Occupation *jobRemoved = jobsList.removeByIndex(indexToRemove)->data;
+    const Occupation *jobRemoved = jobsList.removeByIndex(indexToRemove)->data;
 
     if (jobRemoved != nullptr) {
         recentChangesDatabase.push({*jobRemoved, "removed"});
@@ -687,4 +715,104 @@ void MenuHandler::handleRemoveList() {
         return;
     }
     std::cout << "\nFailed to remove occupation from list. Returning to list menu..." << std::endl;
+}
+
+// sorting dialogue function to ask if user wants to see the data sorted
+void MenuHandler::handleSort(DynamicArray<const Occupation *> &sortedJobs, StructureToSort dataset) {
+
+    // copying the necessary dataset to the sorted jobs array
+    switch (dataset) {
+        case StructureToSort::MAIN_ARRAY:
+            copyMainArray(sortedJobs);
+            break;
+        case StructureToSort::SEARCH_ARRAY:
+            copySearchArray(sortedJobs);
+            break;
+        case StructureToSort::LIST:
+            copyList(sortedJobs);
+            break;
+        default:
+            return;
+    }
+
+    std::string userInput;
+    bool ascending = false;
+    char menuOption;
+    std::string sortCategory;
+    std::string sortOrder;
+
+    std::cout << "\nDo you want to view the data sorted? (y/n)\n" << std::endl;
+
+    switch (yesOrNoMenu()) {
+        case 'y':
+            std::cout << "\nHow would you like to sort the occupations?" << std::endl
+                    << "A: Occupation Title" << std::endl
+                    << "B: Median Annual Wage 2024" << std::endl
+                    << "C: Typical Education Needed for Entry" << std::endl
+                    << "D: Work Experience in a Related Occupation" << std::endl
+                    << "E: Return to Main Menu\n" << std::endl;
+            menuOption = menuHandling('A', 'E', false);
+            if (menuOption != 'E') {
+                while (userInput != "1" && userInput != "2") {
+                    std::cout << "\nEnter 1 to sort in ascending order." << std::endl
+                            << "Enter 2 to sort in descending order.\n" << std::endl;
+                    std::getline(std::cin, userInput);
+                }
+                if (userInput[0] == '1') {
+                    sortOrder = "ascending";
+                    ascending = true;
+                }
+                else {
+                    sortOrder = "descending";
+                    ascending = false;
+                }
+            }
+            else {
+                std::cout << "\nReturning to main menu..." << std::endl;
+                return;
+            }
+            switch (menuOption) {
+                case 'A': // user selects alphabetical sort
+                    sortCategory = "Occupation Title";
+                    sortJob(sortedJobs, ascending,
+                        [](const Occupation* job) {
+                            return job->getOccupation();
+                        });
+                    break;
+                case 'B': // user selects wage sort
+                    sortCategory = "Median Annual Wage 2024";
+                    sortJob(sortedJobs, ascending,
+                       [](const Occupation* job) {
+                           return job->getWage();
+                       });
+                    break;
+                case 'C': // user selects education sort
+                    sortCategory = "Typical Education Needed for Entry";
+                    sortJob(sortedJobs, ascending,
+                       [](const Occupation* job) {
+                           return job->getEducationScore();
+                       });
+                    break;
+                case 'D':
+                    sortCategory = "Work Experience in a Related Occupation";
+                    sortJob(sortedJobs, ascending,
+                       [](const Occupation* job) {
+                           return job->getWorkExperienceScore();
+                       });
+                    break;
+                default: // break to main menu
+                    return;
+            }
+            break;
+        case 'n':
+            return;
+        default:
+            return;
+    }
+
+    printSearchSortResults(sortedJobs);
+
+    std::cout << "\nData successfully sorted based on " << sortCategory << " in " << sortOrder << " order." <<
+            std::endl;
+    std::cout << "\nCheck output file for full table." << std::endl;
 }

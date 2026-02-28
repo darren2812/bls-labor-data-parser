@@ -24,9 +24,22 @@ DynamicArray<T>& DynamicArray<T>::operator=(DynamicArray &&other) noexcept{
     return *this;
 }
 
+template<typename T>
+DynamicArray<T>::DynamicArray(DynamicArray&& other) noexcept
+ : data(other.data), capacity(other.capacity), currentSize(other.currentSize) {
+    other.data = nullptr;
+    other.capacity = 0;
+    other.currentSize = 0;
+}
+
 template <typename T>
-Occupation &DynamicArray<T>::operator[](int index) const {
-    return *data[index];
+T &DynamicArray<T>::operator[](int index) {
+    return data[index];
+}
+
+template <typename T>
+const T &DynamicArray<T>::operator[](int index) const {
+    return data[index];
 }
 
 template <typename T>
@@ -62,22 +75,34 @@ int DynamicArray<T>::getCapacity() const {
 }
 
 template <typename T>
-Occupation *DynamicArray<T>::addJobToArray(T jobToAdd, const int index) {
+Occupation *DynamicArray<T>::addJobToMainArray(std::unique_ptr<Occupation> jobToAdd, const int index) {
     if (currentSize >= capacity) {
         increaseCapacity();
     }
 
     // shift right
     for (int i = currentSize; i > index; i--) {
-        data[i] = data[i - 1];
+        data[i] = std::move(data[i - 1]);
         data[i]->setJobIndex(i);
     }
 
-    data[index] = jobToAdd;
+    data[index] = std::move(jobToAdd);
     data[index]->setJobIndex(index);
 
     currentSize++;
-    return data[index];
+    return data[index].get();
+}
+
+template<typename T>
+void DynamicArray<T>::append(const Occupation *jobToAppend) {
+    if (currentSize >= capacity) {
+        increaseCapacity();
+    }
+
+    data[currentSize] = jobToAppend;
+
+    currentSize++;
+    return data[currentSize - 1];
 }
 
 template <typename T>

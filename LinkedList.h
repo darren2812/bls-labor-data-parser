@@ -8,8 +8,8 @@
 
 class SinglyLinkedNode {
 public:
-    // each node will store a pointer to the main occupation objects (uniqueptrs held by dynamic array)
-    Occupation *data;
+    // each node will store a pointer to the main occupation objects (unique ptrs held by dynamic array)
+    const Occupation *data;
     SinglyLinkedNode *next = nullptr;
 };
 
@@ -24,23 +24,23 @@ private:
 public:
     ~SinglyLinkedList();
 
-    void append(Occupation *jobAppended);
+    void append(const Occupation *jobAppended);
 
-    void prepend(Occupation *jobPrepended);
+    void prepend(const Occupation *jobPrepended);
 
-    void insertAfter(Occupation *jobInserted, int jobIndex);
+    void insertAfter(const Occupation *jobInserted, int jobIndex);
 
     SinglyLinkedNode *removeByIndex(int jobIndex);
 
-    bool searchListByJob(const std::string &jobToSearch, DynamicArray<Occupation *> &searchedJobsArray);
+    bool searchListByJob(const std::string &jobToSearch, DynamicArray<const Occupation *> &searchedJobsArray);
 
     bool searchListByWage(const float &lowerLimit, const float &upperLimit,
-                          DynamicArray<Occupation *> &searchedJobsArray);
+                          DynamicArray<const Occupation *> &searchedJobsArray);
 
     bool searchListByIndex(int jobIndex);
 
     // list iterator for functions in MenuHandler
-    void forEachJobInList(const std::function<void(Occupation *job)> &fn) const;
+    void forEachJobInList(const std::function<void(const Occupation *job)> &fn) const;
 
     // getters
     int getListSize() const;

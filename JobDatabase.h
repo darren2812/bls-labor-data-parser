@@ -16,6 +16,11 @@ public:
 
     ~JobDatabase() = default;
 
+    int getSize() const;
+
+    const Occupation *at(int i) const;
+    Occupation *at(int i);
+
     JobDatabase &operator=(const JobDatabase &other) = delete;
     JobDatabase &operator=(JobDatabase &&other) noexcept = default;
 
@@ -26,20 +31,20 @@ public:
 
     bool generateUniqueKey(const std::string &codePrefix, std::string &uniqueCode) const;
 
-    bool searchArrayByJob(DynamicArray<Occupation *> &searchedJobsArray, const std::string &jobToSearch) const;
+    bool searchArrayByJob(DynamicArray<const Occupation *> &searchedJobsArray, const std::string &jobToSearch) const;
 
-    bool searchArrayByWage(DynamicArray<Occupation *> &searchedJobsArray, const float &lowerLimit,
+    bool searchArrayByWage(DynamicArray<const Occupation *> &searchedJobsArray, const float &lowerLimit,
                       const float &upperLimit) const;
     Occupation* searchJobByCode(const int &matrixCodeInt) const;
 
-    Occupation* findCategory(const std::string &codePrefix) const;
+    const Occupation* findCategory(const std::string &codePrefix) const;
 
     Occupation* addNewJobToDatabase(const OccupationRow& r);
     void removeJobFromDatabase(const Occupation* jobPointer);
 
     // iterators for printing
-    void forEachJobInMainArray(const std::function<void(const Occupation &job)> &fn) const;
-    void forEachEntryInHashTable(const std::function<void(const Occupation &job)> &fn) const;
-    void forEachCategory(const std::function<void(const Occupation &jobCategory)> &fn) const;
-    void forEachJobInCategory(const std::string &prefix, const std::function<void(const Occupation &job)> &fn) const;
+    void forEachJobInMainArray(const std::function<void(const Occupation *job)> &fn) const;
+    void forEachEntryInHashTable(const std::function<void(const Occupation *job)> &fn) const;
+    void forEachCategory(const std::function<void(const Occupation *jobCategory)> &fn) const;
+    void forEachJobInCategory(const std::string &prefix, const std::function<void(const Occupation *job)> &fn) const;
 };

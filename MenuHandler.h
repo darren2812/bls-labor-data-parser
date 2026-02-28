@@ -31,13 +31,20 @@ private:
 
     // DATA STRUCTURES
     JobDatabase allJobsDatabase;
-    DynamicArray<Occupation*> searchedJobsArray;
-    DynamicArray<Occupation*> sortedJobsArray;
+    DynamicArray<const Occupation*> searchedJobsArray;
+    DynamicArray<const Occupation*> sortedJobsArray;
     // declaring linked list pointer suggested by chatGPT
     SinglyLinkedList jobsList;
     // creating stacks to track recent changes
     JobStack recentChangesDatabase;
     JobStack recentChangesList;
+
+    // ENUM for handling different sorting data structures
+    enum class StructureToSort {
+        MAIN_ARRAY,
+        SEARCH_ARRAY,
+        LIST
+    };
 
     // jobCounter counter in main to store the jobCounter of the last job
     int jobCounter = 0;
@@ -84,9 +91,7 @@ public:
 
     void allocateDataStructures();
 
-    // table related functions
     void printTableHeadings();
-
     void printTableEntry(const Occupation &currentJob);
 
     void printPrefixAndCategory(const Occupation &jobCategory) const;
@@ -94,9 +99,8 @@ public:
 
     void printMainArray();
     void printHashTable();
-    void printSearchedJobs();
+    void printSearchSortResults(DynamicArray<const Occupation *> &array);
     void printEntireStack(JobStack &stack, const std::string &dataset);
-
 
     void printAllCategories() const;
     void printCategoryContents(const std::string &prefix) const;
@@ -112,17 +116,23 @@ public:
     OccupationRow promptJobAttributes(std::string jobTitle, const std::string &matrixCode);
 
     std::string promptNonNegativeOrDash();
-    std::string promptNumber(const std::string &messageToDisplay);
-
-    void handleAddDatabase();
+    std::string promptNumber(const std::string &messageToDisplay) const;
 
     // function to select a specific index from the database
-    Occupation* selectSpecificIndex(const std::string &command);
+    const Occupation* selectSpecificIndex(const std::string &command);
     // helper function to search for a particular job in the hash table
-    Occupation* buildKeyAndSearch();
-    Occupation* chooseJobToModify(const std::string &command);
-    bool placeOccupationInList(Occupation* occupation);
+    const Occupation* buildKeyAndSearch() const;
+    const Occupation* chooseJobToModify(const std::string &command);
+    bool placeOccupationInList(const Occupation* occupation);
+
+    // functions to copy the contents of one array to another
+    void copyMainArray(DynamicArray<const Occupation *> &outputArray);
+    void copySearchArray(DynamicArray<const Occupation *> &outputArray);
+    void copyList(DynamicArray<const Occupation *> &outputArray);
+
+    void handleAddDatabase();
     int handleListIndexRetrieval();
     void handleAddList();
     void handleRemoveList();
+    void handleSort(DynamicArray<const Occupation *> &sortedJobs, StructureToSort dataset);
 };

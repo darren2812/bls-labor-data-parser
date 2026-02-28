@@ -7,6 +7,18 @@ JobDatabase::JobDatabase(const int capacity) :
     allJobsArray(capacity),
     allJobsHashTable(2 * capacity){};
 
+int JobDatabase::getSize() const {
+    return allJobsArray.getCurrentSize();
+}
+
+const Occupation *JobDatabase::at(int i) const {
+    return allJobsArray[i].get();
+}
+
+Occupation *JobDatabase::at(int i) {
+    return allJobsArray[i].get();
+}
+
 void JobDatabase::readInputFile(std::fstream &rawData, const std::string *headings, int *columnLengths) {
     rawData.clear();
     rawData.seekg(0, std::ios::beg);
@@ -109,22 +121,22 @@ void JobDatabase::rewriteInputFile(std::fstream &modifiedData) {
     int arraySize = allJobsArray.getCurrentSize();
 
     for (int i = 0; i < arraySize; i++) {
-        modifiedData << allJobsArray[i].getOccupation() << std::endl
-                << allJobsArray[i].getMatrixCode() << std::endl
-                << allJobsArray[i].getOccupationType() << std::endl
-                << allJobsArray[i].getEmploymentCurrentString() << std::endl
-                << allJobsArray[i].getEmploymentFutureString() << std::endl
-                << allJobsArray[i].getDistributionCurrentString() << std::endl
-                << allJobsArray[i].getDistributionFutureString() << std::endl
-                << allJobsArray[i].getNumericChangeString() << std::endl
-                << allJobsArray[i].getPercentageChangeString() << std::endl
-                << allJobsArray[i].getPercentSelfEmployedString() << std::endl
-                << allJobsArray[i].getJobOpeningsString() << std::endl
-                << allJobsArray[i].getWageString() << std::endl
-                << allJobsArray[i].getEducation() << std::endl
-                << allJobsArray[i].getWorkExperience() << std::endl
-                << allJobsArray[i].getTraining() << std::endl
-                << allJobsArray[i].getHandbookContent() << std::endl;
+        modifiedData << allJobsArray[i]->getOccupation() << std::endl
+                << allJobsArray[i]->getMatrixCode() << std::endl
+                << allJobsArray[i]->getOccupationType() << std::endl
+                << allJobsArray[i]->getEmploymentCurrentString() << std::endl
+                << allJobsArray[i]->getEmploymentFutureString() << std::endl
+                << allJobsArray[i]->getDistributionCurrentString() << std::endl
+                << allJobsArray[i]->getDistributionFutureString() << std::endl
+                << allJobsArray[i]->getNumericChangeString() << std::endl
+                << allJobsArray[i]->getPercentageChangeString() << std::endl
+                << allJobsArray[i]->getPercentSelfEmployedString() << std::endl
+                << allJobsArray[i]->getJobOpeningsString() << std::endl
+                << allJobsArray[i]->getWageString() << std::endl
+                << allJobsArray[i]->getEducation() << std::endl
+                << allJobsArray[i]->getWorkExperience() << std::endl
+                << allJobsArray[i]->getTraining() << std::endl
+                << allJobsArray[i]->getHandbookContent() << std::endl;
     }
     // closes file
     modifiedData.close();
@@ -165,20 +177,20 @@ bool JobDatabase::generateUniqueKey(const std::string& codePrefix, std::string &
     return true;
 }
 
-bool JobDatabase::searchArrayByJob(DynamicArray<Occupation*> &searchedJobsArray, const std::string &jobToSearch) const{
+bool JobDatabase::searchArrayByJob(DynamicArray<const Occupation*> &searchedJobsArray, const std::string &jobToSearch) const{
 
     int mainArraySize = allJobsArray.getCurrentSize();
-    searchedJobsArray = DynamicArray<Occupation*>(mainArraySize);
+    searchedJobsArray = DynamicArray<const Occupation*>(mainArraySize);
 
     // linear search for substrings
     for (int i = 0; i < mainArraySize; i++) {
         std::string query = jobToSearch;
-        std::string currentEntry = allJobsArray[i].getOccupation();
+        std::string currentEntry = allJobsArray[i]->getOccupation();
         lowerString(query);
         lowerString(currentEntry);
 
         if (currentEntry.find(query) != std::string::npos) {
-            searchedJobsArray.addJobToArray(&allJobsArray[i], searchedJobsArray.getCurrentSize());
+            searchedJobsArray.append(allJobsArray[i].get());
         }
     }
 
@@ -188,15 +200,15 @@ bool JobDatabase::searchArrayByJob(DynamicArray<Occupation*> &searchedJobsArray,
     return false;
 }
 
-bool JobDatabase::searchArrayByWage(DynamicArray<Occupation *> &searchedJobsArray, const float &lowerLimit, const float &upperLimit) const {
+bool JobDatabase::searchArrayByWage(DynamicArray<const Occupation *> &searchedJobsArray, const float &lowerLimit, const float &upperLimit) const {
 
     int mainArraySize = allJobsArray.getCurrentSize();
-    searchedJobsArray = DynamicArray<Occupation*>(mainArraySize);
+    searchedJobsArray = DynamicArray<const Occupation*>(mainArraySize);
 
     // linear search to find whether wage sits between the upper and lower bounds inclusive
     for (int i = 0; i < mainArraySize; i++) {
-        if (allJobsArray[i].getWage() >= lowerLimit && allJobsArray[i].getWage() <= upperLimit) {
-            searchedJobsArray.addJobToArray(&allJobsArray[i], searchedJobsArray.getCurrentSize());
+        if (allJobsArray[i]->getWage() >= lowerLimit && allJobsArray[i]->getWage() <= upperLimit) {
+            searchedJobsArray.append(allJobsArray[i].get());
         }
     }
 
@@ -210,52 +222,52 @@ Occupation *JobDatabase::searchJobByCode(const int &matrixCodeInt) const {
     return allJobsHashTable.getJobPointer(matrixCodeInt);
 }
 
-Occupation* JobDatabase::findCategory(const std::string &codePrefix) const {
+const Occupation* JobDatabase::findCategory(const std::string &codePrefix) const {
 
     const int arraySize = allJobsArray.getCurrentSize();
 
     for (int i = 0; i < arraySize; i++) {
-        if (allJobsArray[i].getMatrixCodeInt() / 10000 == stoi(codePrefix)) {
-            return &allJobsArray[i];
+        if (allJobsArray[i]->getMatrixCodeInt() / 10000 == stoi(codePrefix)) {
+            return allJobsArray[i].get();
         }
     }
 
    return nullptr;
 }
 
-void JobDatabase::forEachJobInMainArray(const std::function<void(const Occupation &job)> &fn) const {
+void JobDatabase::forEachJobInMainArray(const std::function<void(const Occupation *job)> &fn) const {
     int arraySize = allJobsArray.getCurrentSize();
 
     for (int i = 0; i < arraySize; i++) {
-        fn(allJobsArray[i]);
+        fn(allJobsArray[i].get());
     }
 }
 
-void JobDatabase::forEachEntryInHashTable(const std::function<void(const Occupation &job)> &fn) const {
+void JobDatabase::forEachEntryInHashTable(const std::function<void(const Occupation *job)> &fn) const {
     int hashTableSize = allJobsHashTable.getTableCapacity();
 
     for (int i = 0; i < hashTableSize; i++) {
         if (allJobsHashTable.getJobPointer(i)) {
-            fn(*allJobsHashTable.getJobPointer(i));
+            fn(allJobsHashTable.getJobPointer(i));
         }
     }
 }
 
-void JobDatabase::forEachCategory(const std::function<void(const Occupation& jobCategory)> &fn) const {
+void JobDatabase::forEachCategory(const std::function<void(const Occupation *jobCategory)> &fn) const {
     int arraySize = allJobsArray.getCurrentSize();
 
     for (int i = 0; i < arraySize; i++) {
-        if (allJobsArray[i].getMatrixCodeInt() % 10000 == 0) {
-           fn(allJobsArray[i]);
+        if (allJobsArray[i]->getMatrixCodeInt() % 10000 == 0) {
+           fn(allJobsArray[i].get());
         }
     }
 }
 
-void JobDatabase::forEachJobInCategory(const std::string &prefix, const std::function<void(const Occupation& job)> &fn) const {
+void JobDatabase::forEachJobInCategory(const std::string &prefix, const std::function<void(const Occupation *job)> &fn) const {
     int arraySize = allJobsArray.getCurrentSize();
     for (int i = 0; i < arraySize; i++) {
-        if (allJobsArray[i].getMatrixPrefix() == prefix) {
-            fn(allJobsArray[i]);
+        if (allJobsArray[i]->getMatrixPrefix() == prefix) {
+            fn(allJobsArray[i].get());
         }
     }
 }
@@ -283,7 +295,7 @@ Occupation* JobDatabase::addNewJobToDatabase(const OccupationRow& r) {
     uniquePointer->calculateChanges();
 
     Occupation* rawPointer = uniquePointer.get();
-    allJobsArray.addJobToArray(std::move(uniquePointer), allJobsArray.getCurrentSize());
+    allJobsArray.addJobToMainArray(std::move(uniquePointer), allJobsArray.getCurrentSize());
     allJobsHashTable.insertJob(rawPointer);
 
     return rawPointer;

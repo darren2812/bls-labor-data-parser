@@ -40,7 +40,6 @@ public:
 	// chatGPT informed that a destructor is required as the array is dynamically allocated
 	~HashTable();
 
-	// overloading the [] operator for printing
 	OpenAddressingBucket* operator[](int index) const;
 
 	HashTable& operator=(const HashTable&) = delete;

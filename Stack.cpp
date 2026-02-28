@@ -54,9 +54,9 @@ JobPair JobStack::peek() const {
 }
 
 // search function takes in a string to compare with job field in the pair
-bool JobStack::searchStack(const std::string &jobToSearch, DynamicArray<Occupation *> &searchedJobsArray) {
+bool JobStack::searchStack(const std::string &jobToSearch, DynamicArray<const Occupation *> &searchedJobsArray) {
 
-	searchedJobsArray = DynamicArray<Occupation*>(currentLength);
+	searchedJobsArray = DynamicArray<const Occupation*>(currentLength);
 
 	// linear search for substrings
 	for (int i = 0; i < currentLength; i++) {
@@ -66,7 +66,7 @@ bool JobStack::searchStack(const std::string &jobToSearch, DynamicArray<Occupati
 		lowerString(currentEntry);
 
 		if (currentEntry.find(query) != std::string::npos) {
-			searchedJobsArray.addJobToArray(&array[i].job, searchedJobsArray.getCurrentSize());
+			searchedJobsArray.append(&array[i].job);
 		}
 	}
 
