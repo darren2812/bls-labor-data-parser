@@ -5,10 +5,16 @@
 #include "Occupation.h"
 #include "DynamicArray.h"
 
+// enum to hold recent state
+enum class RecentState {
+	ADDED,
+	REMOVED
+};
+
 // struct to hold job and recent state values (added / deleted)
 struct JobPair {
 	Occupation job;
-	std::string recentState;
+	RecentState recentState = RecentState::ADDED;
 };
 
 // stack code from zyBooks
@@ -18,8 +24,8 @@ private:
 	int allocationSize = 5;
 	int currentLength = 0;
 	JobPair* array;
-public:
 
+public:
 	JobStack();
 	~JobStack();
 	void resize();

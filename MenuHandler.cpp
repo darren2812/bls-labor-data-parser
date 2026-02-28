@@ -165,7 +165,7 @@ void MenuHandler::printEntireStack(JobStack &stack, const std::string &dataset) 
     }
     const int firstColumnLength = tableColumnLengths[0];
     const int secondColumnLength = 8;
-    std::string capitalizedState;
+    std::string state;
 
     std::cout << "\nRecent Changes Made to " << dataset << "\n" << std::endl;
 
@@ -182,10 +182,14 @@ void MenuHandler::printEntireStack(JobStack &stack, const std::string &dataset) 
     int stackLength = stack.getCurrentLength();
 
     stack.forEachJobInStack([&](const JobPair &pair) {
-        capitalizedState = pair.recentState;
-        capitalizeFirst(capitalizedState);
+        if (pair.recentState == RecentState::ADDED) {
+            state = "Added";
+        }
+        else {
+            state = "Removed";
+        }
         std::cout << std::left << std::setw(firstColumnLength) << pair.job.getOccupation() << "|"
-                << std::setw(secondColumnLength) << capitalizedState << "|" << std::endl;
+                << std::setw(secondColumnLength) << state << "|" << std::endl;
     });
 }
 
@@ -686,8 +690,7 @@ void MenuHandler::handleAddDatabase() {
     OccupationRow jobToAdd = promptJobAttributes(jobTitle, matrixCode);
     Occupation *jobToPush = allJobsDatabase.addNewJobToDatabase(jobToAdd);
 
-    recentChangesDatabase.push({*jobToPush, "added"});
-
+    recentChangesDatabase.push({*jobToPush, RecentState::ADDED});
     savedDatabase = false;
 
     // outputs job added to the console
@@ -714,8 +717,8 @@ void MenuHandler::handleAddList() {
     const Occupation *occupationToAdd = chooseJobToModify("add");
     if (occupationToAdd != nullptr) {
         if (placeOccupationInList(occupationToAdd)) {
-            recentChangesDatabase.push({*occupationToAdd, "added"});
-            savedDatabase = false;
+            recentChangesList.push({*occupationToAdd, RecentState::ADDED});
+            savedList = false;
             std::cout << "\nOccupation successfully added to list. Returning to list menu..." << std::endl;
             return;
         }
@@ -734,8 +737,8 @@ void MenuHandler::handleRemoveList() {
     const Occupation *jobRemoved = jobsList.removeByIndex(indexToRemove)->data;
 
     if (jobRemoved != nullptr) {
-        recentChangesDatabase.push({*jobRemoved, "removed"});
-        savedDatabase = false;
+        recentChangesList.push({*jobRemoved, RecentState::REMOVED});
+        savedList = false;
         return;
     }
     std::cout << "\nFailed to remove occupation from list. Returning to list menu..." << std::endl;
@@ -746,7 +749,7 @@ void MenuHandler::handleRemoveDatabase() {
 
     if (occupationToRemove != nullptr) {
         if (allJobsDatabase.removeJobFromDatabase(occupationToRemove)) {
-            recentChangesDatabase.push({*occupationToRemove, "removed"});
+            recentChangesDatabase.push({*occupationToRemove, RecentState::REMOVED});
             savedDatabase = false;
             std::cout << "\nOccupation successfully removed from database. Returning to main menu..." << std::endl;
             return;
