@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Occupation.h"
+#include <functional>
 #include <string>
+#include "Occupation.h"
+#include "DynamicArray.h"
 
 // struct to hold job and recent state values (added / deleted)
 struct JobPair {
 	Occupation job;
 	std::string recentState;
-	// node order set to -1 if not defined (only required for linked list)
-	int jobIndex = -1;
 };
 
 // stack code from zyBooks
@@ -19,14 +19,16 @@ private:
 	int currentLength = 0;
 	JobPair* array;
 public:
+
 	JobStack();
 	~JobStack();
 	void resize();
-	void push(JobPair pair);
-	JobPair peek();
+	void push(const JobPair &pair);
+	JobPair peek() const;
 	JobPair pop();
-	bool searchStack(std::string jobSearched);
-	bool printEntireStack(int firstColumnLength, std::string dataset);
+	bool searchStack(const std::string &jobToSearch, DynamicArray<Occupation *> &searchedJobsArray);
 	int getCurrentLength();
+
+	void forEachJobInStack(const std::function<void(const JobPair &pair)> &fn) const;
 };
 

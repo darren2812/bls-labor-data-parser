@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iomanip>
 #include <chrono>
+#include <cctype>
 #include "LinkedList.h"
 #include "Helpers.h"
 #include "OldDatabase.h"
@@ -24,12 +25,24 @@ float toFloat(std::string& s) {
 	}
 }
 
-// function to make std::string lowercase
-void lowerString(std::string& input) {
-	for (int i = 0; i < input.length(); i++) {
-		input[i] = std::tolower(input[i]);
+void capitalizeFirst(std::string& input) {
+	if (!input.empty()) {
+		input[0] = static_cast<char>(
+			std::toupper(static_cast<unsigned char>(input[0]))
+		);
 	}
 }
+
+void lowerString(std::string& input) {
+	if (!input.empty()) {
+		for (int i = 0; i < input.length(); i++) {
+			input[0] = static_cast<char>(
+				std::tolower(static_cast<unsigned char>(input[0]))
+			);
+		}
+	}
+}
+
 
 // helper function to handle all search functions
 bool searchFunction(SinglyLinkedList* list, std::string dataStructure, std::string searchType, Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter,

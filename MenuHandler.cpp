@@ -159,6 +159,39 @@ void MenuHandler::printSearchedJobs() {
     output.close();
 }
 
+void MenuHandler::printEntireStack(JobStack &stack, const std::string &dataset) {
+
+    // making sure that the stack is not empty
+    if (stack.getCurrentLength() == 0) {
+        std::cout << "\nThere are no changes to display at the moment." << std::endl;
+        return;
+    }
+    const int firstColumnLength = tableColumnLengths[0];
+    const int secondColumnLength = 8;
+    std::string capitalizedState;
+
+    std::cout << "\nRecent Changes Made to " << dataset << "\n" << std::endl;
+
+    std::cout << std::left << std::setw(firstColumnLength) << "Occupation" << "|";
+    // 6 is the length of the word 'removed'
+    std::cout << std::left << std::setw(secondColumnLength) << "Action" << "|\n";
+
+    // printing heading horizontal divider
+    for (int i = 0; i <= firstColumnLength + secondColumnLength; i++) {
+        std::cout << '=';
+    }
+    std::cout << '|' << std::endl;
+
+    int stackLength = stack.getCurrentLength();
+
+    stack.forEachJobInStack([&](const JobPair &pair){
+        capitalizedState = pair.recentState;
+        capitalizeFirst(capitalizedState);
+        std::cout << std::left << std::setw(firstColumnLength) << pair.job.getOccupation() << "|"
+                << std::setw(secondColumnLength) << capitalizedState << "|" << std::endl;
+    });
+}
+
 void MenuHandler::printAllCategories() const {
     allJobsDatabase.forEachCategory([&](const Occupation &jobCategory) {
         printPrefixAndCategory(jobCategory);
@@ -198,15 +231,14 @@ void MenuHandler::printList() {
 // function to handle menu commands
 char MenuHandler::menuHandling(char firstLetter, char lastLetter, bool acceptDash) {
     std::string userInput;
-    char tempChar;
 
     do {
         std::getline(std::cin, userInput);
         if (acceptDash && userInput == "-") {
             return userInput[0];
         }
-        tempChar = std::toupper(userInput[0]);
-        if (tempChar < firstLetter || tempChar > lastLetter) {
+        capitalizeFirst(userInput);
+        if (userInput[0] < firstLetter || userInput[0] > lastLetter) {
             std::cout << "\nEnter a letter from " << firstLetter << " to " << lastLetter << ".\n" << std::endl;
         } else {
             return userInput[0];
@@ -255,7 +287,7 @@ std::string MenuHandler::promptNonNegativeOrDash() {
 
 OccupationRow MenuHandler::promptJobAttributes(std::string jobTitle, const std::string &matrixCode) {
     // Sets occupation based on previous user input
-    jobTitle[0] = std::toupper(jobTitle[0]);
+    capitalizeFirst(jobTitle);
     jobTitle += " *";
 
     // Gives user option to set occupation type as line item or summary
@@ -480,7 +512,7 @@ void MenuHandler::handleAddDatabase() {
     } while (true);
 
     OccupationRow jobToAdd = promptJobAttributes(jobTitle, matrixCode);
-    Occupation* jobToPush = allJobsDatabase.addNewJobToDatabase(jobToAdd);
+    Occupation *jobToPush = allJobsDatabase.addNewJobToDatabase(jobToAdd);
 
     recentChangesDatabase.push({*jobToPush, "added"});
 
@@ -493,7 +525,6 @@ void MenuHandler::handleAddDatabase() {
 
 // function to pinpoint the specific index of an occupation
 Occupation *MenuHandler::selectSpecificIndex(const std::string &command) {
-
     std::cout << "\nEnter the name of the occupation to " + command + ".\n" << std::endl;
 
     std::string userInput;
@@ -571,7 +602,8 @@ Occupation *MenuHandler::buildKeyAndSearch() {
 }
 
 Occupation *MenuHandler::chooseJobToModify(const std::string &command) {
-    std::cout << "\nDo you want to search for the occupation to " + command + " by title or by matrix code?" << std::endl
+    std::cout << "\nDo you want to search for the occupation to " + command + " by title or by matrix code?" <<
+            std::endl
             << "A: Title" << std::endl
             << "B: Matrix Code" << std::endl
             << "C: Return to List Menu\n" <<
@@ -647,7 +679,7 @@ void MenuHandler::handleRemoveList() {
 
     int indexToRemove = handleListIndexRetrieval();
 
-    Occupation* jobRemoved = jobsList.removeByIndex(indexToRemove)->data;
+    Occupation *jobRemoved = jobsList.removeByIndex(indexToRemove)->data;
 
     if (jobRemoved != nullptr) {
         recentChangesDatabase.push({*jobRemoved, "removed"});

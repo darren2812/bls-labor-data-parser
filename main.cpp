@@ -505,7 +505,7 @@ int main() {
 					try {
 						if (recentChangesList.peek().recentState == "added") {
 							undoneJobPair = recentChangesList.pop();
-							list->removeByIndex(undoneJobPair.jobIndex);
+							list->removeByIndex(undoneJobPair.job.getJobIndex());
 							std::cout << "\n'" << undoneJobPair.job.getOccupation() << "' is removed from the list again." << std::endl;
 						}
 						else if (recentChangesList.peek().recentState == "removed") {

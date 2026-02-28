@@ -108,6 +108,9 @@ SinglyLinkedNode *SinglyLinkedList::removeByIndex(int jobIndex) {
 }
 
 bool SinglyLinkedList::searchListByJob(const std::string &jobToSearch, DynamicArray<Occupation *> &searchedJobsArray) {
+
+    searchedJobsArray = DynamicArray<Occupation*>(listSize);
+
     SinglyLinkedNode *current = head;
 
     std::string query = jobToSearch;
@@ -133,6 +136,9 @@ bool SinglyLinkedList::searchListByJob(const std::string &jobToSearch, DynamicAr
 // function to search by wage
 bool SinglyLinkedList::searchListByWage(const float &lowerLimit, const float &upperLimit,
                                        DynamicArray<Occupation *> &searchedJobsArray) {
+
+    searchedJobsArray = DynamicArray<Occupation*>(listSize);
+
     SinglyLinkedNode* current = head;
     while (current != nullptr) {
         if (current->data->getWage() >= lowerLimit && current->data->getWage() <= upperLimit) {

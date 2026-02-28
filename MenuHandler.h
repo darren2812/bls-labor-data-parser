@@ -95,6 +95,8 @@ public:
     void printMainArray();
     void printHashTable();
     void printSearchedJobs();
+    void printEntireStack(JobStack &stack, const std::string &dataset);
+
 
     void printAllCategories() const;
     void printCategoryContents(const std::string &prefix) const;
