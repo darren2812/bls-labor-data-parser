@@ -13,7 +13,9 @@ enum class RecentState {
 
 // struct to hold job and recent state values (added / deleted)
 struct JobPair {
-	Occupation job;
+	std::unique_ptr<Occupation> job = {};
+	int jobIndex = -1;
+	int matrixCodeInt = -1;
 	RecentState recentState = RecentState::ADDED;
 };
 
@@ -23,14 +25,15 @@ private:
 	// allocate 5 elements for the array
 	int allocationSize = 5;
 	int currentLength = 0;
-	JobPair* array;
+	JobPair* array = nullptr;
 
 public:
+
 	JobStack();
 	~JobStack();
 	void resize();
-	void push(const JobPair &pair);
-	JobPair peek() const;
+	void push(JobPair &&pair);
+	const JobPair& peek() const;
 	JobPair pop();
 	bool searchStack(const std::string &jobToSearch, DynamicArray<const Occupation *> &searchedJobsArray);
 	int getCurrentLength();

@@ -1,174 +1,46 @@
 // Helpers.cpp
 // Darren Daniel
 
-#include <iostream>
 #include <iomanip>
 #include <chrono>
 #include <cctype>
-#include "LinkedList.h"
 #include "Helpers.h"
-#include "OldDatabase.h"
-#include "Occupation.h"
-
-// initializing global catch variable to determine if catch statement is called
-bool g_catch = false;
 
 // ChatGPT suggested using a try and catch statement to handle missing values (i.e. "-")
-float toFloat(std::string& s) {
-	try {
-		g_catch = false;
-		return stof(s);
-	}
-	catch (...) {
-		g_catch = true;
-		return 0.0f;
-	}
+float toFloat(std::string &s) {
+    try {
+        return stof(s);
+    } catch (std::exception &) {
+        return 0.0f;
+    }
 }
 
-void capitalizeFirst(std::string& input) {
-	if (!input.empty()) {
-		input[0] = static_cast<char>(
-			std::toupper(static_cast<unsigned char>(input[0]))
-		);
-	}
+void capitalizeFirst(std::string &input) {
+    if (!input.empty()) {
+        input[0] = static_cast<char>(
+            std::toupper(static_cast<unsigned char>(input[0]))
+        );
+    }
 }
 
-void lowerString(std::string& input) {
-	if (!input.empty()) {
-		for (int i = 0; i < input.length(); i++) {
-			input[0] = static_cast<char>(
-				std::tolower(static_cast<unsigned char>(input[0]))
-			);
-		}
-	}
-}
-
-
-// helper function to handle all search functions
-bool searchFunction(SinglyLinkedList* list, std::string dataStructure, std::string searchType, Occupation* searchedJobs, Occupation* allJobs, const int& jobCounter,
-	const std::string* headings, int* columnLengths, int& searchRows) {
-
-	std::string input = "-";
-	// lower and upper limits for wage search
-	float lowerLimit = 0.0f;
-	float upperLimit = 0.0f;
-	// time counters, chrono implementation taken from cpp reference website and ChatGPT
-	std::chrono::high_resolution_clock::time_point startTime;
-	std::chrono::high_resolution_clock::time_point endTime;
-	std::chrono::microseconds timeTaken;
-
-	if (searchType == "title") {
-		std::cout << "\nWhat job do you want to search for?\n" << std::endl;
-		std::getline(std::cin, input);
-		lowerString(input);
-
-		// start of search algorithm and outputs time taken in microseconds
-		startTime = std::chrono::high_resolution_clock::now();
-		// searchRows based on what function is being passed in as an argument
-		if (dataStructure == "array") {
-			searchRows = searchByJob(searchedJobs, allJobs, jobCounter, input);
-		}
-		else if (dataStructure == "list") {
-			searchRows = list->searchListByJob(input, searchedJobs);
-		}
-		endTime = std::chrono::high_resolution_clock::now();
-		timeTaken = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
-
-		// displays entries found in output file
-		if (searchRows == 0) {
-			// prints time to search regardless of whether entries were found
-			std::cout << "\nTime to search: " << timeTaken.count() << " microseconds." << std::endl;
-			// message if no jobs are found
-			std::cout << "\nSorry, we cannot find that job in our database." << std::endl;
-			return false;
-		}
-		else {
-			viewEntries(searchedJobs, headings, columnLengths, searchRows);
-			// prints time to search regardless of whether entries were found
-			std::cout << "\nTime to search: " << timeTaken.count() << " microseconds." << std::endl;
-			std::cout << "\nCheck output file for full table." << std::endl;
-			return true;
-		}
-	}
-
-	else if (searchType == "wage") {
-		std::cout << "\nEnter lower limit for median annual wage to search:\n" << std::endl;
-		std::getline(std::cin, input);
-		lowerLimit = toFloat(input);
-		// any std::string makes g_catch true in toFloat()
-		while (g_catch == true) {
-			std::cout << "\nEnter a numeric value for the lower limit:\n" << std::endl;
-			std::getline(std::cin, input);
-			lowerLimit = toFloat(input);
-		}
-
-		// asks user for upper limit and assigns that value
-		std::cout << "\nEnter upper limit for median annual wage to search:\n" << std::endl;
-		std::getline(std::cin, input);
-		upperLimit = toFloat(input);
-		while (g_catch == true) {
-			std::cout << "\nEnter a numeric value for the upper limit:\n" << std::endl;
-			std::getline(std::cin, input);
-			upperLimit = toFloat(input);
-		}
-
-		// start of search algorithm and outputs time taken in microseconds
-		startTime = std::chrono::high_resolution_clock::now();
-		// searchRows based on what function is entered
-		if (dataStructure == "array") {
-			searchRows = searchByWage(searchedJobs, allJobs, jobCounter, lowerLimit, upperLimit);
-		}
-		else if (dataStructure == "list") {
-			searchRows = list->searchListByWage(lowerLimit, upperLimit, searchedJobs);
-		}
-		endTime = std::chrono::high_resolution_clock::now();
-		timeTaken = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
-
-		// message if no jobs are found
-		if (searchRows == 0) {
-			// prints time to search regardless of whether entries were found
-			std::cout << "\nTime to search: " << timeTaken.count() << " microseconds." << std::endl;
-			std::cout << "\nSorry, we cannot find jobs within the wage range you specified." << std::endl;
-			return false;
-		}
-		else {
-			// displays searched entries in output file
-			viewEntries(searchedJobs, headings, columnLengths, searchRows);
-			// prints time to search regardless of whether entries were found
-			std::cout << "\nTime to search: " << timeTaken.count() << " microseconds." << std::endl;
-			std::cout << "\nWe found " << searchRows << " matching jobs in our database. Check output file for full table." << std::endl;
-			return true;
-		}
-	}
-
-	else {
-		std::cout << "\nNo search functions were called." << std::endl;
-		return false;
-	}
+void lowerString(std::string &input) {
+    if (!input.empty()) {
+        for (int i = 0; i < input.length(); i++) {
+            input[0] = static_cast<char>(
+                std::tolower(static_cast<unsigned char>(input[0]))
+            );
+        }
+    }
 }
 
 // function to mind max value in an array
-float findMax(Occupation** jobArray, int numberOfJobs, float(*function)(Occupation*)) {
-	float maxValue = 0;
-	for (int i = 0; i < numberOfJobs; i++) {
-		if (maxValue < function(jobArray[i])) {
-			maxValue = function(jobArray[i]);
-		}
-	}
-	return maxValue;
-}
-
-// function to print bar chart to the console
-void printBarChart(Occupation** comparedJobs, float maxValue, float maxChartLength, int jobsToCompare, float(*function)(Occupation*)) {
-	float valueOfHashTag = maxValue / maxChartLength;
-	int numberOfHashTags;
-	std::cout << "One # represents " << valueOfHashTag << std::endl;
-	for (int j = 0; j < jobsToCompare; j++) {
-		std::cout << "[" << j << "]: ";
-		numberOfHashTags = function(comparedJobs[j]) / valueOfHashTag;
-		for (int k = 0; k < numberOfHashTags; k++) {
-			std::cout << "#";
-		}
-		std::cout << " (" << function(comparedJobs[j]) << ")" << std::endl;
-	}
+float findMax(DynamicArray<const Occupation *> &array, int numberOfJobs,
+              const std::function<float(const Occupation *)> &function) {
+    float maxValue = 0;
+    for (int i = 0; i < numberOfJobs; i++) {
+        if (maxValue < function(array[i])) {
+            maxValue = function(array[i]);
+        }
+    }
+    return maxValue;
 }

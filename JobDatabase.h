@@ -40,8 +40,9 @@ public:
     const Occupation* findCategory(const std::string &codePrefix) const;
 
     Occupation* addNewJobToDatabase(const OccupationRow& r);
+    void restoreJob(std::unique_ptr<Occupation> jobToAdd, int index);
 
-    bool removeJobFromDatabase(const Occupation *jobPointer);
+    std::unique_ptr<Occupation> removeJobFromDatabase(int indexToRemove, int matrixCodeInt);
 
     // iterators for printing
     void forEachJobInMainArray(const std::function<void(const Occupation *job)> &fn) const;

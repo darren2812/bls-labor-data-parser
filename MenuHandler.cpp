@@ -184,13 +184,142 @@ void MenuHandler::printEntireStack(JobStack &stack, const std::string &dataset) 
     stack.forEachJobInStack([&](const JobPair &pair) {
         if (pair.recentState == RecentState::ADDED) {
             state = "Added";
-        }
-        else {
+        } else {
             state = "Removed";
         }
-        std::cout << std::left << std::setw(firstColumnLength) << pair.job.getOccupation() << "|"
+        std::cout << std::left << std::setw(firstColumnLength) << pair.job->getOccupation() << "|"
                 << std::setw(secondColumnLength) << state << "|" << std::endl;
     });
+}
+
+// function to print bar chart to the console
+void MenuHandler::printBarChart(float maxValue, const float maxChartLength,
+                                const std::function<float(const Occupation *)> &fn) {
+    int jobsToCompare = comparedJobsArray.getCurrentSize();
+    float valueOfHashTag = maxValue / maxChartLength;
+
+    std::cout << "One # represents " << valueOfHashTag << std::endl;
+    for (int j = 0; j < jobsToCompare; j++) {
+        std::cout << "[" << j << "]: ";
+        int numberOfHashTags = std::round(fn(comparedJobsArray[j]) / valueOfHashTag);
+        for (int k = 0; k < numberOfHashTags; k++) {
+            std::cout << "#";
+        }
+        std::cout << " (" << fn(comparedJobsArray[j]) << ")" << std::endl;
+    }
+}
+
+void MenuHandler::printComparisonResults() {
+    int jobsToCompare = comparedJobsArray.getCurrentSize();
+
+    // iterate through all headings but skip ones that are not important to the comparison
+    for (int i = 1; i < NUM_OF_HEADINGS - 1; i++) {
+        std::cout << "\n\n" << tableHeadings[i] << ":" << std::endl
+                << "(Numbers in thousands, except percentages and median annual wages)\n" << std::endl;
+        switch (i) {
+            case 1:
+                for (int j = 0; j < jobsToCompare; j++) {
+                    std::cout << "[" << j << "]: " << comparedJobsArray[j]->getMatrixCode() << std::endl;
+                }
+                break;
+            case 2:
+                for (int j = 0; j < jobsToCompare; j++) {
+                    std::cout << "[" << j << "]: " << comparedJobsArray[j]->getOccupationType() << std::endl;
+                }
+                break;
+            case 3: {
+                // finds the max value and divides it by the max bar chart length for scaling
+                auto getterLambda = [](const Occupation *job) { return job->getEmploymentCurrent(); };
+                printBarChart(findMax(comparedJobsArray, getterLambda),
+                              MAX_BAR_CHART_LENGTH,
+                              getterLambda);
+            }
+            break;
+            case 4: {
+                // finds the max value and divides it by the max bar chart length for scaling
+                auto getterLambda = [](const Occupation *job) { return job->getEmploymentFuture(); };
+                printBarChart(findMax(comparedJobsArray, getterLambda),
+                              MAX_BAR_CHART_LENGTH,
+                              getterLambda);
+            }
+            break;
+            case 5: {
+                // finds the max value and divides it by the max bar chart length for scaling
+                auto getterLambda = [](const Occupation *job) { return job->getDistributionCurrent(); };
+                printBarChart(findMax(comparedJobsArray, getterLambda),
+                              MAX_BAR_CHART_LENGTH,
+                              getterLambda);
+            }
+            break;
+            case 6: {
+                // finds the max value and divides it by the max bar chart length for scaling
+                auto getterLambda = [](const Occupation *job) { return job->getDistributionFuture(); };
+                printBarChart(findMax(comparedJobsArray, getterLambda),
+                              MAX_BAR_CHART_LENGTH,
+                              getterLambda);
+            }
+            break;
+            case 7: {
+                // finds the max value and divides it by the max bar chart length for scaling
+                auto getterLambda = [](const Occupation *job) { return job->getNumericChange(); };
+                printBarChart(findMax(comparedJobsArray, getterLambda),
+                              MAX_BAR_CHART_LENGTH,
+                              getterLambda);
+            }
+            break;
+            case 8: {
+                // finds the max value and divides it by the max bar chart length for scaling
+                auto getterLambda = [](const Occupation *job) { return job->getPercentageChange(); };
+                printBarChart(findMax(comparedJobsArray, getterLambda),
+                              MAX_BAR_CHART_LENGTH,
+                              getterLambda);
+            }
+            break;
+            case 9: {
+                // finds the max value and divides it by the max bar chart length for scaling
+                auto getterLambda = [](const Occupation *job) { return job->getPercentSelfEmployed(); };
+                printBarChart(findMax(comparedJobsArray, getterLambda),
+                              MAX_BAR_CHART_LENGTH,
+                              getterLambda);
+            }
+            break;
+            case 10: {
+                // finds the max value and divides it by the max bar chart length for scaling
+                auto getterLambda = [](const Occupation *job) { return job->getJobOpenings(); };
+                printBarChart(findMax(comparedJobsArray, getterLambda),
+                              MAX_BAR_CHART_LENGTH,
+                              getterLambda);
+            }
+            break;
+            case 11: {
+                // finds the max value and divides it by the max bar chart length for scaling
+                auto getterLambda = [](const Occupation *job) { return job->getWage(); };
+                printBarChart(findMax(comparedJobsArray, getterLambda),
+                              MAX_BAR_CHART_LENGTH,
+                              getterLambda);
+            }
+            break;
+            case 12:
+                for (int j = 0; j < jobsToCompare; j++) {
+                    std::cout << "[" << j << "]: " << comparedJobsArray[j]->getEducation() << std::endl;
+                }
+                break;
+            case 13:
+                for (int j = 0; j < jobsToCompare; j++) {
+                    std::cout << "[" << j << "]: " << comparedJobsArray[j]->getWorkExperience() << std::endl;
+                }
+                break;
+            case 14:
+                for (int j = 0; j < jobsToCompare; j++) {
+                    std::cout << "[" << j << "]: " << comparedJobsArray[j]->getTraining() << std::endl;
+                }
+                break;
+        }
+        std::cout << "\nReference:" << std::endl;
+        for (int j = 0; j < jobsToCompare; j++) {
+            std::cout << "[" << j << "]: " << comparedJobsArray[j]->getOccupation() << std::endl;
+        }
+    }
 }
 
 void MenuHandler::printAllCategories() const {
@@ -467,17 +596,17 @@ std::string MenuHandler::promptNumber() const {
 char MenuHandler::promptOptionToSearch(StructureToSearch dataset) {
     if (dataset == StructureToSearch::MAIN_ARRAY) {
         std::cout << "\nWhat do you want to searched based on?" << std::endl
-                 << "A: Job Title" << std::endl
-                 << "B: Wage" << std::endl
-                 << "C: Matrix Code" << std::endl
-                 << "D: Return to Main Menu\n" << std::endl;
+                << "A: Job Title" << std::endl
+                << "B: Wage" << std::endl
+                << "C: Matrix Code" << std::endl
+                << "D: Return to Main Menu\n" << std::endl;
         return menuHandling('A', 'D', false);
     }
 
     std::cout << "\nWhat do you want to searched based on?" << std::endl
-                 << "A: Job Title" << std::endl
-                 << "B: Wage" << std::endl
-                 << "C: Return to Main Menu\n" << std::endl;
+            << "A: Job Title" << std::endl
+            << "B: Wage" << std::endl
+            << "C: Return to Main Menu\n" << std::endl;
     return menuHandling('A', 'C', false);
 }
 
@@ -512,7 +641,7 @@ void MenuHandler::copyList(DynamicArray<const Occupation *> &outputArray) {
 }
 
 // function to pinpoint the specific index of an occupation
-const Occupation *MenuHandler::selectSpecificIndex(const std::string &command)  {
+const Occupation *MenuHandler::selectSpecificIndex(const std::string &command) {
     std::cout << "\nEnter the name of the occupation to " + command + ".\n" << std::endl;
 
     std::string userInput;
@@ -596,7 +725,7 @@ const Occupation *MenuHandler::chooseJobToModify(const std::string &command) {
             std::endl
             << "A: Title" << std::endl
             << "B: Matrix Code" << std::endl
-            << "C: Return to List Menu\n" <<
+            << "C: Return to Menu\n" <<
             std::endl;
     switch (menuHandling('A', 'B', false)) {
         case 'A':
@@ -633,6 +762,14 @@ bool MenuHandler::placeOccupationInList(const Occupation *occupation) {
         default:
             return false;
     }
+}
+
+bool MenuHandler::databasedIsSaved() {
+    return savedDatabase && recentChangesDatabase.getCurrentLength() == 0;
+}
+
+bool MenuHandler::listIsSaved() {
+    return savedList && recentChangesList.getCurrentLength() == 0;
 }
 
 
@@ -690,7 +827,7 @@ void MenuHandler::handleAddDatabase() {
     OccupationRow jobToAdd = promptJobAttributes(jobTitle, matrixCode);
     Occupation *jobToPush = allJobsDatabase.addNewJobToDatabase(jobToAdd);
 
-    recentChangesDatabase.push({*jobToPush, RecentState::ADDED});
+    recentChangesDatabase.push({nullptr, jobToPush->getJobIndex(), jobToPush->getMatrixCodeInt(), RecentState::ADDED});
     savedDatabase = false;
 
     // outputs job added to the console
@@ -717,7 +854,9 @@ void MenuHandler::handleAddList() {
     const Occupation *occupationToAdd = chooseJobToModify("add");
     if (occupationToAdd != nullptr) {
         if (placeOccupationInList(occupationToAdd)) {
-            recentChangesList.push({*occupationToAdd, RecentState::ADDED});
+            recentChangesList.push({
+                nullptr, occupationToAdd->getJobIndex(), occupationToAdd->getMatrixCodeInt(), RecentState::ADDED
+            });
             savedList = false;
             std::cout << "\nOccupation successfully added to list. Returning to list menu..." << std::endl;
             return;
@@ -736,8 +875,11 @@ void MenuHandler::handleRemoveList() {
 
     const Occupation *jobRemoved = jobsList.removeByIndex(indexToRemove)->data;
 
+    // list stack can just store job indices because the job still exists in the main database
     if (jobRemoved != nullptr) {
-        recentChangesList.push({*jobRemoved, RecentState::REMOVED});
+        recentChangesList.push({
+            nullptr, jobRemoved->getJobIndex(), jobRemoved->getMatrixCodeInt(), RecentState::REMOVED
+        });
         savedList = false;
         return;
     }
@@ -747,20 +889,21 @@ void MenuHandler::handleRemoveList() {
 void MenuHandler::handleRemoveDatabase() {
     const Occupation *occupationToRemove = chooseJobToModify("remove");
 
-    if (occupationToRemove != nullptr) {
-        if (allJobsDatabase.removeJobFromDatabase(occupationToRemove)) {
-            recentChangesDatabase.push({*occupationToRemove, RecentState::REMOVED});
-            savedDatabase = false;
-            std::cout << "\nOccupation successfully removed from database. Returning to main menu..." << std::endl;
-            return;
-        }
+    std::unique_ptr<Occupation> occupationToRemovePointer = allJobsDatabase.removeJobFromDatabase(
+        occupationToRemove->getJobIndex(), occupationToRemove->getMatrixCodeInt());
+
+    // unique pointer is moved to stack for removing items in the database
+    if (occupationToRemovePointer != nullptr) {
+        recentChangesDatabase.push({std::move(occupationToRemovePointer), -1, -1, RecentState::REMOVED});
+        savedDatabase = false;
+        std::cout << "\nOccupation successfully removed from database. Returning to main menu..." << std::endl;
+        return;
     }
     std::cout << "\nFailed to remove occupation from database. Returning to main menu..." << std::endl;
 }
 
 // sorting dialogue function to ask if user wants to see the data sorted
 void MenuHandler::handleSort(DynamicArray<const Occupation *> &sortedJobs, const StructureToSort dataset) {
-
     // copying the necessary dataset to the sorted jobs array
     switch (dataset) {
         case StructureToSort::MAIN_ARRAY:
@@ -802,13 +945,11 @@ void MenuHandler::handleSort(DynamicArray<const Occupation *> &sortedJobs, const
                 if (userInput[0] == '1') {
                     sortOrder = "ascending";
                     ascending = true;
-                }
-                else {
+                } else {
                     sortOrder = "descending";
                     ascending = false;
                 }
-            }
-            else {
+            } else {
                 std::cout << "\nReturning to main menu..." << std::endl;
                 return;
             }
@@ -816,30 +957,30 @@ void MenuHandler::handleSort(DynamicArray<const Occupation *> &sortedJobs, const
                 case 'A': // user selects alphabetical sort
                     sortCategory = "Occupation Title";
                     sortJob(sortedJobs, ascending,
-                        [](const Occupation* job) {
-                            return job->getOccupation();
-                        });
+                            [](const Occupation *job) {
+                                return job->getOccupation();
+                            });
                     break;
                 case 'B': // user selects wage sort
                     sortCategory = "Median Annual Wage 2024";
                     sortJob(sortedJobs, ascending,
-                       [](const Occupation* job) {
-                           return job->getWage();
-                       });
+                            [](const Occupation *job) {
+                                return job->getWage();
+                            });
                     break;
                 case 'C': // user selects education sort
                     sortCategory = "Typical Education Needed for Entry";
                     sortJob(sortedJobs, ascending,
-                       [](const Occupation* job) {
-                           return job->getEducationScore();
-                       });
+                            [](const Occupation *job) {
+                                return job->getEducationScore();
+                            });
                     break;
                 case 'D':
                     sortCategory = "Work Experience in a Related Occupation";
                     sortJob(sortedJobs, ascending,
-                       [](const Occupation* job) {
-                           return job->getWorkExperienceScore();
-                       });
+                            [](const Occupation *job) {
+                                return job->getWorkExperienceScore();
+                            });
                     break;
                 default: // break to main menu
                     std::cout << "\nReturning to menu..." << std::endl;
@@ -859,10 +1000,9 @@ void MenuHandler::handleSort(DynamicArray<const Occupation *> &sortedJobs, const
 }
 
 void MenuHandler::handleSearch(const StructureToSearch dataset) {
-
     int lowerLimit;
     int upperLimit;
-    const Occupation* jobSearched;
+    const Occupation *jobSearched;
     std::string searchValue;
 
     switch (promptOptionToSearch(dataset)) {
@@ -872,8 +1012,7 @@ void MenuHandler::handleSearch(const StructureToSearch dataset) {
 
             if (dataset == StructureToSearch::LIST) {
                 jobsList.searchListByJob(searchValue, searchedJobsArray);
-            }
-            else {
+            } else {
                 allJobsDatabase.searchArrayByJob(searchedJobsArray, searchValue);
             }
             break;
@@ -885,8 +1024,7 @@ void MenuHandler::handleSearch(const StructureToSearch dataset) {
 
             if (dataset == StructureToSearch::LIST) {
                 jobsList.searchListByWage(lowerLimit, upperLimit, searchedJobsArray);
-            }
-            else {
+            } else {
                 allJobsDatabase.searchArrayByWage(searchedJobsArray, lowerLimit, upperLimit);
             }
             break;
@@ -903,5 +1041,92 @@ void MenuHandler::handleSearch(const StructureToSearch dataset) {
         default:
             std::cout << "\nReturning to main menu..." << std::endl;
             return;
+    }
+}
+
+void MenuHandler::handleCompare() {
+    std::cout << "\nHow many occupations do you want to compare?" << std::endl;
+
+    int numberOfJobs;
+    const Occupation *jobToCompare;
+
+    do {
+        std::cout << "\nSelect at least 2 occupations.\n" << std::endl;
+        numberOfJobs = stoi(promptNumber());
+    } while (numberOfJobs < 2 || numberOfJobs > 100);
+
+    comparedJobsArray = DynamicArray<const Occupation *>(numberOfJobs);
+
+    for (int i = 0; i < numberOfJobs; i++) {
+        std::cout << "\nSelecting job " << (i + 1) << " out of " << numberOfJobs << " jobs." << std::endl;
+
+        jobToCompare = chooseJobToModify("compare");
+
+        if (jobToCompare == nullptr) {
+            std::cout << "\nReturning to main menu..." << std::endl;
+            return;
+        }
+
+        comparedJobsArray[i] = jobToCompare;
+    }
+}
+
+void MenuHandler::handleUndoDatabase() {
+    int index;
+    int matrixCodeInt;
+    std::string jobTitle;
+    std::unique_ptr<Occupation> job;
+
+    const auto &top = recentChangesDatabase.peek();
+
+    try {
+        if (top.recentState == RecentState::ADDED) {
+            auto change = recentChangesDatabase.pop();
+            index = change.jobIndex;
+            matrixCodeInt = change.matrixCodeInt;
+
+            job = allJobsDatabase.removeJobFromDatabase(index, matrixCodeInt);
+            jobTitle = job->getOccupation();
+            savedDatabase = false;
+
+            std::cout << "\n'" << jobTitle << "' is removed from the database." << std::endl;
+
+        } else if (top.recentState == RecentState::REMOVED) {
+            auto change = recentChangesDatabase.pop();
+            index = change.jobIndex;
+            jobTitle = change.job->getOccupation();
+
+            allJobsDatabase.restoreJob(std::move(job), index);
+            std::cout << "\n'" << jobTitle << "' is restored to the database." << std::endl;
+        }
+    } catch (const std::out_of_range &e) {
+        std::cout << "\n" << e.what() << std::endl;
+    }
+}
+
+bool MenuHandler::handleCheckSaved() {
+    if (databasedIsSaved() && listIsSaved()) {
+        std::cout << "\nGoodbye!" << std::endl;
+        return true;
+    }
+
+    if (!databasedIsSaved() && !listIsSaved()) {
+        std::cout << "\nThere are unsaved changes in main database and list." << std::endl;
+    }
+    if (databasedIsSaved() && !listIsSaved()) {
+        std::cout << "\nThere are unsaved changes in list." << std::endl;
+    }
+    if (!databasedIsSaved() && listIsSaved()) {
+        std::cout << "\nThere are unsaved changes in main database." << std::endl;
+    }
+
+    std::cout << "\nDo you still want to exit the program? (y/n)" << std::endl;
+    switch (yesOrNoMenu()) {
+        case 'y':
+            std::cout << "\nGoodbye!" << std::endl;
+            return true;
+        default:
+            std::cout << "\nReturning to main menu..." << std::endl;
+            return false;
     }
 }

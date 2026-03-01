@@ -30,11 +30,11 @@ void JobStack::resize() {
 }
 
 // pushes a pair to the stack and resizes when appropriate
-void JobStack::push(const JobPair &pair) {
+void JobStack::push(JobPair &&pair) {
 	if (currentLength >= allocationSize) {
 		resize();
 	}
-	array[currentLength] = pair;
+	array[currentLength] = std::move(pair);
 	currentLength++;
 }
 
@@ -43,10 +43,10 @@ JobPair JobStack::pop() {
 		throw std::out_of_range("No previous changes are recorded.");
 	}
 	currentLength--;
-	return array[currentLength];
+	return std::move(array[currentLength]);
 }
 
-JobPair JobStack::peek() const {
+const JobPair& JobStack::peek() const {
 	if (currentLength <= 0) {
 		throw std::out_of_range("No previous changes are recorded.");
 	}
@@ -61,12 +61,12 @@ bool JobStack::searchStack(const std::string &jobToSearch, DynamicArray<const Oc
 	// linear search for substrings
 	for (int i = 0; i < currentLength; i++) {
 		std::string query = jobToSearch;
-		std::string currentEntry = array[i].job.getOccupation();
+		std::string currentEntry = array[i].job->getOccupation();
 		lowerString(query);
 		lowerString(currentEntry);
 
 		if (currentEntry.find(query) != std::string::npos) {
-			searchedJobsArray.append(&array[i].job);
+			searchedJobsArray.append(array[i].job.get());
 		}
 	}
 

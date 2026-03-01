@@ -624,12 +624,12 @@ int main() {
 					switch (i) {
 					case 1:
 						for (int j = 0; j < jobsToCompare; j++) {
-							std::cout << "[" << j << "]: " << comparedJobs[j]->getMatrixCode() << std::endl;
+							std::cout << "[" << j << "]: " << comparedJobsArray[j]->getMatrixCode() << std::endl;
 						}
 						break;
 					case 2:
 						for (int j = 0; j < jobsToCompare; j++) {
-							std::cout << "[" << j << "]: " << comparedJobs[j]->getOccupationType() << std::endl;
+							std::cout << "[" << j << "]: " << comparedJobsArray[j]->getOccupationType() << std::endl;
 						}
 						break;
 					case 3:
@@ -733,23 +733,23 @@ int main() {
 						break;
 					case 12:
 						for (int j = 0; j < jobsToCompare; j++) {
-							std::cout << "[" << j << "]: " << comparedJobs[j]->getEducation() << std::endl;
+							std::cout << "[" << j << "]: " << comparedJobsArray[j]->getEducation() << std::endl;
 						}
 						break;
 					case 13:
 						for (int j = 0; j < jobsToCompare; j++) {
-							std::cout << "[" << j << "]: " << comparedJobs[j]->getWorkExperience() << std::endl;
+							std::cout << "[" << j << "]: " << comparedJobsArray[j]->getWorkExperience() << std::endl;
 						}
 						break;
 					case 14:
 						for (int j = 0; j < jobsToCompare; j++) {
-							std::cout << "[" << j << "]: " << comparedJobs[j]->getTraining() << std::endl;
+							std::cout << "[" << j << "]: " << comparedJobsArray[j]->getTraining() << std::endl;
 						}
 						break;
 					}
 					std::cout << "\nReference:" << std::endl;
 					for (int j = 0; j < jobsToCompare; j++) {
-						std::cout << "[" << j << "]: " << comparedJobs[j]->getOccupation() << std::endl;
+						std::cout << "[" << j << "]: " << comparedJobsArray[j]->getOccupation() << std::endl;
 					}
 				}
 			}

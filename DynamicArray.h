@@ -32,5 +32,5 @@ public:
     void append(const Occupation* jobToAppend);
 
     // function to remove an entry
-    bool removeEntry(const Occupation *jobToRemove);
+    T removeEntry(int indexRemoved);
 };

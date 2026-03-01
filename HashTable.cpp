@@ -145,8 +145,8 @@ bool HashTable::insertJob(Occupation *jobInserted) {
 }
 
 // remove method takes in a key as its argument
-bool HashTable::removeJob(const Occupation *jobRemoved) {
-	int hashedKey = hashJobKey(jobRemoved->getMatrixCodeInt());
+bool HashTable::removeJob(int matrixCodeInt) {
+	int hashedKey = hashJobKey(matrixCodeInt);
 	int bucketIndex;
 	for (int i = 0; i < tableCapacity; i++) {
 		bucketIndex = (c2 * i * i + c1 * i + hashedKey) % tableCapacity;

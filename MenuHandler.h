@@ -33,6 +33,7 @@ private:
     JobDatabase allJobsDatabase;
     DynamicArray<const Occupation*> searchedJobsArray;
     DynamicArray<const Occupation*> sortedJobsArray;
+    DynamicArray<const Occupation*> comparedJobsArray;
     // declaring linked list pointer suggested by chatGPT
     SinglyLinkedList jobsList;
     // creating stacks to track recent changes
@@ -105,6 +106,8 @@ public:
     void printHashTable();
     void printSearchSortResults(DynamicArray<const Occupation *> &array);
     void printEntireStack(JobStack &stack, const std::string &dataset);
+    void printBarChart(float maxValue, float maxChartLength, const std::function<float(const Occupation *)> &fn);
+    void printComparisonResults();
 
     void printAllCategories() const;
     void printCategoryContents(const std::string &prefix) const;
@@ -130,6 +133,9 @@ public:
     const Occupation* chooseJobToModify(const std::string &command);
     bool placeOccupationInList(const Occupation* occupation);
 
+    bool databasedIsSaved();
+    bool listIsSaved();
+
     // functions to copy the contents of one array to another
     void copyMainArray(DynamicArray<const Occupation *> &outputArray);
     void copySearchArray(DynamicArray<const Occupation *> &outputArray);
@@ -142,4 +148,7 @@ public:
     void handleRemoveDatabase();
     void handleSort(DynamicArray<const Occupation *> &sortedJobs, StructureToSort dataset);
     void handleSearch(StructureToSearch dataset);
+    void handleCompare();
+    void handleUndoDatabase();
+    bool handleCheckSaved();
 };

@@ -301,11 +301,19 @@ Occupation* JobDatabase::addNewJobToDatabase(const OccupationRow& r) {
     return rawPointer;
 }
 
-bool JobDatabase::removeJobFromDatabase(const Occupation *jobPointer) {
-    if (allJobsArray.removeEntry(jobPointer) && allJobsHashTable.removeJob(jobPointer)) {
-        return true;
+void JobDatabase::restoreJob(std::unique_ptr<Occupation> jobToAdd, int index) {
+    Occupation* rawPointer = jobToAdd.get();
+    allJobsArray.addJobToMainArray(std::move(jobToAdd), index);
+    allJobsHashTable.insertJob(rawPointer);
+}
+
+std::unique_ptr<Occupation> JobDatabase::removeJobFromDatabase(int indexToRemove, int matrixCodeInt) {
+    std::unique_ptr<Occupation> jobToRemove = allJobsArray.removeEntry(indexToRemove);
+
+    if (jobToRemove != nullptr && allJobsHashTable.removeJob(matrixCodeInt)) {
+        return std::move(jobToRemove);
     }
-    return false;
+    return nullptr;
 }
 
 

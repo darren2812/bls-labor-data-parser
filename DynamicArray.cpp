@@ -108,13 +108,13 @@ void DynamicArray<T>::append(const Occupation *jobToAppend) {
 }
 
 template <typename T>
-bool DynamicArray<T>::removeEntry(const Occupation *jobToRemove) {
+T DynamicArray<T>::removeEntry(int indexRemoved) {
 
-    const int indexRemoved = jobToRemove->getJobIndex();
+    T jobRemoved = data[indexRemoved];
 
     if (indexRemoved < 0 || indexRemoved >= currentSize) {
         std::cout << "Error: index out of bounds" << std::endl;
-        return false;
+        return nullptr;
     }
 
     for (int i = indexRemoved; i < currentSize - 1; i++) {
@@ -122,7 +122,7 @@ bool DynamicArray<T>::removeEntry(const Occupation *jobToRemove) {
         data[i]->setJobIndex(i);
     }
     currentSize--;
-    return true;
+    return jobRemoved;
 }
 
 
