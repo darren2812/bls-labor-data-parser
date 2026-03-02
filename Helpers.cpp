@@ -34,9 +34,9 @@ void lowerString(std::string &input) {
 }
 
 // function to mind max value in an array
-float findMax(DynamicArray<const Occupation *> &array, int numberOfJobs,
-              const std::function<float(const Occupation *)> &function) {
+float findMax(DynamicArray<const Occupation *> &array, const std::function<float(const Occupation *)> &function) {
     float maxValue = 0;
+    int numberOfJobs = array.getCurrentSize();
     for (int i = 0; i < numberOfJobs; i++) {
         if (maxValue < function(array[i])) {
             maxValue = function(array[i]);

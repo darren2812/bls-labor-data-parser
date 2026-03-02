@@ -5,7 +5,7 @@
 
 
 MenuHandler::MenuHandler()
-    : rawData("./input/rawData.txt"), listData("./input/listData.txt"), output("./output/output.txt") {
+    : rawData("../input/rawData.txt"), listData("../input/listData.txt"), output("../output/output.txt") {
 
     int numberOfRows = 0;
     std::string dummy;
@@ -75,6 +75,10 @@ void MenuHandler::displayListMenu() {
 }
 
 void MenuHandler::run() {
+
+    allocateDatabase();
+    allJobsDatabase.readInputFile(rawData, tableHeadings, tableColumnLengths);
+    allJobsDatabase.readListFile(listData, jobsList);
 
     bool isRunning = true;
 
@@ -730,7 +734,7 @@ std::string MenuHandler::promptNumber() const {
 }
 
 char MenuHandler::promptOptionToSearch(Structure dataset) {
-    if (dataset == Structure::MAIN_ARRAY) {
+    if (dataset == Structure::MAIN_DATABASE) {
         std::cout << "\nWhat do you want to searched based on?" << std::endl
                 << "A: Job Title" << std::endl
                 << "B: Wage" << std::endl
@@ -847,7 +851,7 @@ const Occupation *MenuHandler::buildKeyAndSearch() const {
             suffix = "0000";
         }
 
-        Occupation *jobToReturn = allJobsDatabase.searchJobByCode(stoi(prefix + suffix));
+        const Occupation *jobToReturn = allJobsDatabase.searchJobByCode(stoi(prefix + suffix));
 
         if (jobToReturn != nullptr) {
             return jobToReturn;
@@ -1260,7 +1264,7 @@ void MenuHandler::handleUndoList() {
 
         } else if (top.recentState == RecentState::REMOVED) {
             auto change = recentChangesList.pop();
-            Occupation* jobToAppend = allJobsDatabase.searchJobByCode(change.matrixCodeInt);
+            const Occupation* jobToAppend = allJobsDatabase.searchJobByCode(change.matrixCodeInt);
 
             jobTitle = jobToAppend->getOccupation();
             jobsList.append(jobToAppend);

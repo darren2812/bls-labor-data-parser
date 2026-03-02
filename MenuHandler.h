@@ -39,8 +39,8 @@ private:
     JobStack recentChangesList;
 
     size_t totalJobsCapacity;
-    bool savedDatabase = false;
-    bool savedList = false;
+    bool savedDatabase = true;
+    bool savedList = true;
 
     // ENUM for handling different sorting data structures
     enum class Structure {

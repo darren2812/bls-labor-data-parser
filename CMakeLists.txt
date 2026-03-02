@@ -21,10 +21,9 @@ add_executable(bls_labor_data_parser
         Sort.h
         Stack.cpp
         Stack.h
-        menuHandler.h
-        menuHandler.cpp
+        MenuHandler.h
+        MenuHandler.cpp
         DynamicArray.h
-        DynamicArray.cpp
         JobDatabase.cpp
         JobDatabase.h
 )

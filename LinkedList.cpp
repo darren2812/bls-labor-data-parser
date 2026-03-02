@@ -9,14 +9,7 @@
 
 // destructor for linked list
 SinglyLinkedList::~SinglyLinkedList() {
-    // sets the current node as the head
-    SinglyLinkedNode *current = head;
-    while (current) {
-        // traverses through the list and sets nodeToDelete for each node
-        SinglyLinkedNode *nodeToDelete = current;
-        current = current->next;
-        delete nodeToDelete;
-    }
+    clear();
 }
 
 void SinglyLinkedList::clear() {

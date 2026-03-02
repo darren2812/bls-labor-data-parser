@@ -4,6 +4,7 @@
 #pragma once
 
 #include <string>
+#include <functional>
 #include "DynamicArray.h"
 
 // input handler for missing values

@@ -18,14 +18,11 @@ public:
 
     int getSize() const;
 
-    const Occupation *at(int i) const;
-    Occupation *at(int i);
-
     JobDatabase &operator=(const JobDatabase &other) = delete;
     JobDatabase &operator=(JobDatabase &&other) noexcept = default;
 
     void readInputFile(std::fstream& rawData, const std::string* headings, int* columnLengths);
-    void readListFile(std::fstream &listData, SinglyLinkedList list, const HashTable &hashTable);
+    void readListFile(std::fstream &listData, SinglyLinkedList list);
     void rewriteInputFile(std::fstream& modifiedData);
     void rewriteListFile(std::fstream &listData, const SinglyLinkedList &list);
 
@@ -35,7 +32,7 @@ public:
 
     bool searchArrayByWage(DynamicArray<const Occupation *> &searchedJobsArray, int lowerLimit,
                       int upperLimit) const;
-    Occupation* searchJobByCode(const int &matrixCodeInt) const;
+    const Occupation* searchJobByCode(const int &matrixCodeInt) const;
 
     const Occupation* findCategory(const std::string &codePrefix) const;
 

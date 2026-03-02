@@ -94,7 +94,7 @@ int HashTable::getTableCapacity() const {
 }
 
 // function to get job pointer
-Occupation* HashTable::getJobPointer(int key) const {
+const Occupation* HashTable::getJobPointer(int key) const {
 	int hashedKey = hashJobKey(key);
 	int bucketIndex;
 	for (int i = 0; i < tableCapacity; i++) {
@@ -131,7 +131,7 @@ bool HashTable::insertJob(Occupation *jobInserted) {
 			}
 			return true;
 		}
-		else if (table[bucketIndex]->isEmptyAfterRemoval() && i == 0) {
+		if (table[bucketIndex]->isEmptyAfterRemoval() && i == 0) {
 			firstDeletedIndex = bucketIndex;
 		}
 		else if (!table[bucketIndex]->isEmptyAfterRemoval()) {
@@ -156,7 +156,7 @@ bool HashTable::removeJob(int matrixCodeInt) {
 		}
 		// changes the bucket index to empty after removal. deletion happens in the main array
 		if (!table[bucketIndex]->isEmptyAfterRemoval()) {
-			if (table[bucketIndex]->JobPointer->getMatrixCodeInt() == jobRemoved->getMatrixCodeInt()) {
+			if (table[bucketIndex]->JobPointer->getMatrixCodeInt() == matrixCodeInt) {
 				delete table[bucketIndex];
 				table[bucketIndex] = &OpenAddressingBucket::EMPTY_AFTER_REMOVAL;
 				return true;

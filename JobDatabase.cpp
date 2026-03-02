@@ -11,14 +11,6 @@ int JobDatabase::getSize() const {
     return allJobsArray.getCurrentSize();
 }
 
-const Occupation *JobDatabase::at(int i) const {
-    return allJobsArray[i].get();
-}
-
-Occupation *JobDatabase::at(int i) {
-    return allJobsArray[i].get();
-}
-
 void JobDatabase::readInputFile(std::fstream &rawData, const std::string *headings, int *columnLengths) {
     rawData.clear();
     rawData.seekg(0, std::ios::beg);
@@ -83,15 +75,13 @@ void JobDatabase::readInputFile(std::fstream &rawData, const std::string *headin
     }
 }
 
-void JobDatabase::readListFile(std::fstream &listData, SinglyLinkedList list, const HashTable &hashTable) {
+void JobDatabase::readListFile(std::fstream &listData, SinglyLinkedList list) {
     // setting the cursor position back to the start
     listData.clear();
     listData.seekg(0, std::ios::beg);
     std::string initialString;
     std::string tempString;
     int matrixCode;
-    Occupation *jobPointer;
-    int jobIndex;
     // loop while file does not end
     while (std::getline(listData, tempString)) {
         // try catch block to handle erroneous input
@@ -105,7 +95,7 @@ void JobDatabase::readListFile(std::fstream &listData, SinglyLinkedList list, co
             // converts the modified code to an int
             matrixCode = stoi(tempString);
             // searches for that code in the string
-            jobPointer = hashTable.getJobPointer(matrixCode);
+            const Occupation* jobPointer = allJobsHashTable.getJobPointer(matrixCode);
             if (jobPointer) {
                 list.append(jobPointer);
             } else {
@@ -218,7 +208,7 @@ bool JobDatabase::searchArrayByWage(DynamicArray<const Occupation *> &searchedJo
     return false;
 }
 
-Occupation *JobDatabase::searchJobByCode(const int &matrixCodeInt) const {
+const Occupation *JobDatabase::searchJobByCode(const int &matrixCodeInt) const {
     return allJobsHashTable.getJobPointer(matrixCodeInt);
 }
 
@@ -247,8 +237,8 @@ void JobDatabase::forEachEntryInHashTable(const std::function<void(const Occupat
     int hashTableSize = allJobsHashTable.getTableCapacity();
 
     for (int i = 0; i < hashTableSize; i++) {
-        if (allJobsHashTable.getJobPointer(i)) {
-            fn(allJobsHashTable.getJobPointer(i));
+        if (!allJobsHashTable[i]->isEmpty()) {
+            fn(allJobsHashTable[i]->JobPointer);
         }
     }
 }
@@ -307,7 +297,7 @@ void JobDatabase::restoreJob(std::unique_ptr<Occupation> jobToAdd, int index) {
     allJobsHashTable.insertJob(rawPointer);
 }
 
-std::unique_ptr<Occupation> JobDatabase::removeJobFromDatabase(int indexToRemove, int matrixCodeInt) {
+std::unique_ptr<Occupation> JobDatabase::removeJobFromDatabase(const int indexToRemove, const int matrixCodeInt) {
     std::unique_ptr<Occupation> jobToRemove = allJobsArray.removeEntry(indexToRemove);
 
     if (jobToRemove != nullptr && allJobsHashTable.removeJob(matrixCodeInt)) {

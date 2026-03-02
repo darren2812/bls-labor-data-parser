@@ -5,7 +5,7 @@ class OpenAddressingBucket {
 public:
 	// open addressing bucket only stores a job pointer because the key is already a member field of an Occupation object
 	// this means that occupation objects do not need to be copied as all data is contained in the main array
-	Occupation* JobPointer;
+	const Occupation* JobPointer;
 
 	// declaring constructors and destructor
 	OpenAddressingBucket();
@@ -48,7 +48,7 @@ public:
 	int getTableCapacity() const;
 	
 	// search method
-	Occupation* getJobPointer(int key) const;
+	const Occupation* getJobPointer(int key) const;
 
 	// methods to modify contents of table
 	bool insertJob(Occupation *jobInserted);
