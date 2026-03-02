@@ -75,7 +75,6 @@ public:
     void printAllCategories() const;
     void printCategoryContents(const std::string &prefix) const;
     void printIndicesInList() const;
-    void printList();
 
     // function to handle menu selection for reusability
     char menuHandling(char firstLetter, char lastLetter, bool acceptDash);
@@ -109,13 +108,14 @@ public:
     void handleAddList();
     void handleRemoveList();
     void handleRemoveDatabase();
-    void handleSort(DynamicArray<const Occupation *> &sortedJobs, Structure dataset);
+    void handleSort(Structure dataset);
     void handleSearch(Structure dataset);
     void handleCompare();
     void handleUndoDatabase();
     void handleUndoList();
     bool handleCheckSaved();
     void handleDatabasePrint();
+    void handleListPrint();
     void handleStackPrintAndSearch(Structure dataset);
     void handleClearList();
 };

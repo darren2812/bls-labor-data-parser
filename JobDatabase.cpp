@@ -110,6 +110,9 @@ void JobDatabase::readListFile(std::fstream &listData, SinglyLinkedList list) {
 void JobDatabase::rewriteInputFile(std::fstream &modifiedData) {
     int arraySize = allJobsArray.getCurrentSize();
 
+    modifiedData.clear();
+    modifiedData.seekp(0, std::ios::beg);
+
     for (int i = 0; i < arraySize; i++) {
         modifiedData << allJobsArray[i]->getOccupation() << std::endl
                 << allJobsArray[i]->getMatrixCode() << std::endl
@@ -128,8 +131,6 @@ void JobDatabase::rewriteInputFile(std::fstream &modifiedData) {
                 << allJobsArray[i]->getTraining() << std::endl
                 << allJobsArray[i]->getHandbookContent() << std::endl;
     }
-    // closes file
-    modifiedData.close();
 }
 
 void JobDatabase::rewriteListFile(std::fstream &listData, const SinglyLinkedList &list) {
