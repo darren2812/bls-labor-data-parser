@@ -13,8 +13,6 @@ add_executable(bls_labor_data_parser
         HashTable.h
         Helpers.cpp
         Helpers.h
-        OldDatabase.cpp
-        OldDatabase.h
         LinkedList.cpp
         LinkedList.h
         main.cpp

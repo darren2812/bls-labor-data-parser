@@ -19,10 +19,10 @@ private:
     SinglyLinkedNode *head = nullptr;
     SinglyLinkedNode *tail = nullptr;
     int listSize = 0;
-    int nodeCounter = 0;
 
 public:
     ~SinglyLinkedList();
+    void clear();
 
     void append(const Occupation *jobAppended);
 
@@ -42,7 +42,6 @@ public:
     // list iterator for functions in MenuHandler
     void forEachJobInList(const std::function<void(const Occupation *job)> &fn) const;
 
-    // getters
     int getListSize() const;
 
 };

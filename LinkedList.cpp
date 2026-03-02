@@ -19,6 +19,18 @@ SinglyLinkedList::~SinglyLinkedList() {
     }
 }
 
+void SinglyLinkedList::clear() {
+    SinglyLinkedNode *current = head;
+    while (current) {
+        SinglyLinkedNode *nodeToDelete = current;
+        current = current->next;
+        delete nodeToDelete;
+    }
+    head = nullptr;
+    tail = nullptr;
+    listSize = 0;
+}
+
 // function to append node
 void SinglyLinkedList::append(const Occupation *jobAppended) {
     // creates a new node and assigns its data

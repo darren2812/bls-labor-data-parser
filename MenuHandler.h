@@ -34,67 +34,31 @@ private:
     DynamicArray<const Occupation*> searchedJobsArray;
     DynamicArray<const Occupation*> sortedJobsArray;
     DynamicArray<const Occupation*> comparedJobsArray;
-    // declaring linked list pointer suggested by chatGPT
     SinglyLinkedList jobsList;
-    // creating stacks to track recent changes
     JobStack recentChangesDatabase;
     JobStack recentChangesList;
 
+    size_t totalJobsCapacity;
+    bool savedDatabase = false;
+    bool savedList = false;
+
     // ENUM for handling different sorting data structures
-    enum class StructureToSort {
+    enum class Structure {
+        MAIN_DATABASE,
         MAIN_ARRAY,
         SEARCH_ARRAY,
         LIST
     };
-    enum class StructureToSearch {
-        MAIN_ARRAY,
-        LIST
-    };
-
-    // jobCounter counter in main to store the jobCounter of the last job
-    int jobCounter = 0;
-    // searchRows represents the number of entries successfully searched
-    int searchRows = 0;
-    // number of total rows in original text file
-    int numberOfRows = 0;
-    // max number of jobs analyzed
-    int totalJobsCapacity = 0;
-    // int to store matrix code when searching
-    int searchCode;
-
-    // occupation pointer to store occupation being searched
-    Occupation *jobSearchedPtr = nullptr;
-    // occupation object to store occupation being modified
-    Occupation jobModified;
-    // Job being undone
-    Occupation undoneJob;
-    JobPair undoneJobPair;
-
-    // bool to determine whether any searches were found
-    bool searchOutcome = false;
-    // bool to determine whether user has saved or not
-    bool savedDatabase = false;
-    bool savedList = false;
-
-    // VARIABLES FOR COMPARISON
-    // int to store how many jobs to compare
-    short jobsToCompare = 0;
-    // int to act as a counter when selecting jobs
-    short selectionCounter = 0;
-    // float to see the largest number in the comparison
-    float maxValue = 0;
-    // float to keep track of the value of each hashtag
-    float valueOfHashTag = 0;
-    // int to keep track of the number of hashtags to print to the console
-    int numberOfHashTags = 0;
-    // lambda to pass into functions when printing bar charts
-    float getterLambda;
 
 public:
     MenuHandler();
     ~MenuHandler();
 
-    void allocateDataStructures();
+    void allocateDatabase();
+    void displayMainMenu();
+    void displayListMenu();
+    void run();
+    void runListMenu();
 
     void printTableHeadings();
     void printTableEntry(const Occupation *currentJob);
@@ -105,10 +69,9 @@ public:
     void printMainArray();
     void printHashTable();
     void printSearchSortResults(DynamicArray<const Occupation *> &array);
-    void printEntireStack(JobStack &stack, const std::string &dataset);
+    void printEntireStack(JobStack &stack, Structure dataset) const;
     void printBarChart(float maxValue, float maxChartLength, const std::function<float(const Occupation *)> &fn);
     void printComparisonResults();
-
     void printAllCategories() const;
     void printCategoryContents(const std::string &prefix) const;
     void printIndicesInList() const;
@@ -124,7 +87,7 @@ public:
 
     std::string promptNonNegativeOrDash();
     std::string promptNumber() const;
-    char promptOptionToSearch(StructureToSearch dataset);
+    char promptOptionToSearch(Structure dataset);
 
     // function to select a specific index from the database
     const Occupation* selectSpecificIndex(const std::string &command);
@@ -146,9 +109,13 @@ public:
     void handleAddList();
     void handleRemoveList();
     void handleRemoveDatabase();
-    void handleSort(DynamicArray<const Occupation *> &sortedJobs, StructureToSort dataset);
-    void handleSearch(StructureToSearch dataset);
+    void handleSort(DynamicArray<const Occupation *> &sortedJobs, Structure dataset);
+    void handleSearch(Structure dataset);
     void handleCompare();
     void handleUndoDatabase();
+    void handleUndoList();
     bool handleCheckSaved();
+    void handleDatabasePrint();
+    void handleStackPrintAndSearch(Structure dataset);
+    void handleClearList();
 };

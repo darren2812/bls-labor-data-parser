@@ -22,11 +22,7 @@ struct OccupationRow {
 	std::string handbookContent = "-";
 };
 
-
-// Create occupations class with a private struct containing different variables
 class Occupation {
-
-private:
 	std::string occupation = "-";
 	std::string matrixCode = "-";
 	int matrixCodeInt = 0;
