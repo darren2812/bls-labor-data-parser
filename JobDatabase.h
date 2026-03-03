@@ -21,8 +21,8 @@ public:
     JobDatabase &operator=(const JobDatabase &other) = delete;
     JobDatabase &operator=(JobDatabase &&other) noexcept = default;
 
-    void readInputFile(std::fstream& rawData, const std::string* headings, int* columnLengths);
-    void readListFile(std::fstream &listData, SinglyLinkedList list);
+    void readInputFile(std::fstream& rawData, int* columnLengths);
+    void readListFile(std::fstream &listData, SinglyLinkedList &list);
     void rewriteInputFile(std::fstream& modifiedData);
     void rewriteListFile(std::fstream &listData, const SinglyLinkedList &list);
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Occupation.h"
+#include <memory>
 #include <iostream>
 
 template<typename T>

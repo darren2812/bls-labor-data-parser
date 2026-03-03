@@ -47,6 +47,7 @@ void MenuHandler::allocateDatabase() {
     allJobsDatabase = JobDatabase(totalJobsCapacity);
 }
 
+
 void MenuHandler::displayMainMenu() {
     std::cout << "\nWelcome. Input a letter to the console to execute an operation below." << std::endl
             << "A: View all Data Entries" << std::endl
@@ -77,7 +78,7 @@ void MenuHandler::displayListMenu() {
 void MenuHandler::run() {
 
     allocateDatabase();
-    allJobsDatabase.readInputFile(rawData, tableHeadings, tableColumnLengths);
+    allJobsDatabase.readInputFile(rawData, tableColumnLengths);
     allJobsDatabase.readListFile(listData, jobsList);
 
     bool isRunning = true;

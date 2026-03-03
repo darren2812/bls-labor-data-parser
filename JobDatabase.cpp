@@ -11,7 +11,7 @@ int JobDatabase::getSize() const {
     return allJobsArray.getCurrentSize();
 }
 
-void JobDatabase::readInputFile(std::fstream &rawData, const std::string *headings, int *columnLengths) {
+void JobDatabase::readInputFile(std::fstream &rawData, int *columnLengths) {
     rawData.clear();
     rawData.seekg(0, std::ios::beg);
     std::string tempString;
@@ -75,7 +75,7 @@ void JobDatabase::readInputFile(std::fstream &rawData, const std::string *headin
     }
 }
 
-void JobDatabase::readListFile(std::fstream &listData, SinglyLinkedList list) {
+void JobDatabase::readListFile(std::fstream &listData, SinglyLinkedList &list) {
     // setting the cursor position back to the start
     listData.clear();
     listData.seekg(0, std::ios::beg);
