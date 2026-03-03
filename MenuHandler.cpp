@@ -5,8 +5,12 @@
 
 
 MenuHandler::MenuHandler()
-    : rawData("../input/rawData.txt"), listData("../input/listData.txt"), output("../output/output.txt") {
-
+    : rawDataPath("../input/rawData.txt"),
+      rawData(rawDataPath),
+      listDataPath("../input/listData.txt"),
+      listData(listDataPath),
+      outputPath("../output/output.txt"),
+      output(outputPath) {
     int numberOfRows = 0;
     std::string dummy;
 
@@ -16,8 +20,14 @@ MenuHandler::MenuHandler()
     }
 
     if (!rawData.is_open()) {
-        std::cout << "\nThe file rawData.txt could not be opened" << std::endl;
+        std::cout << "\nThe file rawData.txt could not be opened. Exiting the program..." << std::endl;
         return;
+    }
+    if (!listData.is_open()) {
+        std::cout << "\nThe file listData.txt could not be opened" << std::endl;
+    }
+    if (!output.is_open()) {
+        std::cout << "\nThe file output.txt could not be opened" << std::endl;
     }
 
     // count number of lines and assign to jobInput temporarily
@@ -64,19 +74,18 @@ void MenuHandler::displayMainMenu() {
 
 void MenuHandler::displayListMenu() {
     std::cout << "\nInput a letter to manage your LIST." << std::endl
-                    << "A: View Your Current List" << std::endl
-                    << "B: Search for an Occupation in Your List" << std::endl
-                    << "C: Add an Existing Occupation to Your List" << std::endl
-                    << "D: Remove an Occupation from Your List " << std::endl
-                    << "E: View Recent Changes" << std::endl
-                    << "F: Undo Most Recent Change to Your List" << std::endl
-                    << "G: Save Changes to List Input File" << std::endl
-                    << "H: Clear Your Existing List" << std::endl
-                    << "I: Return to Main Menu\n" << std::endl;
+            << "A: View Your Current List" << std::endl
+            << "B: Search for an Occupation in Your List" << std::endl
+            << "C: Add an Existing Occupation to Your List" << std::endl
+            << "D: Remove an Occupation from Your List " << std::endl
+            << "E: View Recent Changes" << std::endl
+            << "F: Undo Most Recent Change to Your List" << std::endl
+            << "G: Save Changes to List Input File" << std::endl
+            << "H: Clear Your Existing List" << std::endl
+            << "I: Return to Main Menu\n" << std::endl;
 }
 
 void MenuHandler::run() {
-
     allocateDatabase();
     allJobsDatabase.readInputFile(rawData, tableColumnLengths);
     allJobsDatabase.readListFile(listData, jobsList);
@@ -84,7 +93,6 @@ void MenuHandler::run() {
     bool isRunning = true;
 
     while (isRunning) {
-
         displayMainMenu();
         char input = menuHandling('A', 'J', false);
 
@@ -108,7 +116,7 @@ void MenuHandler::run() {
                 handleUndoDatabase();
                 break;
             case 'G':
-                allJobsDatabase.rewriteInputFile(rawData);
+                allJobsDatabase.rewriteInputFile(rawDataPath, rawData);
                 savedDatabase = true;
                 std::cout << "\nChanges saved to file." << std::endl;
                 break;
@@ -122,8 +130,7 @@ void MenuHandler::run() {
                 // handleCheckSaved returns true if all changes have been saved
                 if (handleCheckSaved()) {
                     isRunning = false;
-                }
-                else {
+                } else {
                     isRunning = true;
                 }
                 break;
@@ -135,14 +142,12 @@ void MenuHandler::run() {
 }
 
 void MenuHandler::runListMenu() {
-    
     bool isRunning = true;
-    
+
     while (isRunning) {
-        
         displayListMenu();
         char input = menuHandling('A', 'I', false);
-        
+
         switch (input) {
             case 'A':
                 handleListPrint();
@@ -163,7 +168,7 @@ void MenuHandler::runListMenu() {
                 handleUndoList();
                 break;
             case 'G':
-                allJobsDatabase.rewriteListFile(listData, jobsList);
+                allJobsDatabase.rewriteListFile(listDataPath, listData, jobsList);
                 savedList = true;
                 std::cout << "\nChanges saved to list file." << std::endl;
                 break;
@@ -292,12 +297,10 @@ void MenuHandler::printSearchSortResults(DynamicArray<const Occupation *> &array
 }
 
 void MenuHandler::printEntireStack(JobStack &stack, const Structure dataset) const {
-
     std::string datasetString;
     if (dataset == Structure::MAIN_DATABASE) {
         datasetString = "Main Database";
-    }
-    else {
+    } else {
         datasetString = "List";
     }
 
@@ -1009,16 +1012,18 @@ void MenuHandler::handleRemoveList() {
 }
 
 void MenuHandler::handleRemoveDatabase() {
-
     if (allJobsDatabase.getSize() == 0) {
         std::cout << "\nThe database is empty. Returning to main menu..." << std::endl;
         return;
     }
 
     const Occupation *occupationToRemove = chooseJobToModify("remove");
+    std::unique_ptr<Occupation> occupationToRemovePointer;
 
-    std::unique_ptr<Occupation> occupationToRemovePointer = allJobsDatabase.removeJobFromDatabase(
-        occupationToRemove->getJobIndex(), occupationToRemove->getMatrixCodeInt());
+    if (occupationToRemove != nullptr) {
+        occupationToRemovePointer = allJobsDatabase.removeJobFromDatabase(
+            occupationToRemove->getJobIndex(), occupationToRemove->getMatrixCodeInt());
+    }
 
     // unique pointer is moved to stack for removing items in the database
     if (occupationToRemovePointer != nullptr) {
@@ -1128,7 +1133,6 @@ void MenuHandler::handleSort(const Structure dataset) {
 }
 
 void MenuHandler::handleSearch(const Structure dataset) {
-
     if (dataset == Structure::MAIN_DATABASE && allJobsDatabase.getSize() == 0) {
         std::cout << "\nThe database is empty. Returning to main menu..." << std::endl;
         return;
@@ -1141,7 +1145,7 @@ void MenuHandler::handleSearch(const Structure dataset) {
     int lowerLimit;
     int upperLimit;
     std::string searchValue;
-    const Occupation* jobToSearch;
+    const Occupation *jobToSearch;
     char input = promptOptionToSearch(dataset);
 
     switch (input) {
@@ -1201,7 +1205,6 @@ void MenuHandler::handleSearch(const Structure dataset) {
 }
 
 void MenuHandler::handleCompare() {
-
     if (allJobsDatabase.getSize() == 0) {
         std::cout << "\nThe database is empty. Returning to main menu..." << std::endl;
         return;
@@ -1259,7 +1262,6 @@ void MenuHandler::handleUndoDatabase() {
             savedDatabase = false;
 
             std::cout << "\n'" << jobTitle << "' is removed from the database." << std::endl;
-
         } else if (top.recentState == RecentState::REMOVED) {
             auto change = recentChangesDatabase.pop();
             index = change.jobIndex;
@@ -1291,10 +1293,9 @@ void MenuHandler::handleUndoList() {
             savedList = false;
 
             std::cout << "\n'" << jobTitle << "' is removed from the list." << std::endl;
-
         } else if (top.recentState == RecentState::REMOVED) {
             auto change = recentChangesList.pop();
-            const Occupation* jobToAppend = allJobsDatabase.searchJobByCode(change.matrixCodeInt);
+            const Occupation *jobToAppend = allJobsDatabase.searchJobByCode(change.matrixCodeInt);
 
             jobTitle = jobToAppend->getOccupation();
             jobsList.append(jobToAppend);
@@ -1340,9 +1341,9 @@ void MenuHandler::handleDatabasePrint() {
     }
 
     std::cout << "\nDo you want to view the main database or the hash table?" << std::endl
-                << "A: Main Database" << std::endl
-                << "B: Hash Table" << std::endl
-                << "C: Return to Main Menu\n" << std::endl;
+            << "A: Main Database" << std::endl
+            << "B: Hash Table" << std::endl
+            << "C: Return to Main Menu\n" << std::endl;
     char input = menuHandling('A', 'C', false);
 
     switch (input) {
@@ -1402,8 +1403,8 @@ void MenuHandler::handleStackPrintAndSearch(const Structure dataset) {
 }
 
 void MenuHandler::handleClearList() {
-
-    std::cout << "\nThis will delete any existing lists and create a new one. Do you want to proceed? (y/n)\n" << std::endl;
+    std::cout << "\nThis will delete any existing lists and create a new one. Do you want to proceed? (y/n)\n" <<
+            std::endl;
     char input = yesOrNoMenu();
 
     if (input == 'y') {

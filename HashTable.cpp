@@ -9,12 +9,8 @@ OpenAddressingBucket::OpenAddressingBucket() {
 	JobPointer = nullptr;
 }
 // job pointer does not need
-OpenAddressingBucket::OpenAddressingBucket(Occupation *bucketJobPointer) {
+OpenAddressingBucket::OpenAddressingBucket(const Occupation *bucketJobPointer) {
 	JobPointer = bucketJobPointer;
-}
-OpenAddressingBucket::~OpenAddressingBucket() {
-	delete JobPointer;
-	JobPointer = nullptr;
 }
 
 // definition of static variables (ChatGPT helped debugged)
@@ -43,14 +39,16 @@ HashTable::HashTable(int initialCapacity) {
 	for (int i = 0; i < initialCapacity; i++) {
 		table[i] = &OpenAddressingBucket::EMPTY_SINCE_START;
 	}
-	this->c1 = c1;
-	this->c2 = c2;
 	this->tableCapacity = initialCapacity;
 }
 
 // defining destructor for the hash table (code based on zyBooks)
 HashTable::~HashTable() {
-	// no need to iterate through hash table because pointers are managed by the dynamic array and job database classes
+	for (int i = 0; i < tableCapacity; i++) {
+		if (!table[i]->isEmpty()) {
+			delete table[i];
+		}
+	}
 	delete[] table;
 	table = nullptr;
 }

@@ -9,8 +9,8 @@ public:
 
 	// declaring constructors and destructor
 	OpenAddressingBucket();
-	OpenAddressingBucket(Occupation *bucketJobPointer);
-	~OpenAddressingBucket();
+	OpenAddressingBucket(const Occupation *bucketJobPointer);
+	~OpenAddressingBucket() = default;
 
 	// Two sentinel buckets based on zyBooks implementation
 	static OpenAddressingBucket EMPTY_SINCE_START;

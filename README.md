@@ -26,5 +26,4 @@ A C++ console application that parses and organizes labor market data from the U
 - Search and sort arrays allow for the same printing functions to be reused across all data structure search / sort results.
 
 ## Known Issues (Currently Being Fixed)
-- Malloc error when removing occupations from the main array and then quitting.
 - Removing entries from the list still does not work.

@@ -12,7 +12,7 @@ private:
 public:
     JobDatabase() = default;
 
-    JobDatabase(int capacity);
+    JobDatabase(size_t capacity);
 
     ~JobDatabase() = default;
 
@@ -23,8 +23,8 @@ public:
 
     void readInputFile(std::fstream& rawData, int* columnLengths);
     void readListFile(std::fstream &listData, SinglyLinkedList &list);
-    void rewriteInputFile(std::fstream& modifiedData);
-    void rewriteListFile(std::fstream &listData, const SinglyLinkedList &list);
+    void rewriteInputFile(const std::string &modifiedDataPath, std::fstream& modifiedData);
+    void rewriteListFile(const std::string &listDataPath, std::fstream &listData, const SinglyLinkedList &list);
 
     bool generateUniqueKey(const std::string &codePrefix, std::string &uniqueCode) const;
 

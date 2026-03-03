@@ -108,18 +108,25 @@ public:
 
     // function to remove an entry
     T removeEntry(int indexRemoved) {
-        T jobRemoved = std::move(data[indexRemoved]);
 
         if (indexRemoved < 0 || indexRemoved >= currentSize) {
             std::cout << "Error: index out of bounds" << std::endl;
-            return nullptr;
+            return T{};
         }
+
+        T jobRemoved = std::move(data[indexRemoved]);
 
         for (int i = indexRemoved; i < currentSize - 1; i++) {
             data[i] = std::move(data[i + 1]);
-            data[i]->setJobIndex(i);
+
+            if (data[i]) {
+                data[i]->setJobIndex(i);
+            }
         }
+
+        data[currentSize - 1].reset();
         currentSize--;
-        return std::move(jobRemoved);
+
+        return jobRemoved;
     }
 };

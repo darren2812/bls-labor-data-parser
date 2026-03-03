@@ -3,7 +3,7 @@
 #include "JobDatabase.h"
 #include "Helpers.h"
 
-JobDatabase::JobDatabase(const int capacity) :
+JobDatabase::JobDatabase(const size_t capacity) :
     allJobsArray(capacity),
     allJobsHashTable(2 * capacity){};
 
@@ -107,11 +107,12 @@ void JobDatabase::readListFile(std::fstream &listData, SinglyLinkedList &list) {
     }
 }
 
-void JobDatabase::rewriteInputFile(std::fstream &modifiedData) {
-    int arraySize = allJobsArray.getCurrentSize();
+void JobDatabase::rewriteInputFile(const std::string &modifiedDataPath, std::fstream &modifiedData) {
 
-    modifiedData.clear();
-    modifiedData.seekp(0, std::ios::beg);
+    modifiedData.close();
+    modifiedData.open(modifiedDataPath, std::ios::out | std::ios::trunc);
+
+    int arraySize = allJobsArray.getCurrentSize();
 
     for (int i = 0; i < arraySize; i++) {
         modifiedData << allJobsArray[i]->getOccupation() << std::endl
@@ -133,9 +134,10 @@ void JobDatabase::rewriteInputFile(std::fstream &modifiedData) {
     }
 }
 
-void JobDatabase::rewriteListFile(std::fstream &listData, const SinglyLinkedList &list) {
-    listData.clear();
-    listData.seekp(0, std::ios::beg);
+void JobDatabase::rewriteListFile(const std::string &listDataPath, std::fstream &listData, const SinglyLinkedList &list) {
+
+    listData.close();
+    listData.open(listDataPath, std::ios::out | std::ios::trunc);
 
     if (list.getListSize() > 0) {
         list.forEachJobInList([&](const Occupation *job) {

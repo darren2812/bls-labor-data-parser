@@ -24,7 +24,9 @@ private:
     // array to assign different lengths for each column and setting everything to 0
     int tableColumnLengths[NUM_OF_HEADINGS] = {};
 
-    // file stream for data
+    std::string rawDataPath;
+    std::string listDataPath;
+    std::string outputPath;
     std::fstream rawData;
     std::fstream listData;
     std::ofstream output;
