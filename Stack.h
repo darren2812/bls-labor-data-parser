@@ -35,8 +35,7 @@ public:
 	void push(JobPair &&pair);
 	const JobPair& peek() const;
 	JobPair pop();
-	bool searchStack(const std::string &jobToSearch, DynamicArray<const Occupation *> &searchedJobsArray);
-	int getCurrentLength();
+	int getCurrentLength() const;
 
 	void forEachJobInStack(const std::function<void(const JobPair &pair)> &fn) const;
 };

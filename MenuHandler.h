@@ -71,7 +71,7 @@ public:
     void printMainArray();
     void printHashTable();
     void printSearchSortResults(DynamicArray<const Occupation *> &array);
-    void printEntireStack(JobStack &stack, Structure dataset) const;
+    void printEntireStack(const JobStack &stack, Structure dataset) const;
     void printBarChart(float maxValue, float maxChartLength, const std::function<float(const Occupation *)> &fn);
     void printComparisonResults();
     void printAllCategories() const;
@@ -106,7 +106,7 @@ public:
     void copyList(DynamicArray<const Occupation *> &outputArray);
 
     void handleAddDatabase();
-    int handleListIndexRetrieval();
+    int handleListIndexRetrieval(const std::string &command);
     void handleAddList();
     void handleRemoveList();
     void handleRemoveDatabase();
@@ -118,6 +118,6 @@ public:
     bool handleCheckSaved();
     void handleDatabasePrint();
     void handleListPrint();
-    void handleStackPrintAndSearch(Structure dataset);
+    void handleStackPrint(const JobStack &stack, Structure dataset);
     void handleClearList();
 };

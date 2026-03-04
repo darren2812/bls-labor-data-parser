@@ -9,7 +9,7 @@
 class SinglyLinkedNode {
 public:
     // each node will store a pointer to the main occupation objects (unique ptrs held by dynamic array)
-    const Occupation *data;
+    const Occupation *data = nullptr;
     SinglyLinkedNode *next = nullptr;
 };
 
@@ -30,7 +30,7 @@ public:
 
     void insertAfter(const Occupation *jobInserted, int jobIndex);
 
-    SinglyLinkedNode *removeByIndex(int jobIndex);
+    const Occupation *removeByIndex(int jobIndex);
 
     bool searchListByJob(const std::string &jobToSearch, DynamicArray<const Occupation *> &searchedJobsArray);
 

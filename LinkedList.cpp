@@ -65,7 +65,7 @@ void SinglyLinkedList::prepend(const Occupation *jobPrepended) {
 void SinglyLinkedList::insertAfter(const Occupation *jobInserted, int jobIndex) {
     SinglyLinkedNode *current = head;
     while (current) {
-        if (current->data->getJobIndex() == jobIndex) {
+        if (current->data && current->data->getJobIndex() == jobIndex) {
             auto newNode = new SinglyLinkedNode;
             newNode->next = current->next;
             current->next = newNode;
@@ -78,10 +78,9 @@ void SinglyLinkedList::insertAfter(const Occupation *jobInserted, int jobIndex) 
 }
 
 // removes node based on node counter value
-SinglyLinkedNode *SinglyLinkedList::removeByIndex(int jobIndex) {
+const Occupation *SinglyLinkedList::removeByIndex(int jobIndex) {
     SinglyLinkedNode *current = head;
     SinglyLinkedNode *before = nullptr;
-    SinglyLinkedNode *nodeRemoved;
     while (current && current->data->getJobIndex() != jobIndex) {
         before = current;
         current = current->next;
@@ -89,22 +88,21 @@ SinglyLinkedNode *SinglyLinkedList::removeByIndex(int jobIndex) {
     if (current) {
         if (current == head) {
             head = head->next;
-            // chatGPT suggested changing tail to nullptr if the node removed is the only node
             if (head == nullptr) {
                 tail = nullptr;
             }
         } else if (current == tail) {
             tail = before;
-            // chatGPT helped debugging with this line
             tail->next = nullptr;
         } else if (before != nullptr) {
             before->next = current->next;
         }
-        nodeRemoved = current;
+
+        const Occupation *occupationToReturn = current->data;
         delete current;
-        current = nullptr;
         listSize--;
-        return nodeRemoved;
+
+        return occupationToReturn;
     }
 
     // output message if node is not found
@@ -121,14 +119,16 @@ bool SinglyLinkedList::searchListByJob(const std::string &jobToSearch, DynamicAr
     std::string query = jobToSearch;
     lowerString(query);
 
-    std::string currentEntry;
-
     while (current != nullptr) {
-        currentEntry = current->data->getOccupation();
-        lowerString(currentEntry);
-        if (query == currentEntry) {
-            searchedJobsArray.append(current->data);
+
+        if (current->data != nullptr) {
+            std::string currentEntry = current->data->getOccupation();
+            lowerString(currentEntry);
+            if (query.find(currentEntry) != std::string::npos) {
+                searchedJobsArray.append(current->data);
+            }
         }
+
         current = current->next;
     }
 
@@ -146,7 +146,7 @@ bool SinglyLinkedList::searchListByWage(const int lowerLimit, const int upperLim
 
     SinglyLinkedNode* current = head;
     while (current != nullptr) {
-        if (current->data->getWage() >= lowerLimit && current->data->getWage() <= upperLimit) {
+        if (current->data && current->data->getWage() >= lowerLimit && current->data->getWage() <= upperLimit) {
             searchedJobsArray.append(current->data);
         }
         current = current->next;
@@ -162,7 +162,7 @@ bool SinglyLinkedList::searchListByIndex(int jobIndex) {
     SinglyLinkedNode * current = head;
 
     while (current) {
-        if (current->data->getJobIndex() == jobIndex) {
+        if (current->data && current->data->getJobIndex() == jobIndex) {
             return true;
         }
         current = current->next;
@@ -174,7 +174,9 @@ bool SinglyLinkedList::searchListByIndex(int jobIndex) {
 void SinglyLinkedList::forEachJobInList(const std::function<void(const Occupation *job)> &fn) const {
     SinglyLinkedNode *current = head;
     while (current) {
-        fn(current->data);
+        if (current->data != nullptr) {
+            fn(current->data);
+        }
         current = current->next;
     }
 }
