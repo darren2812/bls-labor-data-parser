@@ -25,5 +25,5 @@ A C++ console application that parses and organizes labor market data from the U
 - Removals use std::move to move the occupation from main array to the stack.
 - Search and sort arrays allow for the same printing functions to be reused across all data structure search / sort results.
 
-## Known Issues (Currently Being Fixed)
-- Removing entries from the list still does not work.
+## Known Bugs (Currently Being Fixed)
+- Undo functionality still does not work for main database.
