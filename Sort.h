@@ -1,6 +1,3 @@
-// Sort.h
-// Darren Daniel
-
 #pragma once
 #include "Occupation.h"
 #include "DynamicArray.h"
@@ -71,5 +68,4 @@ void mergeJob(DynamicArray<const Occupation *> &sortedJobs, int lowIndex, int mi
 	}
 
 	delete[] tempArray;
-	tempArray = nullptr;
 }

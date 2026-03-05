@@ -1,12 +1,8 @@
-// Occupation.cpp
-// Darren Daniel
-
 #include "Occupation.h"
 #include "Helpers.h"
 #include <sstream>
 #include <iomanip>
 
-// getters return the specific data field of jobStruct
 std::string Occupation::getOccupation() const {
 	return occupation;
 }
@@ -125,7 +121,7 @@ void Occupation::setMatrixCode(std::string mc) {
 	}
 }
 void Occupation::setOccupationType(std::string ot) {
-	occupationType = ot;
+	occupationType = std::move(ot);
 }
 void Occupation::setEmploymentCurrent(std::string ec) {
 	employmentCurrentString = ec;
@@ -161,12 +157,13 @@ void Occupation::setJobOpenings(std::string jo) {
 }
 void Occupation::setWage(std::string w) {
 	wageString = w;
-	size_t tempIndex = w.find(">=$");
-	if (tempIndex != std::string::npos) {
-		w.erase(tempIndex, 3); // deletes >=$
-		w.erase(tempIndex + 3, 1); // deletes comma
+	std::string cleanedWage = "";
+	for (char c : w) {
+		if (isnumber(c)) {
+			cleanedWage += c;
+		}
 	}
-	wage = toFloat(w);
+	wage = toFloat(cleanedWage);
 }
 void Occupation::setEducation(std::string e) {
 	education = e;

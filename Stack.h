@@ -19,10 +19,7 @@ struct JobPair {
 	RecentState recentState = RecentState::ADDED;
 };
 
-// stack code from zyBooks
 class JobStack {
-private:
-	// allocate 5 elements for the array
 	int allocationSize = 5;
 	int currentLength = 0;
 	JobPair* array = nullptr;

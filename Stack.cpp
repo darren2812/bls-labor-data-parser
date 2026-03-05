@@ -1,21 +1,16 @@
 #include "Stack.h"
-#include <iostream>
 #include <iomanip>
-
-#include "Helpers.h"
 
 // constructor creates a new dynamic array of job pairs
 JobStack::JobStack() {
     array = new JobPair[allocationSize];
 }
 
-// destructor frees up memory
 JobStack::~JobStack() {
     delete[] array;
     array = nullptr;
 }
 
-// dynamically resizes the jobstack
 void JobStack::resize() {
     const int newSize = allocationSize == 0 ? 1 : allocationSize * 2;
     auto newArray = new JobPair[newSize];
@@ -29,7 +24,6 @@ void JobStack::resize() {
     allocationSize = newSize;
 }
 
-// pushes a pair to the stack and resizes when appropriate
 void JobStack::push(JobPair &&pair) {
     if (currentLength >= allocationSize) {
         resize();
@@ -53,7 +47,6 @@ const JobPair &JobStack::peek() const {
     return array[currentLength - 1];
 }
 
-// getter to check length
 int JobStack::getCurrentLength() const {
     return currentLength;
 }

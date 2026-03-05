@@ -1,12 +1,8 @@
-// Helpers.cpp
-// Darren Daniel
-
 #include <iomanip>
 #include <chrono>
 #include <cctype>
 #include "Helpers.h"
 
-// ChatGPT suggested using a try and catch statement to handle missing values (i.e. "-")
 float toFloat(std::string &s) {
     try {
         return stof(s);
@@ -33,13 +29,12 @@ void lowerString(std::string &input) {
     }
 }
 
-// function to mind max value in an array
-float findMax(DynamicArray<const Occupation *> &array, const std::function<float(const Occupation *)> &function) {
+float findMax(DynamicArray<const Occupation *> &array, const std::function<float(const Occupation *)> &fn) {
     float maxValue = 0;
-    int numberOfJobs = array.getCurrentSize();
+    const int numberOfJobs = array.getCurrentSize();
     for (int i = 0; i < numberOfJobs; i++) {
-        if (maxValue < function(array[i])) {
-            maxValue = function(array[i]);
+        if (maxValue < fn(array[i])) {
+            maxValue = fn(array[i]);
         }
     }
     return maxValue;

@@ -9,11 +9,8 @@
 
 class MenuHandler {
 private:
-    // integer to store the number of table headings
     static constexpr int NUM_OF_HEADINGS = 16;
-    // float to store the maximum length of a bar chart when comparing jobs
     float MAX_BAR_CHART_LENGTH = 100;
-    // headings in indexes 1 and 15 are null to skip columns 2 and 16 in data file
     const std::string tableHeadings[NUM_OF_HEADINGS] = {
         "Occupation", "SOC Matrix Code", "Type", "Employment 2023", "Employment 2033",
         "% Distribution 2023", "% Distribution 2033", "Change 2023-33",
@@ -78,12 +75,11 @@ public:
     void printCategoryContents(const std::string &prefix) const;
     void printIndicesInList() const;
 
-    // function to handle menu selection for reusability
+    // function to handle menu selection
     char menuHandling(char firstLetter, char lastLetter, bool acceptDash);
-    // function to handle yes/no selection for reusability
+    // function to handle yes/no selection
     char yesOrNoMenu();
 
-    // job adding prompts
     OccupationRow promptJobAttributes(std::string jobTitle, const std::string &matrixCode);
 
     std::string promptNonNegativeOrDash();
@@ -118,6 +114,6 @@ public:
     bool handleCheckSaved();
     void handleDatabasePrint();
     void handleListPrint();
-    void handleStackPrint(const JobStack &stack, Structure dataset);
+    void handleStackPrint(const JobStack &stack, Structure dataset) const;
     void handleClearList();
 };

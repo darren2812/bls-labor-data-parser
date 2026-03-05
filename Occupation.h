@@ -1,5 +1,3 @@
-// Occupation.h
-
 #pragma once
 #include <string>
 

@@ -106,7 +106,6 @@ public:
         currentSize++;
     }
 
-    // function to remove an entry
     T removeEntry(int indexRemoved) {
 
         if (indexRemoved < 0 || indexRemoved >= currentSize) {

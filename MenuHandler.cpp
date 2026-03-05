@@ -30,7 +30,7 @@ MenuHandler::MenuHandler()
         std::cout << "\nThe file output.txt could not be opened" << std::endl;
     }
 
-    // count number of lines and assign to jobInput temporarily
+    // count number of lines and assign to dummy string
     while (std::getline(rawData, dummy)) {
         numberOfRows++;
     }
@@ -43,7 +43,6 @@ MenuHandler::MenuHandler()
         return;
     }
 
-    // divide number of rows by number of rows per entry which is 16
     totalJobsCapacity = numberOfRows / NUM_OF_HEADINGS;
 }
 
@@ -333,9 +332,9 @@ void MenuHandler::printEntireStack(const JobStack &stack, const Structure datase
         }
         std::string jobTitle;
         // prints out the job removed by searching with matrix code
-        if (dataset == Structure::MAIN_DATABASE) {
+        if (dataset == Structure::MAIN_DATABASE && pair.recentState == RecentState::REMOVED) {
             jobTitle = pair.job->getOccupation();
-        } else if (dataset == Structure::LIST) {
+        } else {
             const Occupation *job = allJobsDatabase.searchJobByCode(pair.matrixCodeInt);
             if (job != nullptr) {
                 jobTitle = job->getOccupation();
@@ -469,6 +468,8 @@ void MenuHandler::printComparisonResults() {
                 for (int j = 0; j < jobsToCompare; j++) {
                     std::cout << "[" << j << "]: " << comparedJobsArray[j]->getTraining() << std::endl;
                 }
+                break;
+            default:
                 break;
         }
         std::cout << "\nReference:" << std::endl;
@@ -888,7 +889,6 @@ bool MenuHandler::placeOccupationInList(const Occupation *occupation) {
             // appends object to the list and prints list
             jobsList.append(occupation);
             return true;
-            break;
         case 'C':
             if (jobsList.getListSize() == 0) {
                 std::cout << "\nThe list is currently empty. Insert with another method." << std::endl;
@@ -928,7 +928,7 @@ void MenuHandler::handleAddDatabase() {
         switch (yesOrNoMenu()) {
             case 'y':
                 break;
-            case 'n':
+            default:
                 std::cout << "\nReturning to main menu..." << std::endl;
                 return;
         }
@@ -1041,7 +1041,9 @@ void MenuHandler::handleRemoveDatabase() {
 
     // unique pointer is moved to stack for removing items in the database
     if (occupationToRemovePointer != nullptr) {
-        recentChangesDatabase.push({std::move(occupationToRemovePointer), -1, -1, RecentState::REMOVED});
+        int index = occupationToRemovePointer->getJobIndex();
+        int matrixCodeInt = occupationToRemovePointer->getMatrixCodeInt();
+        recentChangesDatabase.push({std::move(occupationToRemovePointer), index, matrixCodeInt, RecentState::REMOVED});
         savedDatabase = false;
         std::cout << "\nOccupation successfully removed from database. Returning to main menu..." << std::endl;
         return;
@@ -1247,7 +1249,7 @@ void MenuHandler::handleCompare() {
                 case 'y':
                     std::cout << "\nReturning to main menu..." << std::endl;
                     return;
-                case 'n':
+                default:
                     i--; // decrements i so that user can try searching for a job again by title
                     continue;
             }
@@ -1261,27 +1263,23 @@ void MenuHandler::handleUndoDatabase() {
     int index;
     int matrixCodeInt;
     std::string jobTitle;
-    std::unique_ptr<Occupation> job;
+    std::unique_ptr<Occupation> jobToUndo;
 
     try {
-        const auto &top = recentChangesDatabase.peek();
+        auto top = recentChangesDatabase.pop();
+        index = top.jobIndex;
 
         if (top.recentState == RecentState::ADDED) {
-            auto change = recentChangesDatabase.pop();
-            index = change.jobIndex;
-            matrixCodeInt = change.matrixCodeInt;
+            matrixCodeInt = top.matrixCodeInt;
 
-            job = allJobsDatabase.removeJobFromDatabase(index, matrixCodeInt);
-            jobTitle = job->getOccupation();
+            jobToUndo = allJobsDatabase.removeJobFromDatabase(index, matrixCodeInt);
+            jobTitle = jobToUndo->getOccupation();
             savedDatabase = false;
 
             std::cout << "\n'" << jobTitle << "' is removed from the database." << std::endl;
         } else if (top.recentState == RecentState::REMOVED) {
-            auto change = recentChangesDatabase.pop();
-            index = change.jobIndex;
-            jobTitle = change.job->getOccupation();
-
-            allJobsDatabase.restoreJob(std::move(job), index);
+            jobTitle = top.job->getOccupation();
+            allJobsDatabase.restoreJob(std::move(top.job), index);
             std::cout << "\n'" << jobTitle << "' is restored to the database." << std::endl;
         }
     }
@@ -1292,15 +1290,12 @@ void MenuHandler::handleUndoDatabase() {
 }
 
 void MenuHandler::handleUndoList() {
-    int index;
-    std::string jobTitle;
 
     try {
-        const auto &top = recentChangesList.peek();
+        auto top = recentChangesList.pop();
 
         if (top.recentState == RecentState::ADDED) {
-            auto change = recentChangesDatabase.pop();
-            index = change.jobIndex;
+            int index = top.jobIndex;
 
             auto job = jobsList.removeByIndex(index);
 
@@ -1308,19 +1303,18 @@ void MenuHandler::handleUndoList() {
                 throw std::runtime_error("The job no longer exists in the main array");
             }
 
-            jobTitle = job->getOccupation();
+            std::string jobTitle = job->getOccupation();
             savedList = false;
 
             std::cout << "\n'" << jobTitle << "' is removed from the list." << std::endl;
         } else if (top.recentState == RecentState::REMOVED) {
-            auto change = recentChangesList.pop();
-            const Occupation *job = allJobsDatabase.searchJobByCode(change.matrixCodeInt);
+            const Occupation *job = allJobsDatabase.searchJobByCode(top.matrixCodeInt);
 
             if (job == nullptr) {
                 throw std::runtime_error("The job no longer exists in the main array");
             }
 
-            jobTitle = job->getOccupation();
+            std::string jobTitle = job->getOccupation();
             jobsList.append(job);
             savedList = false;
 
@@ -1406,7 +1400,7 @@ void MenuHandler::handleListPrint() {
     handleSort(Structure::LIST);
 }
 
-void MenuHandler::handleStackPrint(const JobStack &stack, Structure dataset) {
+void MenuHandler::handleStackPrint(const JobStack &stack, Structure dataset) const {
     if (stack.getCurrentLength() > 0) {
         printEntireStack(stack, dataset);
     } else {

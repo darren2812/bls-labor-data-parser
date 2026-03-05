@@ -1,13 +1,9 @@
-// LinkedList.cpp
-// Darren Daniel
-
 #include <iostream>
 #include <fstream>
 #include <chrono>
 #include "Helpers.h"
 #include "LinkedList.h"
 
-// destructor for linked list
 SinglyLinkedList::~SinglyLinkedList() {
     clear();
 }
@@ -24,18 +20,14 @@ void SinglyLinkedList::clear() {
     listSize = 0;
 }
 
-// function to append node
 void SinglyLinkedList::append(const Occupation *jobAppended) {
-    // creates a new node and assigns its data
     auto newNode = new SinglyLinkedNode;
-    // dereferences jobAppended pointer and assigns to data field
     newNode->data = jobAppended;
     // assigns head and tail to new node if the list is empty
     if (head == nullptr) {
         head = newNode;
         tail = newNode;
     }
-    // sets the next of tail to new node and reassigns tail to new node
     else {
         tail->next = newNode;
         tail = newNode;
@@ -43,9 +35,7 @@ void SinglyLinkedList::append(const Occupation *jobAppended) {
     listSize++;
 }
 
-// function to prepend node
 void SinglyLinkedList::prepend(const Occupation *jobPrepended) {
-    // creates a new node and assigns its data
     auto newNode = new SinglyLinkedNode;
     newNode->data = jobPrepended;
     // assigns head and tail to new node if the list is empty
@@ -53,7 +43,6 @@ void SinglyLinkedList::prepend(const Occupation *jobPrepended) {
         head = newNode;
         tail = newNode;
     }
-    // changes the next pointer of new node to point to head and reassigns head
     else {
         newNode->next = head;
         head = newNode;
@@ -61,7 +50,6 @@ void SinglyLinkedList::prepend(const Occupation *jobPrepended) {
     listSize++;
 }
 
-// function to insert a node after another node
 void SinglyLinkedList::insertAfter(const Occupation *jobInserted, int jobIndex) {
     SinglyLinkedNode *current = head;
     while (current) {
@@ -77,7 +65,6 @@ void SinglyLinkedList::insertAfter(const Occupation *jobInserted, int jobIndex) 
     }
 }
 
-// removes node based on node counter value
 const Occupation *SinglyLinkedList::removeByIndex(int jobIndex) {
     SinglyLinkedNode *current = head;
     SinglyLinkedNode *before = nullptr;
@@ -105,7 +92,6 @@ const Occupation *SinglyLinkedList::removeByIndex(int jobIndex) {
         return occupationToReturn;
     }
 
-    // output message if node is not found
     std::cout << "Could not find node to remove." << std::endl;
     return nullptr;
 }
@@ -138,7 +124,6 @@ bool SinglyLinkedList::searchListByJob(const std::string &jobToSearch, DynamicAr
     return false;
 }
 
-// function to search by wage
 bool SinglyLinkedList::searchListByWage(const int lowerLimit, const int upperLimit,
                                        DynamicArray<const Occupation *> &searchedJobsArray) {
 
@@ -181,7 +166,6 @@ void SinglyLinkedList::forEachJobInList(const std::function<void(const Occupatio
     }
 }
 
-// function to get size of list
 int SinglyLinkedList::getListSize() const {
     return listSize;
 }

@@ -310,4 +310,3 @@ std::unique_ptr<Occupation> JobDatabase::removeJobFromDatabase(const int indexTo
 }
 
 
-

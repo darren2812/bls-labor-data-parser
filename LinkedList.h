@@ -1,6 +1,3 @@
-// LinkedList.h
-// Darren Daniel
-
 #pragma once
 #include "Occupation.h"
 #include "DynamicArray.h"
@@ -8,14 +5,11 @@
 
 class SinglyLinkedNode {
 public:
-    // each node will store a pointer to the main occupation objects (unique ptrs held by dynamic array)
     const Occupation *data = nullptr;
     SinglyLinkedNode *next = nullptr;
 };
 
-// linked list class
 class SinglyLinkedList {
-private:
     SinglyLinkedNode *head = nullptr;
     SinglyLinkedNode *tail = nullptr;
     int listSize = 0;

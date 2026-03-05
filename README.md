@@ -24,6 +24,3 @@ A C++ console application that parses and organizes labor market data from the U
 - Addition and removal of jobs in both the linked list and dynamic array can be tracked and undone using a stack.
 - Removals use std::move to move the occupation from main array to the stack.
 - Search and sort arrays allow for the same printing functions to be reused across all data structure search / sort results.
-
-## Known Bugs (Currently Being Fixed)
-- Undo functionality still does not work for main database.
