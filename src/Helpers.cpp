@@ -3,7 +3,7 @@
 #include <cctype>
 #include "Helpers.h"
 
-float toFloat(std::string &s) {
+float toFloat(const std::string &s) {
     try {
         return stof(s);
     } catch (std::exception &) {
@@ -21,7 +21,7 @@ void capitalizeFirst(std::string &input) {
 
 void lowerString(std::string &input) {
     if (!input.empty()) {
-        for (int i = 0; i < input.length(); i++) {
+        for (size_t i = 0; i < input.size(); i++) {
             input[0] = static_cast<char>(
                 std::tolower(static_cast<unsigned char>(input[0]))
             );

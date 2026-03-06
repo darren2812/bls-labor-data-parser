@@ -19,7 +19,7 @@ private:
         "Typical On-the-Job Training", ""
     };
     // array to assign different lengths for each column and setting everything to 0
-    int tableColumnLengths[NUM_OF_HEADINGS] = {};
+    size_t tableColumnLengths[NUM_OF_HEADINGS] = {};
 
     std::string rawDataPath;
     std::string listDataPath;
@@ -97,9 +97,9 @@ public:
     bool listIsSaved();
 
     // functions to copy the contents of one array to another
-    void copyMainArray(DynamicArray<const Occupation *> &outputArray);
-    void copySearchArray(DynamicArray<const Occupation *> &outputArray);
-    void copyList(DynamicArray<const Occupation *> &outputArray);
+    void copyMainArray(DynamicArray<const Occupation *> &outputArray) const;
+    void copySearchArray(DynamicArray<const Occupation *> &outputArray) const;
+    void copyList(DynamicArray<const Occupation *> &outputArray) const;
 
     void handleAddDatabase();
     int handleListIndexRetrieval(const std::string &command);

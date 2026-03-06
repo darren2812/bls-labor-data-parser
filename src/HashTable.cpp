@@ -1,6 +1,3 @@
-#include <iostream>
-#include <iomanip>
-#include <unordered_set>
 #include "HashTable.h"
 
 
@@ -28,7 +25,7 @@ HashTable::HashTable() :
 	table(nullptr),
 	tableCapacity(0){}
 
-HashTable::HashTable(int initialCapacity) {
+HashTable::HashTable(size_t initialCapacity) {
 	table = new OpenAddressingBucket*[initialCapacity];
 	for (int i = 0; i < initialCapacity; i++) {
 		table[i] = &OpenAddressingBucket::EMPTY_SINCE_START;
@@ -68,26 +65,25 @@ HashTable& HashTable::operator=(HashTable&& other) noexcept {
 }
 
 // mid-square hash function copied from zyBooks
-int HashTable::hashJobKey(int key) const {
+size_t HashTable::hashJobKey(int key) {
 	int R = 24;
 	int squaredKey = key * key;
 	
 	int lowBitsToRemove = (32 - R) / 2;
-	int extractedBits = squaredKey >> lowBitsToRemove;
+	size_t extractedBits = squaredKey >> lowBitsToRemove;
 	extractedBits = extractedBits & (0xFFFFFFFF >> (32 - R));
 
 	return extractedBits;
 }
 
-int HashTable::getTableCapacity() const {
+size_t HashTable::getTableCapacity() const {
 	return tableCapacity;
 }
 
 const Occupation* HashTable::getJobPointer(int key) const {
-	int hashedKey = hashJobKey(key);
-	int bucketIndex;
+	size_t hashedKey = hashJobKey(key);
 	for (int i = 0; i < tableCapacity; i++) {
-		bucketIndex = (c2 * i * i + c1 * i + hashedKey) % tableCapacity;
+		size_t bucketIndex = (c2 * i * i + c1 * i + hashedKey) % tableCapacity;
 		if (table[bucketIndex]->isEmptySinceStart()) {
 			return nullptr;
 		}
@@ -103,14 +99,15 @@ const Occupation* HashTable::getJobPointer(int key) const {
 
 // insert method calls private hashing method
 // Since the hashtable only points to the main array, this implementation rejects identical keys.
-bool HashTable::insertJob(Occupation *jobInserted) {
-	int hashedKey = hashJobKey(jobInserted->getMatrixCodeInt());
-	int bucketIndex;
+bool HashTable::insertJob(Occupation *jobInserted) const{
+
+	size_t hashedKey = hashJobKey(jobInserted->getMatrixCodeInt());
+
 	// track the first deleted index for better performance as further searches
 	// for the same key will be shorter
-	int firstDeletedIndex = -1;
+	size_t firstDeletedIndex = -1;
 	for (int i = 0; i < tableCapacity; i++) {
-		bucketIndex = (c2 * i * i + c1 * i + hashedKey) % tableCapacity;
+		size_t bucketIndex = (c2 * i * i + c1 * i + hashedKey) % tableCapacity;
 		if (table[bucketIndex]->isEmptySinceStart()) {
 			if (firstDeletedIndex == -1) {
 				table[bucketIndex] = new OpenAddressingBucket(jobInserted);

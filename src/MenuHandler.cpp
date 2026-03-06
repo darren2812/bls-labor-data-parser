@@ -1,15 +1,16 @@
 #include <iostream>
 #include <iomanip>
+#include <cmath>
 #include "MenuHandler.h"
 #include "Helpers.h"
 
 
 MenuHandler::MenuHandler()
-    : rawDataPath("../input/rawData.txt"),
+    : rawDataPath("input/rawData.txt"),
+      listDataPath("input/listData.txt"),
+      outputPath("output/output.txt"),
       rawData(rawDataPath),
-      listDataPath("../input/listData.txt"),
       listData(listDataPath),
-      outputPath("../output/output.txt"),
       output(outputPath) {
     int numberOfRows = 0;
     std::string dummy;
@@ -207,7 +208,7 @@ void MenuHandler::printTableHeadings() {
     // outputs headings to the output file and skips over column 2 and 16
     for (int i = 0; i < NUM_OF_HEADINGS; i++) {
         if (i != 1 && i != 15) {
-            output << std::left << std::setw(tableColumnLengths[i]) << tableHeadings[i] << "|";
+            output << std::left << std::setw(static_cast<int>(tableColumnLengths[i])) << tableHeadings[i] << "|";
             totalWidth += tableColumnLengths[i];
             // takes widths from job title, employment, wage, education, and work experience columns for console summary
             if (i == 0 || i == 3 || i == 11 || i == 12 || i == 13) {
@@ -749,7 +750,7 @@ char MenuHandler::promptOptionToSearch(Structure dataset) {
     return menuHandling('A', 'C', false);
 }
 
-void MenuHandler::copyMainArray(DynamicArray<const Occupation *> &outputArray) {
+void MenuHandler::copyMainArray(DynamicArray<const Occupation *> &outputArray) const {
     outputArray = DynamicArray<const Occupation *>(allJobsDatabase.getSize());
 
     allJobsDatabase.forEachJobInMainArray([&](const Occupation *job) {
@@ -757,7 +758,7 @@ void MenuHandler::copyMainArray(DynamicArray<const Occupation *> &outputArray) {
     });
 }
 
-void MenuHandler::copySearchArray(DynamicArray<const Occupation *> &outputArray) {
+void MenuHandler::copySearchArray(DynamicArray<const Occupation *> &outputArray) const {
     int searchArraySize = searchedJobsArray.getCurrentSize();
     outputArray = DynamicArray<const Occupation *>(searchArraySize);
 
@@ -766,7 +767,7 @@ void MenuHandler::copySearchArray(DynamicArray<const Occupation *> &outputArray)
     }
 }
 
-void MenuHandler::copyList(DynamicArray<const Occupation *> &outputArray) {
+void MenuHandler::copyList(DynamicArray<const Occupation *> &outputArray) const {
     int listSize = jobsList.getListSize();
     outputArray = DynamicArray<const Occupation *>(listSize);
 
@@ -1068,7 +1069,6 @@ void MenuHandler::handleSort(const Structure dataset) {
             return;
     }
 
-    std::string userInput;
     bool ascending = false;
     char menuOption;
     std::string sortCategory;
@@ -1086,6 +1086,7 @@ void MenuHandler::handleSort(const Structure dataset) {
                     << "E: Return to Main Menu\n" << std::endl;
             menuOption = menuHandling('A', 'E', false);
             if (menuOption != 'E') {
+                std::string userInput;
                 while (userInput != "1" && userInput != "2") {
                     std::cout << "\nEnter 1 to sort in ascending order." << std::endl
                             << "Enter 2 to sort in descending order.\n" << std::endl;
@@ -1229,7 +1230,6 @@ void MenuHandler::handleCompare() {
     std::cout << "\nHow many occupations do you want to compare?" << std::endl;
 
     int numberOfJobs;
-    const Occupation *jobToCompare;
 
     do {
         std::cout << "\nSelect at least 2 occupations.\n" << std::endl;
@@ -1241,7 +1241,7 @@ void MenuHandler::handleCompare() {
     for (int i = 0; i < numberOfJobs; i++) {
         std::cout << "\nSelecting job " << (i + 1) << " out of " << numberOfJobs << "." << std::endl;
 
-        jobToCompare = chooseJobToModify("compare");
+        const Occupation *jobToCompare = chooseJobToModify("compare");
 
         if (jobToCompare == nullptr) {
             std::cout << "\nJob not found. Do you want to return to the main menu? (y/n)\n" << std::endl;
@@ -1260,19 +1260,16 @@ void MenuHandler::handleCompare() {
 }
 
 void MenuHandler::handleUndoDatabase() {
-    int index;
-    int matrixCodeInt;
-    std::string jobTitle;
-    std::unique_ptr<Occupation> jobToUndo;
 
     try {
         auto top = recentChangesDatabase.pop();
-        index = top.jobIndex;
+        int index = top.jobIndex;
+        std::string jobTitle;
 
         if (top.recentState == RecentState::ADDED) {
-            matrixCodeInt = top.matrixCodeInt;
+            int matrixCodeInt = top.matrixCodeInt;
 
-            jobToUndo = allJobsDatabase.removeJobFromDatabase(index, matrixCodeInt);
+            std::unique_ptr<Occupation> jobToUndo = allJobsDatabase.removeJobFromDatabase(index, matrixCodeInt);
             jobTitle = jobToUndo->getOccupation();
             savedDatabase = false;
 
@@ -1290,7 +1287,6 @@ void MenuHandler::handleUndoDatabase() {
 }
 
 void MenuHandler::handleUndoList() {
-
     try {
         auto top = recentChangesList.pop();
 

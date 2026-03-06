@@ -100,10 +100,10 @@ int Occupation::getJobIndex() const {
 }
 
 // setters assign std::string arguments to std::string data fields and call toFloat() function for float data fields
-void Occupation::setOccupation(std::string o) {
+void Occupation::setOccupation(const std::string &o) {
 	occupation = o;
 }
-void Occupation::setMatrixCode(std::string mc) {
+void Occupation::setMatrixCode(const std::string &mc) {
 	if (mc == "-") {
 		int randomNumber = rand();
 		matrixCode = std::to_string(randomNumber);
@@ -112,52 +112,54 @@ void Occupation::setMatrixCode(std::string mc) {
 	else {
 		matrixCode = mc;
 		// erases the - character from the matrix code
-		auto pos = mc.find("-");
-		if (pos != std::string::npos) {
-			mc.erase(pos, 1);
+		std::string cleanedMatrixCode;
+		for (char c : mc) {
+			if (isnumber(c)) {
+				cleanedMatrixCode+= c;
+			}
 		}
 		// converts the modified code to an int
-		matrixCodeInt = stoi(mc);
+		matrixCodeInt = stoi(cleanedMatrixCode);
 	}
 }
-void Occupation::setOccupationType(std::string ot) {
-	occupationType = std::move(ot);
+void Occupation::setOccupationType(const std::string &ot) {
+	occupationType = ot;
 }
-void Occupation::setEmploymentCurrent(std::string ec) {
+void Occupation::setEmploymentCurrent(const std::string &ec) {
 	employmentCurrentString = ec;
 	employmentCurrent = toFloat(ec);
 }
-void Occupation::setEmploymentFuture(std::string ef) {
+void Occupation::setEmploymentFuture(const std::string &ef) {
 	employmentFutureString = ef;
 	employmentFuture = toFloat(ef);
 }
-void Occupation::setDistributionCurrent(std::string dc) {
+void Occupation::setDistributionCurrent(const std::string &dc) {
 	distributionCurrentString = dc;
 	distributionCurrent = toFloat(dc);
 }
-void Occupation::setDistributionFuture(std::string df) {
+void Occupation::setDistributionFuture(const std::string &df) {
 	distributionFutureString = df;
 	distributionFuture = toFloat(df);
 }
-void Occupation::setNumericChange(std::string nc) {
+void Occupation::setNumericChange(const std::string &nc) {
 	numericChangeString = nc;
 	numericChange = toFloat(nc);
 }
-void Occupation::setPercentageChange(std::string pc) {
+void Occupation::setPercentageChange(const std::string &pc) {
 	percentChangeString = pc;
 	percentChange = toFloat(pc);
 }
-void Occupation::setPercentSelfEmployed(std::string pse) {
+void Occupation::setPercentSelfEmployed(const std::string &pse) {
 	percentSelfEmployedString = pse;
 	percentSelfEmployed = toFloat(pse);
 }
-void Occupation::setJobOpenings(std::string jo) {
+void Occupation::setJobOpenings(const std::string &jo) {
 	jobOpeningsString = jo;
 	jobOpenings = toFloat(jo);
 }
-void Occupation::setWage(std::string w) {
+void Occupation::setWage(const std::string &w) {
 	wageString = w;
-	std::string cleanedWage = "";
+	std::string cleanedWage;
 	for (char c : w) {
 		if (isnumber(c)) {
 			cleanedWage += c;
@@ -165,7 +167,7 @@ void Occupation::setWage(std::string w) {
 	}
 	wage = toFloat(cleanedWage);
 }
-void Occupation::setEducation(std::string e) {
+void Occupation::setEducation(const std::string &e) {
 	education = e;
 	int score = 0;
 	if (e == "No formal educational credential") {
@@ -194,7 +196,7 @@ void Occupation::setEducation(std::string e) {
 	}
 	educationScore = score;
 }
-void Occupation::setWorkExperience(std::string we) {
+void Occupation::setWorkExperience(const std::string &we) {
 	workExperience = we;
 	int score = 0;
 	if (we == "None") {
@@ -208,10 +210,10 @@ void Occupation::setWorkExperience(std::string we) {
 	}
 	workExperienceScore = score;
 }
-void Occupation::setTraining(std::string t) {
+void Occupation::setTraining(const std::string &t) {
 	training = t;
 }
-void Occupation::setHandbookContent(std::string hc) {
+void Occupation::setHandbookContent(const std::string &hc) {
 	handbookContent = hc;
 }
 void Occupation::setJobIndex(int i) {

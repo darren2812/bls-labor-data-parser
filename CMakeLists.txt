@@ -9,21 +9,21 @@ add_executable(bls_labor_data_parser
         input/listData.txt
         input/rawData.txt
         output/output.txt
-        HashTable.cpp
-        HashTable.h
-        Helpers.cpp
-        Helpers.h
-        LinkedList.cpp
-        LinkedList.h
-        main.cpp
-        Occupation.cpp
-        Occupation.h
-        Sort.h
-        Stack.cpp
-        Stack.h
-        MenuHandler.h
-        MenuHandler.cpp
-        DynamicArray.h
-        JobDatabase.cpp
-        JobDatabase.h
+        src/HashTable.cpp
+        src/HashTable.h
+        src/Helpers.cpp
+        src/Helpers.h
+        src/LinkedList.cpp
+        src/LinkedList.h
+        src/main.cpp
+        src/Occupation.cpp
+        src/Occupation.h
+        src/Sort.h
+        src/Stack.cpp
+        src/Stack.h
+        src/MenuHandler.h
+        src/MenuHandler.cpp
+        src/DynamicArray.h
+        src/JobDatabase.cpp
+        src/JobDatabase.h
 )

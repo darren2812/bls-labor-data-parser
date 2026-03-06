@@ -3,7 +3,8 @@
 
 class OpenAddressingBucket {
 public:
-	// open addressing bucket only stores a job pointer because the key is already a member field of an Occupation object
+	// open addressing bucket only stores a job pointer.
+	// The key is already a member field of an Occupation object
 	// this means that occupation objects do not need to be copied as all data is contained in the main array
 	const Occupation* JobPointer;
 
@@ -23,21 +24,17 @@ public:
 };
 
 class HashTable {
-private:
-	// main structure is a dynamic array of pointers
 	OpenAddressingBucket** table;
 	// declaring constants for quadratic probing
 	int c1 = 1;
 	int c2 = 1;
-	int tableCapacity;
+	size_t tableCapacity;
 
 	// private hashing method
-	int hashJobKey(int key) const;
+	static size_t hashJobKey(int key);
 public:
-	// default constructor takes in default arguments if not defined by the user
 	HashTable();
-	HashTable(int initialCapacity);
-	// chatGPT informed that a destructor is required as the array is dynamically allocated
+	HashTable(size_t initialCapacity);
 	~HashTable();
 
 	OpenAddressingBucket* operator[](int index) const;
@@ -45,12 +42,10 @@ public:
 	HashTable& operator=(const HashTable&) = delete;
 	HashTable& operator=(HashTable&&) noexcept;
 
-	int getTableCapacity() const;
+	size_t getTableCapacity() const;
 	
-	// search method
 	const Occupation* getJobPointer(int key) const;
 
-	// methods to modify contents of table
-	bool insertJob(Occupation *jobInserted);
+	bool insertJob(Occupation *jobInserted) const;
 	bool removeJob(int matrixCodeInt);
 };

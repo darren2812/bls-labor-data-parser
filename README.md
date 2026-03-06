@@ -24,3 +24,33 @@ A C++ console application that parses and organizes labor market data from the U
 - Addition and removal of jobs in both the linked list and dynamic array can be tracked and undone using a stack.
 - Removals use std::move to move the occupation from main array to the stack.
 - Search and sort arrays allow for the same printing functions to be reused across all data structure search / sort results.
+
+## Screenshots
+#### All Jobs Display
+![allJobsDisplay](screenshots/allJobsDisplay.png)
+#### Job Comparison Bar Charts
+![barCharDisplay](screenshots/barChartDisplay.png)
+#### Displaying Recent Changes to List
+![listStackDisplay](screenshots/listStackDisplay.png)
+
+## Instructions to Run
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/darren2812/bls-labor-data-parser
+cd bls-labor-data-parser
+```
+
+### 2. Compile the program
+```bash
+g++ -std=c++17 src/*.cpp -o data_parser
+```
+
+### 3. Run the program
+```bash
+./data_parser
+```
+
+#### Notes:
+- Make sure the input and output folders stay in the expected locations.
+- This version does not yet use full warning/error-checking flags because the code is still being refined.

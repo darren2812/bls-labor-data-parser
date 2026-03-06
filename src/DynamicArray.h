@@ -18,7 +18,7 @@ public:
         data = nullptr;
     }
 
-    DynamicArray(int capacity) : capacity(capacity) {
+    DynamicArray(size_t capacity) : capacity(capacity) {
         data = new T[capacity];
     }
 

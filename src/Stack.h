@@ -1,9 +1,8 @@
 #pragma once
 
 #include <functional>
-#include <string>
+#include <memory>
 #include "Occupation.h"
-#include "DynamicArray.h"
 
 // enum to hold recent state
 enum class RecentState {

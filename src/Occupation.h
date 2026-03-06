@@ -94,26 +94,26 @@ public:
 	std::string getHandbookContent() const;
 	int getJobIndex() const;
 
-	void setOccupation(std::string o);
-	void setMatrixCode(std::string mc);
-	void setOccupationType(std::string ot);
-	void setEmploymentCurrent(std::string ec);
-	void setEmploymentFuture(std::string ef);
-	void setDistributionCurrent(std::string dc);
-	void setDistributionFuture(std::string df);
-	void setNumericChange(std::string nc);
-	void setPercentageChange(std::string pc);
-	void setPercentSelfEmployed(std::string pse);
-	void setJobOpenings(std::string jo);
-	void setWage(std::string w);
-	void setEducation(std::string e);
-	void setWorkExperience(std::string we);
-	void setTraining(std::string t);
-	void setHandbookContent(std::string hc);
+	void setOccupation(const std::string &o);
+	void setMatrixCode(const std::string &mc);
+	void setOccupationType(const std::string &ot);
+	void setEmploymentCurrent(const std::string &ec);
+	void setEmploymentFuture(const std::string &ef);
+	void setDistributionCurrent(const std::string &dc);
+	void setDistributionFuture(const std::string &df);
+	void setNumericChange(const std::string &nc);
+	void setPercentageChange(const std::string &pc);
+	void setPercentSelfEmployed(const std::string &pse);
+	void setJobOpenings(const std::string &jo);
+	void setWage(const std::string &w);
+	void setEducation(const std::string &e);
+	void setWorkExperience(const std::string &we);
+	void setTraining(const std::string &t);
+	void setHandbookContent(const std::string &hc);
 	void setJobIndex(int i);
 
 	// functions for calculations
 	void calculateChanges();
-	std::string formatOneDecimal(float& value);
+	static std::string formatOneDecimal(float& value);
 };
 

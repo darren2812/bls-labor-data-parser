@@ -4,7 +4,7 @@
 #include <functional>
 #include "DynamicArray.h"
 
-float toFloat(std::string &s);
+float toFloat(const std::string &s);
 
 void capitalizeFirst(std::string &input);
 

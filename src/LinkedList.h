@@ -26,12 +26,12 @@ public:
 
     const Occupation *removeByIndex(int jobIndex);
 
-    bool searchListByJob(const std::string &jobToSearch, DynamicArray<const Occupation *> &searchedJobsArray);
+    bool searchListByJob(const std::string &jobToSearch, DynamicArray<const Occupation *> &searchedJobsArray) const;
 
-    bool searchListByWage(int lowerLimit, int upperLimit,
-                          DynamicArray<const Occupation *> &searchedJobsArray);
+    bool searchListByWage(float lowerLimit, float upperLimit,
+                          DynamicArray<const Occupation *> &searchedJobsArray) const;
 
-    bool searchListByIndex(int jobIndex);
+    bool searchListByIndex(int jobIndex) const;
 
     // list iterator for functions in MenuHandler
     void forEachJobInList(const std::function<void(const Occupation *job)> &fn) const;

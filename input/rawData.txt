@@ -12047,22 +12047,6 @@ None
 Short-term on-the-job training
 OOH Content
 Fishing and hunting workers
-45-3000
-Summary
-25.5
-25.3
-0
-0
--0.2
--0.8
-36.8
-3.5
--
--
--
--
--
-Fishing and hunting workers
 45-3031
 Line item
 25.5

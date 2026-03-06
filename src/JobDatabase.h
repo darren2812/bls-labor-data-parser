@@ -5,7 +5,6 @@
 #include "LinkedList.h"
 
 class JobDatabase {
-private:
     DynamicArray<std::unique_ptr<Occupation>> allJobsArray;
     HashTable allJobsHashTable;
 
@@ -21,8 +20,8 @@ public:
     JobDatabase &operator=(const JobDatabase &other) = delete;
     JobDatabase &operator=(JobDatabase &&other) noexcept = default;
 
-    void readInputFile(std::fstream& rawData, int* columnLengths);
-    void readListFile(std::fstream &listData, SinglyLinkedList &list);
+    void readInputFile(std::fstream& rawData, size_t *columnLengths);
+    void readListFile(std::fstream &listData, SinglyLinkedList &list) const;
     void rewriteInputFile(const std::string &modifiedDataPath, std::fstream& modifiedData);
     void rewriteListFile(const std::string &listDataPath, std::fstream &listData, const SinglyLinkedList &list);
 

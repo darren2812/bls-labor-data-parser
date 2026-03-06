@@ -11,7 +11,7 @@ int JobDatabase::getSize() const {
     return allJobsArray.getCurrentSize();
 }
 
-void JobDatabase::readInputFile(std::fstream &rawData, int *columnLengths) {
+void JobDatabase::readInputFile(std::fstream &rawData, size_t *columnLengths) {
     rawData.clear();
     rawData.seekg(0, std::ios::beg);
     std::string tempString;
@@ -65,6 +65,7 @@ void JobDatabase::readInputFile(std::fstream &rawData, int *columnLengths) {
                 columnCount = -1;
                 currentSize++;
                 break;
+            default: break;
         }
         // skips matrix and handbook columns in file and finds the longest std::string from input to adjust for column size
         if (columnCount != 1 && tempString.size() + 1 > columnLengths[columnCount]) {
@@ -75,25 +76,24 @@ void JobDatabase::readInputFile(std::fstream &rawData, int *columnLengths) {
     }
 }
 
-void JobDatabase::readListFile(std::fstream &listData, SinglyLinkedList &list) {
+void JobDatabase::readListFile(std::fstream &listData, SinglyLinkedList &list) const {
     // setting the cursor position back to the start
     listData.clear();
     listData.seekg(0, std::ios::beg);
     std::string initialString;
     std::string tempString;
-    int matrixCode;
     // loop while file does not end
     while (std::getline(listData, tempString)) {
         // try catch block to handle erroneous input
         try {
             initialString = tempString;
             // erases the - character from the matrix code
-            auto pos = tempString.find("-");
+            auto pos = tempString.find('-');
             if (pos != std::string::npos) {
                 tempString.erase(pos, 1);
             }
             // converts the modified code to an int
-            matrixCode = stoi(tempString);
+            int matrixCode = stoi(tempString);
             // searches for that code in the string
             const Occupation* jobPointer = allJobsHashTable.getJobPointer(matrixCode);
             if (jobPointer) {
@@ -304,7 +304,7 @@ std::unique_ptr<Occupation> JobDatabase::removeJobFromDatabase(const int indexTo
     std::unique_ptr<Occupation> jobToRemove = allJobsArray.removeEntry(indexToRemove);
 
     if (jobToRemove != nullptr && allJobsHashTable.removeJob(matrixCodeInt)) {
-        return std::move(jobToRemove);
+        return jobToRemove;
     }
     return nullptr;
 }

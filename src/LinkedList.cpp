@@ -96,7 +96,7 @@ const Occupation *SinglyLinkedList::removeByIndex(int jobIndex) {
     return nullptr;
 }
 
-bool SinglyLinkedList::searchListByJob(const std::string &jobToSearch, DynamicArray<const Occupation *> &searchedJobsArray) {
+bool SinglyLinkedList::searchListByJob(const std::string &jobToSearch, DynamicArray<const Occupation *> &searchedJobsArray) const {
 
     searchedJobsArray = DynamicArray<const Occupation*>(listSize);
 
@@ -124,8 +124,8 @@ bool SinglyLinkedList::searchListByJob(const std::string &jobToSearch, DynamicAr
     return false;
 }
 
-bool SinglyLinkedList::searchListByWage(const int lowerLimit, const int upperLimit,
-                                       DynamicArray<const Occupation *> &searchedJobsArray) {
+bool SinglyLinkedList::searchListByWage(const float lowerLimit, const float upperLimit,
+                                       DynamicArray<const Occupation *> &searchedJobsArray) const {
 
     searchedJobsArray = DynamicArray<const Occupation*>(listSize);
 
@@ -143,7 +143,7 @@ bool SinglyLinkedList::searchListByWage(const int lowerLimit, const int upperLim
     return false;
 }
 
-bool SinglyLinkedList::searchListByIndex(int jobIndex) {
+bool SinglyLinkedList::searchListByIndex(int jobIndex) const {
     SinglyLinkedNode * current = head;
 
     while (current) {
