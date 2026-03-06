@@ -2,6 +2,7 @@
 #include "Helpers.h"
 #include <sstream>
 #include <iomanip>
+#include <random>
 
 std::string Occupation::getOccupation() const {
 	return occupation;
@@ -105,7 +106,11 @@ void Occupation::setOccupation(const std::string &o) {
 }
 void Occupation::setMatrixCode(const std::string &mc) {
 	if (mc == "-") {
-		int randomNumber = rand();
+		std::random_device generator;
+		// if matrix code is blank, generate a 6-digit matrix code to prevent possible
+		// conflicts with 5-digit codes
+		std::uniform_int_distribution<int> distribution(100000, 999999);
+		int randomNumber = distribution(generator);;
 		matrixCode = std::to_string(randomNumber);
 		matrixCodeInt = randomNumber;
 	}

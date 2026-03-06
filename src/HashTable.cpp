@@ -27,14 +27,14 @@ HashTable::HashTable() :
 
 HashTable::HashTable(size_t initialCapacity) {
 	table = new OpenAddressingBucket*[initialCapacity];
-	for (int i = 0; i < initialCapacity; i++) {
+	for (size_t i = 0; i < initialCapacity; i++) {
 		table[i] = &OpenAddressingBucket::EMPTY_SINCE_START;
 	}
 	this->tableCapacity = initialCapacity;
 }
 
 HashTable::~HashTable() {
-	for (int i = 0; i < tableCapacity; i++) {
+	for (size_t i = 0; i < tableCapacity; i++) {
 		if (!table[i]->isEmpty()) {
 			delete table[i];
 		}
@@ -42,7 +42,7 @@ HashTable::~HashTable() {
 	delete[] table;
 	table = nullptr;
 }
-OpenAddressingBucket *HashTable::operator[](int index) const {
+OpenAddressingBucket *HashTable::operator[](size_t index) const {
 	return table[index];
 }
 
@@ -82,7 +82,7 @@ size_t HashTable::getTableCapacity() const {
 
 const Occupation* HashTable::getJobPointer(int key) const {
 	size_t hashedKey = hashJobKey(key);
-	for (int i = 0; i < tableCapacity; i++) {
+	for (size_t i = 0; i < tableCapacity; i++) {
 		size_t bucketIndex = (c2 * i * i + c1 * i + hashedKey) % tableCapacity;
 		if (table[bucketIndex]->isEmptySinceStart()) {
 			return nullptr;
@@ -99,14 +99,14 @@ const Occupation* HashTable::getJobPointer(int key) const {
 
 // insert method calls private hashing method
 // Since the hashtable only points to the main array, this implementation rejects identical keys.
-bool HashTable::insertJob(Occupation *jobInserted) const{
+bool HashTable::insertJob(const Occupation *jobInserted) const{
 
 	size_t hashedKey = hashJobKey(jobInserted->getMatrixCodeInt());
 
 	// track the first deleted index for better performance as further searches
 	// for the same key will be shorter
-	size_t firstDeletedIndex = -1;
-	for (int i = 0; i < tableCapacity; i++) {
+	int firstDeletedIndex = -1;
+	for (size_t i = 0; i < tableCapacity; i++) {
 		size_t bucketIndex = (c2 * i * i + c1 * i + hashedKey) % tableCapacity;
 		if (table[bucketIndex]->isEmptySinceStart()) {
 			if (firstDeletedIndex == -1) {
@@ -118,7 +118,7 @@ bool HashTable::insertJob(Occupation *jobInserted) const{
 			return true;
 		}
 		if (table[bucketIndex]->isEmptyAfterRemoval() && i == 0) {
-			firstDeletedIndex = bucketIndex;
+			firstDeletedIndex = static_cast<int>(bucketIndex);
 		}
 		else if (!table[bucketIndex]->isEmptyAfterRemoval()) {
 			if (table[bucketIndex]->JobPointer->getMatrixCodeInt() == jobInserted->getMatrixCodeInt()) {
@@ -132,9 +132,9 @@ bool HashTable::insertJob(Occupation *jobInserted) const{
 
 // remove method takes in a key as its argument
 bool HashTable::removeJob(int matrixCodeInt) {
-	int hashedKey = hashJobKey(matrixCodeInt);
-	int bucketIndex;
-	for (int i = 0; i < tableCapacity; i++) {
+	size_t hashedKey = hashJobKey(matrixCodeInt);
+	size_t bucketIndex;
+	for (size_t i = 0; i < tableCapacity; i++) {
 		bucketIndex = (c2 * i * i + c1 * i + hashedKey) % tableCapacity;
 		if (table[bucketIndex]->isEmptySinceStart()) {
 			return false;

@@ -37,7 +37,7 @@ public:
 	HashTable(size_t initialCapacity);
 	~HashTable();
 
-	OpenAddressingBucket* operator[](int index) const;
+	OpenAddressingBucket* operator[](size_t index) const;
 
 	HashTable& operator=(const HashTable&) = delete;
 	HashTable& operator=(HashTable&&) noexcept;
@@ -46,6 +46,6 @@ public:
 	
 	const Occupation* getJobPointer(int key) const;
 
-	bool insertJob(Occupation *jobInserted) const;
+	bool insertJob(const Occupation *jobInserted) const;
 	bool removeJob(int matrixCodeInt);
 };

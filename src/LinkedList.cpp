@@ -23,7 +23,7 @@ void SinglyLinkedList::clear() {
 void SinglyLinkedList::append(const Occupation *jobAppended) {
     auto newNode = new SinglyLinkedNode;
     newNode->data = jobAppended;
-    // assigns head and tail to new node if the list is empty
+    // assigns head and tail to the new node if the list is empty
     if (head == nullptr) {
         head = newNode;
         tail = newNode;
@@ -38,7 +38,7 @@ void SinglyLinkedList::append(const Occupation *jobAppended) {
 void SinglyLinkedList::prepend(const Occupation *jobPrepended) {
     auto newNode = new SinglyLinkedNode;
     newNode->data = jobPrepended;
-    // assigns head and tail to new node if the list is empty
+    // assigns head and tail to the new node if the list is empty
     if (head == nullptr) {
         head = newNode;
         tail = newNode;

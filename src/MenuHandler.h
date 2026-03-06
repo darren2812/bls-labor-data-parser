@@ -54,16 +54,16 @@ public:
     ~MenuHandler();
 
     void allocateDatabase();
-    void displayMainMenu();
-    void displayListMenu();
+    static void displayMainMenu();
+    static void displayListMenu();
     void run();
     void runListMenu();
 
     void printTableHeadings();
     void printTableEntry(const Occupation *currentJob);
 
-    void printPrefixAndCategory(const Occupation &jobCategory) const;
-    void printSuffixAndJob(const Occupation &job) const;
+    static void printPrefixAndCategory(const Occupation &jobCategory);
+    static void printSuffixAndJob(const Occupation &job);
 
     void printMainArray();
     void printHashTable();
@@ -74,17 +74,18 @@ public:
     void printAllCategories() const;
     void printCategoryContents(const std::string &prefix) const;
     void printIndicesInList() const;
+    static void printSingleJob(const Occupation* job);
 
     // function to handle menu selection
-    char menuHandling(char firstLetter, char lastLetter, bool acceptDash);
+    static unsigned char menuHandling(char firstLetter, char lastLetter, bool acceptDash);
     // function to handle yes/no selection
-    char yesOrNoMenu();
+    static unsigned char yesOrNoMenu();
 
-    OccupationRow promptJobAttributes(std::string jobTitle, const std::string &matrixCode);
+    static OccupationRow promptJobAttributes(std::string jobTitle, const std::string &matrixCode);
 
-    std::string promptNonNegativeOrDash();
-    std::string promptNumber() const;
-    char promptOptionToSearch(Structure dataset);
+    static std::string promptNonNegativeOrDash();
+    static std::string promptNumber();
+    static unsigned char promptOptionToSearch(Structure dataset);
 
     // function to select a specific index from the database
     const Occupation* selectSpecificIndex(const std::string &command);
@@ -93,8 +94,8 @@ public:
     const Occupation* chooseJobToModify(const std::string &command);
     bool placeOccupationInList(const Occupation* occupation);
 
-    bool databasedIsSaved();
-    bool listIsSaved();
+    bool databasedIsSaved() const;
+    bool listIsSaved() const;
 
     // functions to copy the contents of one array to another
     void copyMainArray(DynamicArray<const Occupation *> &outputArray) const;
@@ -102,7 +103,7 @@ public:
     void copyList(DynamicArray<const Occupation *> &outputArray) const;
 
     void handleAddDatabase();
-    int handleListIndexRetrieval(const std::string &command);
+    int handleListIndexRetrieval(const std::string &command) const;
     void handleAddList();
     void handleRemoveList();
     void handleRemoveDatabase();
@@ -111,7 +112,7 @@ public:
     void handleCompare();
     void handleUndoDatabase();
     void handleUndoList();
-    bool handleCheckSaved();
+    bool handleCheckSaved() const;
     void handleDatabasePrint();
     void handleListPrint();
     void handleStackPrint(const JobStack &stack, Structure dataset) const;

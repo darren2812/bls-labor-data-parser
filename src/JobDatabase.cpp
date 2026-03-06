@@ -193,7 +193,7 @@ bool JobDatabase::searchArrayByJob(DynamicArray<const Occupation*> &searchedJobs
     return false;
 }
 
-bool JobDatabase::searchArrayByWage(DynamicArray<const Occupation *> &searchedJobsArray, const int lowerLimit, const int upperLimit) const {
+bool JobDatabase::searchArrayByWage(DynamicArray<const Occupation *> &searchedJobsArray, const float lowerLimit, const float upperLimit) const {
 
     int mainArraySize = allJobsArray.getCurrentSize();
     searchedJobsArray = DynamicArray<const Occupation*>(mainArraySize);
@@ -237,9 +237,9 @@ void JobDatabase::forEachJobInMainArray(const std::function<void(const Occupatio
 }
 
 void JobDatabase::forEachEntryInHashTable(const std::function<void(const Occupation *job)> &fn) const {
-    int hashTableSize = allJobsHashTable.getTableCapacity();
+    size_t hashTableSize = allJobsHashTable.getTableCapacity();
 
-    for (int i = 0; i < hashTableSize; i++) {
+    for (size_t i = 0; i < hashTableSize; i++) {
         if (!allJobsHashTable[i]->isEmpty()) {
             fn(allJobsHashTable[i]->JobPointer);
         }

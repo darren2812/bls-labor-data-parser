@@ -23,14 +23,14 @@ public:
     void readInputFile(std::fstream& rawData, size_t *columnLengths);
     void readListFile(std::fstream &listData, SinglyLinkedList &list) const;
     void rewriteInputFile(const std::string &modifiedDataPath, std::fstream& modifiedData);
-    void rewriteListFile(const std::string &listDataPath, std::fstream &listData, const SinglyLinkedList &list);
+    static void rewriteListFile(const std::string &listDataPath, std::fstream &listData, const SinglyLinkedList &list);
 
     bool generateUniqueKey(const std::string &codePrefix, std::string &uniqueCode) const;
 
     bool searchArrayByJob(DynamicArray<const Occupation *> &searchedJobsArray, const std::string &jobToSearch) const;
 
-    bool searchArrayByWage(DynamicArray<const Occupation *> &searchedJobsArray, int lowerLimit,
-                      int upperLimit) const;
+    bool searchArrayByWage(DynamicArray<const Occupation *> &searchedJobsArray, float lowerLimit,
+                      float upperLimit) const;
     const Occupation* searchJobByCode(const int &matrixCodeInt) const;
 
     const Occupation* findCategory(const std::string &codePrefix) const;

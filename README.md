@@ -43,7 +43,7 @@ cd bls-labor-data-parser
 
 ### 2. Compile the program
 ```bash
-g++ -std=c++17 src/*.cpp -o data_parser
+g++ -std=c++17 -Wall -Wextra -pedantic src/*.cpp -o data_parser
 ```
 
 ### 3. Run the program
@@ -53,4 +53,5 @@ g++ -std=c++17 src/*.cpp -o data_parser
 
 #### Notes:
 - Make sure the input and output folders stay in the expected locations.
-- This version does not yet use full warning/error-checking flags because the code is still being refined.
+- The input file may have to be redownloaded if manual changes on the .txt file are made.
+- The table might wrap around if the terminal window is too small. This should not be a problem using an IDE console.
