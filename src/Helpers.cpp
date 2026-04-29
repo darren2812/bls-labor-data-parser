@@ -22,8 +22,8 @@ void capitalizeFirst(std::string &input) {
 void lowerString(std::string &input) {
     if (!input.empty()) {
         for (size_t i = 0; i < input.size(); i++) {
-            input[0] = static_cast<char>(
-                std::tolower(static_cast<unsigned char>(input[0]))
+            input[i] = static_cast<char>(
+                std::tolower(static_cast<unsigned char>(input[i]))
             );
         }
     }
